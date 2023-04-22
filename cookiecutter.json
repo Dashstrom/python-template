@@ -1,0 +1,16 @@
+{
+  "project_name": "",
+  "__project_slug": "{{cookiecutter.__project_slug}}",
+  "__project_pypi_name": "{{cookiecutter.__project_slug}}",
+  "project_short_description": "My amazing package",
+  "project_url": "https://github.com/Dashstrom/{{cookiecutter.__project_pypi_name}}",
+  "__base_url": "https://github.com/Dashstrom/{{cookiecutter.__project_pypi_name}}",
+  "discord_server": "no",
+  "__bug_tracker": "{{cookiecutter.__source_url}}/issues",
+  "__docs_user_guide": "{{cookiecutter.__base_url}}",
+  "__homepage": "{{cookiecutter.__base_url}}",
+  "__sourcecode": "{{cookiecutter.__source_url}}",
+  "__clone_url": "{{cookiecutter.__source_url}}",
+  "pypi": ["yes", "no"],
+  "docker": ["no", "yes"]
+}
