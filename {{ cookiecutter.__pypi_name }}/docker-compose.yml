@@ -1,0 +1,10 @@
+version: "3.7"
+services:
+  bot:
+    container_name: {{ cookiecutter.__pypi_name }}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro

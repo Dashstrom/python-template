@@ -1,5 +1,0 @@
-__author__ = ""
-__email__ = ""
-__version__ = ""
-__copyright__ = "Copyrigth, Dashstrom"
-__copyright__ = "Copyrigth, Dashstrom"
