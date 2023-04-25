@@ -59,6 +59,8 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3 :: Only",
+
+  "Typing :: Typed"
 ]
 dynamic = ["version", "dependencies"]
 
@@ -67,7 +69,7 @@ Homepage = "{{ cookiecutter.__homepage }}"
 Issues = "{{ cookiecutter.__issues }}"
 Documentation = "{{ cookiecutter.__documentation }}"
 Source = "{{ cookiecutter.__source }}"
-{% if cookiecutter.cli != 'none' %}
+{% if cookiecutter.cli|lower != 'none' %}
 
 [project.scripts]
 {{ cookiecutter.__cli_name }} = "{{ cookiecutter.__project_slug }}.cli:cli"
@@ -103,6 +105,10 @@ commands =
   ruff check .
   black --diff .
   mypy .
+
+[testenv:audit]
+deps = pip-audit==2.5.4
+commands =
   pip-audit -r requirements.txt
   pip-audit -r requirements-dev.txt
 
@@ -164,12 +170,14 @@ target-version = "py37"  # Doesn't support py36
 
 [tool.ruff.per-file-ignores]
 # E402 Module level import not at top of file
-# INP001 File `docs\conf.py` is part of an implicit namespace package. Add an `__init__.py`.
+# INP001 File `docs\conf.py` is part of an implicit namespace package.
 # A001 Variable `copyright` is shadowing a python builtin
 # PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
 "docs/conf.py" = ["E402", "INP001", "A001", "PTH100"]
 # S101 Use of `assert` detected
-"tests/*.py" = ["S101"]
+# S603 `subprocess` call: check for execution of untrusted input
+# S607 Starting a process with a partial executable path
+"tests/*.py" = ["S101", "S603", "S607"]
 
 [tool.ruff.mccabe]
 # Unlike Flake8, default to a complexity level of 10.
@@ -221,7 +229,7 @@ enable_error_code = ["ignore-without-code", "truthy-bool", "redundant-expr"]
 
 # Disallow dynamic typing
 disallow_any_unimported = true
-disallow_any_expr = true
+disallow_any_expr = false
 disallow_any_decorated = true
 disallow_any_generics = true
 disallow_subclassing_any = true

@@ -11,7 +11,12 @@ REMOVED_IF_FALSE = {
         "Dockerfile",
         "docker-compose.yml",
         ".dockerignore",
-    ]
+    ],
+    "{{ cookiecutter.cli }}": [
+        "{{ cookiecutter.__project_slug }}/cli.py",
+        "{{ cookiecutter.__project_slug }}/__main__.py",
+        "tests/test_cli.py",
+    ],
 }
 
 
@@ -30,9 +35,26 @@ def run(*args: str) -> None:
         fatal("Command failed, exiting")
 
 
+def remove_paths() -> None:
+    """Remove paths."""
+    for pred, paths in REMOVED_IF_FALSE.items():
+        for path in paths:
+            if pred.lower().strip() in (
+                "no",
+                "false",
+                "n",
+                "non",
+                "0",
+                "none",
+                "",
+            ):
+                abspath = pathlib.Path(path).resolve()
+                abspath.unlink()
+
+
 def git() -> None:
     """Instansiate Git repository."""
-    if "{{ cookiecutter.git }}" == "yes":
+    if "{{ cookiecutter.git }}" == "True":
         run("git", "init")
         run("git", "add", "*")
         run("git", "commit", "-m", "Initial commit")
@@ -43,17 +65,8 @@ def git() -> None:
 
 def setup() -> None:
     """Setup virtual environnement and pre-commit."""
-    if "{{ cookiecutter.setup }}" == "yes":
+    if "{{ cookiecutter.setup }}" == "True":
         run("make", "setup")
-
-
-def remove_paths() -> None:
-    """Remove paths."""
-    for pred, paths in REMOVED_IF_FALSE.items():
-        for path in paths:
-            if pred.lower() in ("no", "False", "n", "non", "0", ""):
-                abspath = pathlib.Path(path).resolve()
-                abspath.unlink()
 
 
 def main() -> None:

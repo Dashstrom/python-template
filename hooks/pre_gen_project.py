@@ -36,12 +36,13 @@ def check_compatibilities() -> None:
         and "{{ cookiecutter.pypi }}" == "yes"
     ):
         fatal("All Rights Reserved is not compatible with PyPI")
-    if "dashstrom/template-python" in "{{ cookiecutter.__clone_url }}":
+    if "dashstrom/template-python" in "{{ cookiecutter.__clone_url|lower }}":
         fatal("You are trying to erase original project")
 
 
 def main() -> None:
     """Main function."""
+    print("DOCKER: {{ cookiecutter.docker }}")
     check_names()
     check_compatibilities()
 

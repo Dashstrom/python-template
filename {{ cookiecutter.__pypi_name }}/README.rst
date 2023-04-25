@@ -1,51 +1,37 @@
 {{cookiecutter.project_name}}
 {% for i in range(cookiecutter.project_name|length) %}={% endfor %}
 
-.. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v1.json
-    :target: https://github.com/charliermarsh/ruff
-    :alt: Code style: ruff
-
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :target: https://github.com/psf/black
-    :alt: Formater: black
-
-.. image:: {{ cookiecutter.__source }}/actions/workflows/docs.yml/badge.svg
-    :target: {{ cookiecutter.__source }}/actions/workflows/docs.yml
+.. image:: https://github.com/Dashstrom/blabla/actions/workflows/docs.yml/badge.svg
+    :target: https://github.com/Dashstrom/blabla/actions/workflows/docs.yml
     :alt: CI : Docs
 
-.. image:: {{ cookiecutter.__source }}/actions/workflows/lint.yml/badge.svg
-    :target: {{ cookiecutter.__source }}/actions/workflows/lint.yml
+.. image:: https://github.com/Dashstrom/blabla/actions/workflows/lint.yml/badge.svg
+    :target: https://github.com/Dashstrom/blabla/actions/workflows/lint.yml
     :alt: CI : Lint
 
-.. image:: {{ cookiecutter.__source }}/actions/workflows/tests.yml/badge.svg
-    :target: {{ cookiecutter.__source }}/actions/workflows/tests.yml
+.. image:: https://github.com/Dashstrom/blabla/actions/workflows/tests.yml/badge.svg
+    :target: https://github.com/Dashstrom/blabla/actions/workflows/tests.yml
     :alt: CI : Tests
 
-.. image:: {{ cookiecutter.__source }}/actions/workflows/publish.yml/badge.svg
-    :target: {{ cookiecutter.__source }}/actions/workflows/publish.yml
+.. image:: https://github.com/Dashstrom/blabla/actions/workflows/publish.yml/badge.svg
+    :target: https://github.com/Dashstrom/blabla/actions/workflows/publish.yml
     :alt: CI : Publish
 
-.. image:: https://img.shields.io/badge/security-bandit-yellow.svg
-    :target: https://github.com/PyCQA/bandit
-    :alt: Security : Bandit
-
-.. image:: https://img.shields.io/badge/security-pip--audit-yellow
-    :target: https://github.com/pypa/pip-audit
-    :alt: Security : pip-audit
-{% if cookiecutter.pypi == 'yes' %}
+.. image:: https://github.com/Dashstrom/blabla/actions/workflows/security.yml/badge.svg
+    :target: https://github.com/Dashstrom/blabla/actions/workflows/security.yml
+    :alt: CI : Security
+{% if cookiecutter.pypi %}
 .. image:: https://img.shields.io/pypi/v/{{ cookiecutter.__pypi_name }}.svg
     :target: {{ cookiecutter.__pypi_url }}
     :alt: PyPI : {{ cookiecutter.__pypi_name }}
 
 .. image:: https://img.shields.io/pypi/pyversions/{{ cookiecutter.__pypi_name }}.svg
     :target: {{ cookiecutter.__pypi_url }}
-    :alt: Python : versions
-{% endif %}
+    :alt: Python : versions{% endif %}
 {% if cookiecutter.discord != 'no' %}
 .. image:: https://img.shields.io/badge/Discord-cookiecutter-5865F2?style=flat&logo=discord&logoColor=white
     :target: {{ cookiecutter.discord }}
-    :alt: Discord
-{% endif %}
+    :alt: Discord{% endif %}
 .. image:: https://img.shields.io/badge/license-{{ cookiecutter.license.replace(" ", "%20") }}-green.svg
     :target: {{ cookiecutter.__source }}/blob/main/LICENSE
     :alt: License : {{ cookiecutter.license }}
@@ -107,7 +93,7 @@ A Makefile is available for help you to run commands.
     release      package and upload a release
     dist         builds source and wheel package
     install      install the package to the active Python's site-packages
-{% if cookiecutter.docker == 'yes'  %}
+{% if cookiecutter.docker == true %}
 Docker
 ******
 
@@ -167,7 +153,6 @@ Import backups
     docker compose stop
     docker run --rm -v "easterobot_database:/database" -v "easterobot_logs:/logs" -v "$PWD":/backup ubuntu bash -c "cd / && rm -rf /{database,logs}/* && tar xvfP /backup/backup.tar.gz"
     docker compose up -d{% endif %}
-
 License
 *******
 

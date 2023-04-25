@@ -15,6 +15,10 @@ end_of_line = crlf
 [*.{yml,yaml,json,jsonb,jsonl,toml}]
 indent_size = 2
 
+[*.txt]
+trim_trailing_whitespace = false
+insert_final_newline = false
+
 [*.tsv]
 indent_style = tab
 

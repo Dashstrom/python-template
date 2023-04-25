@@ -51,7 +51,7 @@ endif
 PIP=$(PY) -m pip
 VENV_PY=$(VENV)python
 VENV_PIP=$(VENV_PY) -m pip
-DEPS=$(wildcart *requirements*.txt) pyproject.toml
+DEPS=$(wildcart *requirements*.txt)
 
 .PHONY: help clean coverage dist docs install lint venv
 .DEFAULT_GOAL := help
@@ -71,13 +71,11 @@ help:  ## show current message
 
 $(VENV_ACTIVATE): $(DEPS)
 	$(MAKE) clean
-	$(PIP) install virtualenv
 	$(PY) -m venv venv
 	$(VENV_PIP) install --upgrade pip
 	$(VENV_PIP) install -r requirements-dev.txt
-	$(VENV_PIP) install .
+	$(VENV_PIP) install -e .
 	$(VENV)pre-commit install
-	$(VENV)tox -p
 
 setup: $(VENV_ACTIVATE)  ## create virtual environment and install pre-commit
 
@@ -87,8 +85,11 @@ clean:  ## remove all build, test, coverage and Python artifacts
 lint: setup  ## check style with pre-commit, ruff, black and mypy
 	$(VENV)pre-commit run --all-files
 
-test: setup  ## run all tests
+tests: setup  ## run all tests
 	$(VENV)tox -p
+
+audit: setup  ## check dependency tree
+	$(VENV)tox -e audit
 
 coverage: setup  ## check code coverage quickly with the default Python
 	$(VENV)coverage run --source {{ cookiecutter.__project_slug }} -m pytest

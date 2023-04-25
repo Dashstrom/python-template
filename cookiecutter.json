@@ -26,9 +26,9 @@
     "MIT",
     "All Rights Reserved"
   ],
-  "copyright": "Copyright {% now 'utc', '%Y' %}, {{ cookiecutter.full_name }} <{{ cookiecutter.email }}> - {{ cookiecutter.license }}",
-  "pypi": ["yes", "no"],
-  "git": ["yes", "no"],
-  "setup": ["yes", "no"],
-  "docker": ["no", "yes"]
+  "copyright": "Copyright {% now 'utc', '%Y' %}, {{ cookiecutter.full_name }} <{{ cookiecutter.email }}>",
+  "pypi": true,
+  "git": true,
+  "setup": true,
+  "docker": false
 }

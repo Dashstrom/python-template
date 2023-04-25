@@ -1,5 +1,6 @@
-"""Main package."""
-from .cli import cli
+"""Main package."""{% if cookiecutter.cli|lower != 'none' %}
+from .cli import cli{% endif %}
+from .core import hello
 from .info import (
     __author__,
     __copyright__,
@@ -12,6 +13,7 @@ from .info import (
 
 __all__ = [
     "cli",
+    "hello",
     "__author__",
     "__copyright__",
     "__description__",

@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  bot:
+  {{ cookiecutter.__pypi_name }}:
     container_name: {{ cookiecutter.__pypi_name }}
     build:
       context: .
