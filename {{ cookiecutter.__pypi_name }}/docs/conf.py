@@ -11,6 +11,7 @@ https://www.sphinx-doc.org/en/master/usage/configuration.html
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import pathlib
 import sys
 
 sys.path.insert(0, os.path.abspath(".."))
@@ -39,6 +40,7 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 source_suffix = ".rst"
 todo_include_todos = False
+# html_favicon = str(pathlib.Path(__file__).parent / "resources" / "favicon.png")
 
 
 # -- Options for HTML output -------------------------------------------------
