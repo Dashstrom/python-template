@@ -8,24 +8,22 @@ on:
 jobs:
   publish:
     name: Publish on PyPI
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python 3.6
+      - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
-          python-version: "3.6"
-      - name: Install dependencies
-        run: pip install tox
+          python-version: "3.8"
 
-      - name: Run all tests with tox
-        run: tox
+      - name: Run all tests with Make
+        run: make tests-all
 
-      - name: Build sdist
-        run: pipx run build --sdist --wheel
+      - name: Build dist with Make
+        run: make dist
 
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ '{{ secrets.PYPI_API_TOKEN }}' }}
+          password: ${{ secrets.PYPI_API_TOKEN }}

@@ -1,34 +1,24 @@
+.. role:: bash(code)
+   :language: bash
+
 {{cookiecutter.project_name}}
 {% for i in range(cookiecutter.project_name|length) %}={% endfor %}
 
-.. image:: https://github.com/Dashstrom/blabla/actions/workflows/docs.yml/badge.svg
-    :target: https://github.com/Dashstrom/blabla/actions/workflows/docs.yml
+.. image:: {{ cookiecutter.__source }}/actions/workflows/docs.yml/badge.svg
+    :target: {{ cookiecutter.__source }}/actions/workflows/docs.yml
     :alt: CI : Docs
-
-.. image:: https://github.com/Dashstrom/blabla/actions/workflows/lint.yml/badge.svg
-    :target: https://github.com/Dashstrom/blabla/actions/workflows/lint.yml
+.. image:: {{ cookiecutter.__source }}/actions/workflows/lint.yml/badge.svg
+    :target: {{ cookiecutter.__source }}/actions/workflows/lint.yml
     :alt: CI : Lint
-
-.. image:: https://github.com/Dashstrom/blabla/actions/workflows/tests.yml/badge.svg
-    :target: https://github.com/Dashstrom/blabla/actions/workflows/tests.yml
-    :alt: CI : Tests
-
-.. image:: https://github.com/Dashstrom/blabla/actions/workflows/publish.yml/badge.svg
-    :target: https://github.com/Dashstrom/blabla/actions/workflows/publish.yml
-    :alt: CI : Publish
-
-.. image:: https://github.com/Dashstrom/blabla/actions/workflows/security.yml/badge.svg
-    :target: https://github.com/Dashstrom/blabla/actions/workflows/security.yml
-    :alt: CI : Security
-{% if cookiecutter.pypi %}
+.. image:: {{ cookiecutter.__source }}/actions/workflows/tests.yml/badge.svg
+    :target: {{ cookiecutter.__source }}/actions/workflows/tests.yml
+    :alt: CI : Tests{% if cookiecutter.pypi %}
 .. image:: https://img.shields.io/pypi/v/{{ cookiecutter.__pypi_name }}.svg
     :target: {{ cookiecutter.__pypi_url }}
     :alt: PyPI : {{ cookiecutter.__pypi_name }}
-
 .. image:: https://img.shields.io/pypi/pyversions/{{ cookiecutter.__pypi_name }}.svg
     :target: {{ cookiecutter.__pypi_url }}
-    :alt: Python : versions{% endif %}
-{% if cookiecutter.discord != 'no' %}
+    :alt: Python : versions{% endif %}{% if cookiecutter.discord != 'no' %}
 .. image:: https://img.shields.io/badge/Discord-cookiecutter-5865F2?style=flat&logo=discord&logoColor=white
     :target: {{ cookiecutter.discord }}
     :alt: Discord{% endif %}
@@ -38,24 +28,22 @@
 
 {{cookiecutter.project_short_description}}
 
-Requirements
-************
-
-* TODO
-
 Install
 *******
 
-You can install "{{cookiecutter.__pypi_name}}" via `pip <https://pypi.org/project/pip/>`_ from `PyPI <https://pypi.org/project>`_
+You can install :bash:`{{ cookiecutter.__pypi_name }}` via `pip <https://pypi.org/project/pip/>`_ from `PyPI <https://pypi.org/project>`_
 
 ..  code-block:: bash
 
-    pip install {{cookiecutter.__pypi_name}}
+    pip install {{ cookiecutter.__pypi_name }}
 
 Usage
------
+*****
 
-* TODO
+DShow version of {{cookiecutter.__pypi_name}}.
+
+..  code-block:: bash
+    {{ cookiecutter.__pypi_name }}
 
 Developpement
 *************

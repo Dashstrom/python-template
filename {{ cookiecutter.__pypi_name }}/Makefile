@@ -1,6 +1,24 @@
 # ----------------------------------------------------------------------
+# OS dependent configuration
+# ----------------------------------------------------------------------
+
+VENV=venv/bin/
+LIB=venv/Lib/site-packages/
+MARKER=venv/marker
+EXE=
+ifeq ($(OS),Windows_NT)
+VENV=venv/Scripts/
+LIB=venv/Lib/site-packages/
+MARKER=venv/marker
+EXE=.exe
+endif
+
+
+# ----------------------------------------------------------------------
 # Python interpreter detection
 # ----------------------------------------------------------------------
+
+ARG_COMMAND="import sys;print(sys.version_info>=(3, 8))"
 
 ifeq (ok,$(shell test -e /dev/null 2>&1 && echo ok))
 NULL_STDERR=2>/dev/null
@@ -9,104 +27,149 @@ NULL_STDERR=2>NUL
 endif
 
 ifndef PY
-ifeq (1,$(shell python3 -c "print(1)" $(NULL_STDERR)))
-PY=python3
+
+ifndef _PY
+ifeq (True,$(shell py -3 -c $(ARG_COMMAND) $(NULL_STDERR)))
+_PY=py -3
 endif
 endif
 
-ifndef PY
-ifeq (1,$(shell py -3 -c "print(1)" $(NULL_STDERR)))
-PY=py -3
+ifndef _PY
+ifeq (True,$(shell python3 -c $(ARG_COMMAND) $(NULL_STDERR)))
+_PY=python3
 endif
 endif
 
-ifndef PY
-ifeq (1,$(shell python -c "print(1)" $(NULL_STDERR)))
+ifndef _PY
+ifeq (True,$(shell python -c $(ARG_COMMAND) $(NULL_STDERR)))
 PY=python
 endif
+
 endif
 
-ifndef PY
-$(error Could not detect Python interpreter automatically, please use PY environment variable.)
+ifndef _PY
+$(error Could not detect Python 3.8 or greather interpreter automatically, please use PY environment variable.)
 endif
 
+PY=$(_PY)
 
-# ----------------------------------------------------------------------
-# OS dependent configuration
-# ----------------------------------------------------------------------
-
-ifeq (win32,$(shell $(PY) -c "print(__import__('sys').platform)"))
-VENV=venv\\Scripts\\
-VENV_ACTIVATE=$(VENV)Activate.ps1
-else
-VENV=venv/bin/
-VENV_ACTIVATE=$(VENV)activate
 endif
 
+ifneq (True,$(shell $(PY) -c $(ARG_COMMAND) $(NULL_STDERR)))
+$(error $(PY) is not a valid Python 3.8 or greather interpreter)
+endif
 
 # ----------------------------------------------------------------------
 # Configuration
 # ----------------------------------------------------------------------
 
+GIT=git
 PIP=$(PY) -m pip
-VENV_PY=$(VENV)python
-VENV_PIP=$(VENV_PY) -m pip
-DEPS=$(wildcart *requirements*.txt)
+VENV_PY=$(VENV)python$(EXE)
+VENV_PIP=$(VENV)pip$(EXE)
 
-.PHONY: help clean coverage dist docs install lint venv
-.DEFAULT_GOAL := help
-
-RM_GLOB := $(PY) -c "import shutil,sys,pathlib;[shutil.rmtree(sp, ignore_errors=True)for p in sys.argv[1:]for sp in pathlib.Path().resolve().glob(p)]"
+RM_GLOB := $(PY) -c "import shutil,sys,pathlib;[shutil.rmtree(sp, ignore_errors=False)for p in sys.argv[1:]for sp in pathlib.Path().resolve().glob(p)]"
 BROWSER := $(PY) -c "import os,webbrowser,sys;from urllib.request import pathname2url;webbrowser.open('file:'+pathname2url(os.path.abspath(sys.argv[1])))"
 EXTRACT_HELP := $(PY) -c "import re,sys;m=[re.match(r'^([a-zA-Z_-]+):.*?\#\# (.*)$$',line)for line in sys.stdin];print('\n'.join('{:12} {}'.format(*g.groups())for g in m if g))"
 LS := $(PY) -c "import sys,os;print('\n'.join(os.listdir(os.path.abspath(sys.argv[1]))))"
+TOUCH := $(PY) -c "import sys;open(sys.argv[1], 'ab')"
+
+TOX=$(VENV)tox$(EXE)
+SPHINX=$(VENV)sphinx-build$(EXE)
+COVERAGE=$(VENV)coverage$(EXE)
+TWINE=$(VENV)twine$(EXE)
+PRECOMMIT=$(VENV)pre-commit$(EXE)
+
+
+# ----------------------------------------------------------------------
+# Automatic installation
+# ----------------------------------------------------------------------
+
+.git:
+	$(GIT) init
+	$(GIT) add *
+	$(GIT) commit -m "Initial commit"
+	$(GIT) branch -M main
+
+$(MARKER): pyproject.toml .git
+	$(PIP) install virtualenv
+	$(PY) -m virtualenv venv
+	$(VENV_PIP) install 'setuptools>=62.0.0' 'pip>=21.3'
+	$(VENV_PIP) install -e .[pre-commit,lint]
+	$(PRECOMMIT) install
+	$(TOUCH) $(MARKER)
+
+$(VENV): $(MARKER)
+
+$(VENV_PY): $(MARKER)
+
+$(VENV_PIP): $(MARKER)
+
+$(TOX): $(VENV_PIP)
+	$(VENV_PIP) install -e .[tox]
+
+$(PRECOMMIT): $(VENV_PIP)
+
+$(SPHINX): $(VENV_PIP)
+	$(VENV_PIP) install -e .[docs]
+
+$(COVERAGE): $(VENV_PIP)
+	$(VENV_PIP) install -e .[cov]
+
+$(TWINE): $(VENV_PIP)
+	$(VENV_PIP) install -e .[deploy]
+
+$(LIB)build: $(VENV_PIP)
+	$(VENV_PIP) install -e .[build]
 
 
 # ----------------------------------------------------------------------
 # Commands
 # ----------------------------------------------------------------------
 
-help:  ## show current message
-	@$(EXTRACT_HELP) < $(MAKEFILE_LIST)
+.PHONY: help setup clean purge format lint tests-all tests coverage docs open-docs dist release install
+.DEFAULT_GOAL := help
 
-$(VENV_ACTIVATE): $(DEPS)
-	$(MAKE) clean
-	$(PY) -m venv venv
-	$(VENV_PIP) install --upgrade pip
-	$(VENV_PIP) install -r requirements-dev.txt
-	$(VENV_PIP) install -e .
-	$(VENV)pre-commit install
+clean:  ## Remove all build, test, coverage, venv and Python artifacts.
+	$(RM_GLOB) 'venv/*/python.?e?x?e?' 'venv' 'build/' 'dist/' 'public/' '.eggs/' '.tox/' '.coverage' 'htmlcov/' '.pytest_cache' '.mypy_cache' '.ruff_cache'  '**/*.egg-info' '**/*.egg' '**/__pycache__' '**/*~' '**/*.pyc' '**/*.pyo'
 
-setup: $(VENV_ACTIVATE)  ## create virtual environment and install pre-commit
+cov: $(COVERAGE)  ## Check code coverage.
+	$(COVERAGE) run --source {{ cookiecutter.__project_slug }} -m pytest
+	$(COVERAGE) report -m
+	$(COVERAGE) html
 
-clean:  ## remove all build, test, coverage and Python artifacts
-	$(RM_GLOB) 'build/' 'dist/' '.eggs/' '.tox/' '.coverage' 'htmlcov/' '.pytest_cache' '.mypy_cache' '.ruff_cache' '.venv' 'venv' '**/*.egg-info' '**/*.egg' '**/__pycache__' '**/*~' '**/*.pyc' '**/*.pyo'
-
-lint: setup  ## check style with pre-commit, ruff, black and mypy
-	$(VENV)pre-commit run --all-files
-
-tests: setup  ## run all tests
-	$(VENV)tox -p
-
-audit: setup  ## check dependency tree
-	$(VENV)tox -e audit
-
-coverage: setup  ## check code coverage quickly with the default Python
-	$(VENV)coverage run --source {{ cookiecutter.__project_slug }} -m pytest
-	$(VENV)coverage report -m
-	$(VENV)coverage html
-	$(BROWSER) htmlcov/index.html
-
-docs: setup  ## generate Sphinx HTML documentation
-	$(VENV)sphinx-build -W -b html docs public
-	$(BROWSER) public/index.html
-
-dist: clean setup  ## builds source and wheel package
+dist: clean $(LIB)build  ## Builds source and wheel package.
 	$(VENV_PY) -m build
 	$(LS) dist/
 
-release: dist  ## package and upload a release
-	$(VENV)twine upload dist/*
+docs: $(SPHINX) ## Generate Sphinx HTML documentation.
+	$(SPHINX) -W -b html docs public
 
-install: clean  ## install the package to the active Python's site-packages
+format: $(PRECOMMIT)  ## Format style with pre-commit, ruff, black and mypy.
+	$(PRECOMMIT) run --all-files
+
+help:  ## Show current message.
+	@$(EXTRACT_HELP) < $(MAKEFILE_LIST)
+
+install:  ## Install the package to the active Python's site-packages.
 	$(PIP) install .
+
+lint: $(TOX)  ## Check style with tox, ruff, black and mypy.
+	$(TOX) -e lint
+
+open-docs: docs  ## Open documentation.
+	$(BROWSER) public/index.html
+
+open-cov: cov  ## Open coverage report.
+	$(BROWSER) htmlcov/index.html
+
+release: dist $(TWINE)  ## Package and upload a release.
+	$(TWINE) upload dist/*
+
+setup: clean $(VENV_PY)  ## Create virtual environment and install pre-commit.
+
+tests: $(TOX)  ## Run unit and functional tests.
+	$(TOX) -e tests
+
+tests-all: $(TOX)  ## Run all tests in parallel (docs, lint and tests).
+	$(TOX) -p

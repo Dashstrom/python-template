@@ -3,20 +3,29 @@ name: docs
 on:
   - push
 
+permissions:
+    contents: write
+
 jobs:
   docs:
-    name: Build docs
-    runs-on: ubuntu-22.04
+    name: Docs
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python 3.6
+      - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
-          python-version: "3.6"
+          python-version: "3.8"
 
-      - name: Install dependencies
-        run: pip install tox
+      - name: Build docs with Make
+        run: make docs
 
-      - name: Build with tox
-        run: tox -e docs
+      - name: Deploy docs
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          force_orphan: true

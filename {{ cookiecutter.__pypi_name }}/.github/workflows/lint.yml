@@ -5,18 +5,15 @@ on:
 
 jobs:
   lint:
-    name: Linting
-    runs-on: ubuntu-22.04
+    name: Lint
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python 3.6
+      - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
-          python-version: "3.6"
+          python-version: "3.8"
 
-      - name: Install dependencies
-        run: pip install tox
-
-      - name: Linting with tox
-        run: tox -e lint
+      - name: Run linting with Make
+        run: make lint

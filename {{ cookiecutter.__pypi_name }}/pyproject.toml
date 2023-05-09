@@ -14,7 +14,7 @@ build-backend = "setuptools.build_meta"
 name = "{{ cookiecutter.__pypi_name }}"
 description = "{{ cookiecutter.project_short_description }}"
 readme = "README.rst"
-requires-python = ">=3.6"
+requires-python = ">=3.8"
 license.file = "LICENSE"
 authors = [
   { name="{{ cookiecutter.full_name }}", email="{{ cookiecutter.email }}" },
@@ -51,8 +51,6 @@ classifiers = [
   "Operating System :: OS Independent",
 
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.6",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -62,7 +60,11 @@ classifiers = [
 
   "Typing :: Typed"
 ]
-dynamic = ["version", "dependencies"]
+dependencies = [
+  {%- if cookiecutter.cli|lower == 'click' %}click>=8.1.3{%- endif %}
+  "typing-extensions>=4.5.0",
+]
+dynamic = ["version"]
 
 [project.urls]
 Homepage = "{{ cookiecutter.__homepage }}"
@@ -75,6 +77,46 @@ Source = "{{ cookiecutter.__source }}"
 {{ cookiecutter.__cli_name }} = "{{ cookiecutter.__project_slug }}.cli:cli"
 {% endif %}
 
+[project.optional-dependencies]
+tests = [
+  "pytest>=7.0.0",
+  "pytest-mock>=3.10.0",
+]
+cov = [
+  "{{ cookiecutter.__pypi_name }}[tests]",
+  "coverage[toml]>=6.5.0",
+  "pytest-cov>=4.0.0",
+]
+lint = [
+  "{{ cookiecutter.__pypi_name }}[tests]",
+  "black>=22.0.0",
+  "mypy>=1.2.0",
+  "ruff>=0.0.262",
+]
+tox = [
+  "tox>=4.0.0",
+]
+pre-commit = [
+  "pre-commit>=3.0.0",
+]
+docs = [
+  "sphinx>=5.0.0",
+  "sphinx_rtd_theme>=1.2.0",
+]
+build = [
+  "build>=0.10.0",
+]
+deploy = [
+  "twine>=4.0.0",
+]
+requires = [
+  "setuptools>=67.0.0",
+  "pip>=21.3"
+]
+dev = [
+  "{{ cookiecutter.__pypi_name }}[tests,cov,lint,tox,pre-commit,docs,build,deploy,requires]",
+]
+
 # ----------------------------------------------------------------------
 # Setuptools :
 # https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
@@ -85,7 +127,6 @@ packages = ["{{ cookiecutter.__project_slug }}"]
 
 [tool.setuptools.dynamic]
 version = {attr = "{{ cookiecutter.__project_slug }}.info.__version__"}
-dependencies = {file = ["requirements.txt"]}
 
 
 # ----------------------------------------------------------------------
@@ -97,28 +138,22 @@ dependencies = {file = ["requirements.txt"]}
 legacy_tox_ini = """
 [tox]
 min_version = 4.0
-envlist = lint,docs,test
+envlist = lint,docs,tests
 
 [testenv:lint]
-deps = -r requirements-lint.txt
+deps = .[lint]
 commands =
   ruff check .
   black --diff .
   mypy .
 
-[testenv:audit]
-deps = pip-audit==2.5.4
-commands =
-  pip-audit -r requirements.txt
-  pip-audit -r requirements-dev.txt
-
-[testenv:test]
-deps = -r requirements-test.txt
+[testenv]
+deps = .[tests]
 commands =
   pytest
 
 [testenv:docs]
-deps = -r requirements-docs.txt
+deps = .[docs]
 commands =
   sphinx-build -W -b html -d {envtmpdir}/doctrees docs {envtmpdir}/public
 """
@@ -141,7 +176,10 @@ select = [
 # D400 [*] First line should end with a period
 # T201 `print` found
 # T203 `pprint` found
-ignore = ["D203", "D213", "T201", "T203"]
+# ANN101 Missing type annotation for `self` in method
+# D105 Missing docstring in magic method
+# A003 Class attribute `compile` is shadowing a python builtin
+ignore = ["D203", "D213", "T201", "T203", "ANN101", "D105", "A003"]
 exclude = [
   ".bzr",
   ".direnv",
@@ -166,7 +204,7 @@ exclude = [
 ]
 line-length = 79
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-target-version = "py37"  # Doesn't support py36
+target-version = "py38"
 
 [tool.ruff.per-file-ignores]
 # E402 Module level import not at top of file
@@ -191,7 +229,7 @@ max-complexity = 10
 
 [tool.black]
 line-length = 79
-target-version = ["py311", "py310", "py39", "py38", "py37", "py36"]
+target-version = ["py311", "py310", "py39", "py38"]
 
 
 # ----------------------------------------------------------------------
@@ -200,7 +238,7 @@ target-version = ["py311", "py310", "py39", "py38", "py37", "py36"]
 # ----------------------------------------------------------------------
 
 [tool.mypy]
-python_version = 3.6
+python_version = 3.8
 strict = true
 show_error_codes = true
 exclude = [
@@ -230,7 +268,7 @@ enable_error_code = ["ignore-without-code", "truthy-bool", "redundant-expr"]
 # Disallow dynamic typing
 disallow_any_unimported = true
 disallow_any_expr = false
-disallow_any_decorated = true
+disallow_any_decorated = false
 disallow_any_generics = true
 disallow_subclassing_any = true
 
@@ -255,7 +293,3 @@ strict_equality = true
 
 # Config file
 warn_unused_configs = true
-
-[[tool.mypy.overrides]]
-module = ["lxml"]
-ignore_missing_imports = true

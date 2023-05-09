@@ -32,11 +32,7 @@ def cli(argv: Optional[Sequence[str]] = None) -> None:
     if args.version:  # type: ignore[misc]
         print(__version__)
     elif args.hello:
-        print(hello(args.hello.name))
-
-
-if __name__ == "__main__":
-    cli(){% elif cookiecutter.cli|lower == 'click' %}
+        print(hello(args.hello.name)){% elif cookiecutter.cli|lower == 'click' %}
 import click
 
 from .core import hello
@@ -53,8 +49,4 @@ def cli() -> None:
 @click.argument("name", default=__author__)
 def hello_command(name: str) -> None:
     """Run hello command."""
-    click.echo(hello(name))
-
-
-if __name__ == "__main__":
-    cli(){% endif %}
+    click.echo(hello(name)){% endif %}
