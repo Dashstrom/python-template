@@ -1,5 +1,8 @@
 """Main entrypoint for package."""
-from .cli import cli
+import sys
+
+from .cli import entrypoint
 
 if __name__ == "__main__":
-    cli()  # pylint: disable=no-value-for-parameter,missing-kwoa
+    sys.modules["__main__"] = entrypoint  # type: ignore[assignment]  # pragma: no cover  # noqa: E501
+    entrypoint()  # pylint: disable=no-value-for-parameter,missing-kwoa  # pragma: no cover  # noqa: E501

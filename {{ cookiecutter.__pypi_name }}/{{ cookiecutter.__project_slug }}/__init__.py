@@ -1,5 +1,5 @@
 """Main package."""{% if cookiecutter.cli|lower != 'none' %}
-from .cli import cli{% endif %}
+from .cli import entrypoint{% endif %}
 from .core import hello
 from .info import (
     __author__,
@@ -12,7 +12,7 @@ from .info import (
 )
 
 __all__ = [
-    "cli",
+    "entrypoint",
     "hello",
     "__author__",
     "__copyright__",

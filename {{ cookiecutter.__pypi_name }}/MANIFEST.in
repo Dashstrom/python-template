@@ -7,7 +7,8 @@ include Makefile
 include MANIFEST.in
 include pyproject.toml
 include README.rst
-include {{ cookiecutter.__project_slug }}/py.typed
+recursive-include {{ cookiecutter.__project_slug }} *
+recursive-include .github *
 recursive-include tests *
 recursive-include docs *
 recursive-exclude * __pycache__

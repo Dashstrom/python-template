@@ -7,8 +7,8 @@
   "__project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
   "__pypi_name": "{{ cookiecutter.__project_slug.replace('_', '-') }}",
   "__pypi_url": "https://pypi.org/project/{{ cookiecutter.__pypi_name }}",
-  "project_short_description": "My amazing package",
-  "__base_url": "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter__pypi_name }}",
+  "project_short_description": null,
+  "__base_url": "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.__pypi_name }}",
   "__homepage": "{{ cookiecutter.__base_url }}",
   "__issues": "{{ cookiecutter.__base_url }}/issues",
   "__documentation": "{{ cookiecutter.__base_url }}",
@@ -27,9 +27,13 @@
     "MIT",
     "All Rights Reserved"
   ],
-  "copyright": "Copyright {% now 'utc', '%Y' %}, {{ cookiecutter.full_name }} <{{ cookiecutter.email }}>",
+  "copyright": "Copyright (c) {% now 'utc', '%Y' %}, {{ cookiecutter.full_name }} <{{ cookiecutter.email }}>",
   "pypi": true,
   "git": true,
+  "push": false,
   "setup": true,
-  "docker": false
+  "docker": false,
+  "_copy_without_render": [
+      ".github/workflows"
+  ]
 }

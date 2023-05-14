@@ -1,4 +1,4 @@
-{% if cookiecutter.license == 'GNU GPL v3.0' %}
+{%- if cookiecutter.license == 'GNU GPL v3.0' %}
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
@@ -632,8 +632,8 @@ to attach them to the start of each source file to most effectively
 state the exclusion of warranty; and each file should have at least
 the "copyright" line and a pointer to where the full notice is found.
 
-    <one line to give the program's name and a brief idea of what it does.>
-    Copyright (C) <year>  <name of author>
+    {{ cookiecutter.project_short_description }}
+    {{ cookiecutter.copyright }}
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -672,10 +672,10 @@ into proprietary programs.  If your program is a subroutine library, you
 may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
-<https://www.gnu.org/licenses/why-not-lgpl.html>.{% elif cookiecutter.license == 'MIT' %}
+<https://www.gnu.org/licenses/why-not-lgpl.html>.{%- elif cookiecutter.license == 'MIT' %}
 MIT License
 
-Copyright (c) {% now 'utc', '%Y' %} {{ cookiecutter.full_name }} <{{ cookiecutter.email }}>
+{{ cookiecutter.copyright }}
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -693,9 +693,9 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.{% elif cookiecutter.license == 'All Rights Reserved' %}
+SOFTWARE.{%- elif cookiecutter.license == 'All Rights Reserved' %}
 {{ cookiecutter.copyright }}
-Unauthorized copying of this file or the whole project, via any medium is strictly prohibited
-Proprietary and confidential
+Unauthorized copying of this file or the whole project, via any medium is strictly prohibited.
+Proprietary and confidential.
 Written by {{ cookiecutter.full_name }} <{{ cookiecutter.email }}>
-{% endif %}
+{%- endif %}

@@ -40,7 +40,7 @@ templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 source_suffix = ".rst"
 todo_include_todos = False
-# html_favicon = str(pathlib.Path(__file__).parent / "resources" / "favicon.png")
+html_favicon = str(pathlib.Path(__file__).parent / "resources" / "favicon.ico")
 
 
 # -- Options for HTML output -------------------------------------------------

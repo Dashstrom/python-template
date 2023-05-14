@@ -11,21 +11,16 @@ def fatal(text: str) -> None:
 
 def match(pattern: str, name: str, value: str) -> None:
     """Match field."""
-    if not re.match(pattern, value) or 1 > len(value) or len(value) >= 256:
+    if not re.match(pattern, value):
         fatal(f"{name} ({value}) doesn't match {pattern!r} !")
 
 
 def check_names() -> None:
     """Check variables from cookiecutter."""
     match(
-        r"^[ _a-zA-Z-][ _a-zA-Z0-9-]+$",
+        r"^[ _a-zA-Z-][ _a-zA-Z0-9-]{2,}$",
         "project_name",
         "{{ cookiecutter.project_name }}",
-    )
-    match(
-        r"^[_a-zA-Z][_a-zA-Z0-9]+$",
-        "project_slug",
-        "{{ cookiecutter.__project_slug }}",
     )
 
 
@@ -33,7 +28,7 @@ def check_compatibilities() -> None:
     """Check compatibilities between variables."""
     if (
         "{{ cookiecutter.license }}" == "All Rights Reserved"
-        and "{{ cookiecutter.pypi }}" == "yes"
+        and "{{ cookiecutter.pypi }}" == "True"
     ):
         fatal("All Rights Reserved is not compatible with PyPI")
     if "dashstrom/template-python" in "{{ cookiecutter.__clone_url|lower }}":
@@ -42,7 +37,6 @@ def check_compatibilities() -> None:
 
 def main() -> None:
     """Main function."""
-    print("DOCKER: {{ cookiecutter.docker }}")
     check_names()
     check_compatibilities()
 

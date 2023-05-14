@@ -1,10 +1,11 @@
 """Module for package information."""
 
-
-__author__ = "{{ cookiecutter.full_name }}"
-__maintainer__ = "{{ cookiecutter.full_name }}"
-__description__ = "{{ cookiecutter.project_short_description }}"
-__email__ = "{{ cookiecutter.email }}"
-__version__ = "{{ cookiecutter.version }}"
-__copyright__ = "{{ cookiecutter.copyright }}"
-__license__ = "{{ cookiecutter.license }}"
+# fmt: off
+__author__ = {{cookiecutter.full_name | tojson()}}
+__maintainer__ = {{cookiecutter.full_name | tojson()}}
+__description__ = {{cookiecutter.project_short_description | tojson()}}
+__email__ = {{cookiecutter.email | tojson()}}
+__version__ = {{cookiecutter.version | tojson()}}
+__copyright__ = {{cookiecutter.copyright | tojson()}}
+__license__ = {{cookiecutter.license | tojson()}}
+# fmt: on

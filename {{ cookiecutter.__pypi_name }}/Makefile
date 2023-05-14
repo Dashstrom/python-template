@@ -51,7 +51,8 @@ ifndef _PY
 $(error Could not detect Python 3.8 or greather interpreter automatically, please use PY environment variable.)
 endif
 
-PY=$(_PY)
+# Get original executable if venv
+PY=$(shell $(_PY) -c "import os,sys;print(sys.base_prefix.replace(os.sep,'/') + ('/python.exe' if os.name == 'nt' else '/bin/python3'))")
 
 endif
 
@@ -72,7 +73,7 @@ RM_GLOB := $(PY) -c "import shutil,sys,pathlib;[shutil.rmtree(sp, ignore_errors=
 BROWSER := $(PY) -c "import os,webbrowser,sys;from urllib.request import pathname2url;webbrowser.open('file:'+pathname2url(os.path.abspath(sys.argv[1])))"
 EXTRACT_HELP := $(PY) -c "import re,sys;m=[re.match(r'^([a-zA-Z_-]+):.*?\#\# (.*)$$',line)for line in sys.stdin];print('\n'.join('{:12} {}'.format(*g.groups())for g in m if g))"
 LS := $(PY) -c "import sys,os;print('\n'.join(os.listdir(os.path.abspath(sys.argv[1]))))"
-TOUCH := $(PY) -c "import sys;open(sys.argv[1], 'ab')"
+TOUCH := $(PY) -c "import sys;open(sys.argv[1],'ab')"
 
 TOX=$(VENV)tox$(EXE)
 SPHINX=$(VENV)sphinx-build$(EXE)
@@ -92,6 +93,7 @@ PRECOMMIT=$(VENV)pre-commit$(EXE)
 	$(GIT) branch -M main
 
 $(MARKER): pyproject.toml .git
+	$(MAKE) clean
 	$(PIP) install virtualenv
 	$(PY) -m virtualenv venv
 	$(VENV_PIP) install 'setuptools>=62.0.0' 'pip>=21.3'
@@ -127,16 +129,14 @@ $(LIB)build: $(VENV_PIP)
 # Commands
 # ----------------------------------------------------------------------
 
-.PHONY: help setup clean purge format lint tests-all tests coverage docs open-docs dist release install
+.PHONY: clean cov dist docs format help install lint open-docs open-cov release setup tests tests-all
 .DEFAULT_GOAL := help
 
 clean:  ## Remove all build, test, coverage, venv and Python artifacts.
 	$(RM_GLOB) 'venv/*/python.?e?x?e?' 'venv' 'build/' 'dist/' 'public/' '.eggs/' '.tox/' '.coverage' 'htmlcov/' '.pytest_cache' '.mypy_cache' '.ruff_cache'  '**/*.egg-info' '**/*.egg' '**/__pycache__' '**/*~' '**/*.pyc' '**/*.pyo'
 
 cov: $(COVERAGE)  ## Check code coverage.
-	$(COVERAGE) run --source {{ cookiecutter.__project_slug }} -m pytest
-	$(COVERAGE) report -m
-	$(COVERAGE) html
+	$(TOX) -e cov
 
 dist: clean $(LIB)build  ## Builds source and wheel package.
 	$(VENV_PY) -m build
@@ -172,4 +172,4 @@ tests: $(TOX)  ## Run unit and functional tests.
 	$(TOX) -e tests
 
 tests-all: $(TOX)  ## Run all tests in parallel (docs, lint and tests).
-	$(TOX) -p
+	$(TOX)

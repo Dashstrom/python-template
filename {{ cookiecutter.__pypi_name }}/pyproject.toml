@@ -12,15 +12,15 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "{{ cookiecutter.__pypi_name }}"
-description = "{{ cookiecutter.project_short_description }}"
+description = {{ cookiecutter.project_short_description | tojson() }}
 readme = "README.rst"
 requires-python = ">=3.8"
 license.file = "LICENSE"
 authors = [
-  { name="{{ cookiecutter.full_name }}", email="{{ cookiecutter.email }}" },
+  { name={{ cookiecutter.full_name | tojson() }}, email={{ cookiecutter.email | tojson() }} },
 ]
 maintainers  = [
-  { name="{{ cookiecutter.full_name }}", email="{{ cookiecutter.email }}" },
+  { name={{ cookiecutter.full_name | tojson() }}, email={{ cookiecutter.email | tojson() }} },
 ]
 keywords = [
   "python"
@@ -33,24 +33,28 @@ classifiers = [
   #"Development Status :: 5 - Production/Stable",
   #"Development Status :: 6 - Mature",
   #"Development Status :: 7 - Inactive",
+{%- if 'none' != cookiecutter.cli|lower %}
 
+  # Default usage
   "Environment :: Console",
+{%- endif %}
 
+  # Framework used
   "Framework :: Pytest",
   "Framework :: Sphinx",
   "Framework :: tox",
 
+  # Indicate who your project is intended for
   "Intended Audience :: Developers",
   "Intended Audience :: System Administrators",
-{% if cookiecutter.license == 'GNU GPL v3.0' %}
-  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",{% elif cookiecutter.license == 'MIT' %}
-  "License :: OSI Approved :: MIT License",{% endif %}
 
-  "Natural Language :: English",
-
+  # Target OS
   "Operating System :: OS Independent",
 
-  "Programming Language :: Python",
+  # What is the language used in this project
+  "Natural Language :: English",
+
+  # Verison available for this project
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -58,10 +62,15 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3 :: Only",
 
+  # License used in this project{% if cookiecutter.license == 'GNU GPL v3.0' %}
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",{% elif cookiecutter.license == 'MIT' %}
+  "License :: OSI Approved :: MIT License",{% endif %}
+
+  # The project is typed
   "Typing :: Typed"
 ]
-dependencies = [
-  {%- if cookiecutter.cli|lower == 'click' %}click>=8.1.3{%- endif %}
+dependencies = [{%- if cookiecutter.cli|lower == 'click' %}
+  "click>=8.1.3",{%- endif %}
   "typing-extensions>=4.5.0",
 ]
 dynamic = ["version"]
@@ -71,15 +80,15 @@ Homepage = "{{ cookiecutter.__homepage }}"
 Issues = "{{ cookiecutter.__issues }}"
 Documentation = "{{ cookiecutter.__documentation }}"
 Source = "{{ cookiecutter.__source }}"
-{% if cookiecutter.cli|lower != 'none' %}
+{%- if cookiecutter.cli|lower != 'none' %}
 
 [project.scripts]
-{{ cookiecutter.__cli_name }} = "{{ cookiecutter.__project_slug }}.cli:cli"
-{% endif %}
+{{ cookiecutter.__cli_name }} = "{{ cookiecutter.__project_slug }}.cli:entrypoint"
+{%- endif %}
 
 [project.optional-dependencies]
 tests = [
-  "pytest>=7.0.0",
+  "pytest>=7.3.0",
   "pytest-mock>=3.10.0",
 ]
 cov = [
@@ -109,12 +118,8 @@ build = [
 deploy = [
   "twine>=4.0.0",
 ]
-requires = [
-  "setuptools>=67.0.0",
-  "pip>=21.3"
-]
 dev = [
-  "{{ cookiecutter.__pypi_name }}[tests,cov,lint,tox,pre-commit,docs,build,deploy,requires]",
+  "{{ cookiecutter.__pypi_name }}[tests,cov,lint,tox,pre-commit,docs,build,deploy]",
 ]
 
 # ----------------------------------------------------------------------
@@ -123,6 +128,7 @@ dev = [
 # ----------------------------------------------------------------------
 
 [tool.setuptools]
+include-package-data = true
 packages = ["{{ cookiecutter.__project_slug }}"]
 
 [tool.setuptools.dynamic]
@@ -140,6 +146,11 @@ legacy_tox_ini = """
 min_version = 4.0
 envlist = lint,docs,tests
 
+[testenv]
+deps = .[tests]
+commands =
+  pytest
+
 [testenv:lint]
 deps = .[lint]
 commands =
@@ -147,10 +158,12 @@ commands =
   black --diff .
   mypy .
 
-[testenv]
-deps = .[tests]
+[testenv:cov]
+deps = .[cov]
 commands =
-  pytest
+  coverage run --source {{ cookiecutter.__project_slug }} -m pytest
+  coverage report -m
+  coverage html
 
 [testenv:docs]
 deps = .[docs]
@@ -158,68 +171,15 @@ commands =
   sphinx-build -W -b html -d {envtmpdir}/doctrees docs {envtmpdir}/public
 """
 
-
 # ----------------------------------------------------------------------
-# Ruff :
-# https://pypi.org/project/ruff
+# Pytest
+# https://docs.pytest.org/en/7.3.x/
 # ----------------------------------------------------------------------
 
-[tool.ruff]
-select = [
-  "A", "B", "C", "D", "E", "F", "G", "I","N", "Q", "S", "T", "W", "ANN",
-  "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN",
-  "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI",
-  "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"
-]
-# D203 and D211 are incompatible
-# D212 and D213 are incompatible
-# D400 [*] First line should end with a period
-# T201 `print` found
-# T203 `pprint` found
-# ANN101 Missing type annotation for `self` in method
-# D105 Missing docstring in magic method
-# A003 Class attribute `compile` is shadowing a python builtin
-ignore = ["D203", "D213", "T201", "T203", "ANN101", "D105", "A003"]
-exclude = [
-  ".bzr",
-  ".direnv",
-  ".eggs",
-  ".git",
-  ".hg",
-  ".mypy_cache",
-  ".nox",
-  ".pants.d",
-  ".pytype",
-  ".ruff_cache",
-  ".svn",
-  ".tox",
-  ".venv",
-  "__pypackages__",
-  "_build",
-  "buck-out",
-  "build",
-  "dist",
-  "node_modules",
-  "venv",
-]
-line-length = 79
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-target-version = "py38"
-
-[tool.ruff.per-file-ignores]
-# E402 Module level import not at top of file
-# INP001 File `docs\conf.py` is part of an implicit namespace package.
-# A001 Variable `copyright` is shadowing a python builtin
-# PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
-"docs/conf.py" = ["E402", "INP001", "A001", "PTH100"]
-# S101 Use of `assert` detected
-# S603 `subprocess` call: check for execution of untrusted input
-# S607 Starting a process with a partial executable path
-"tests/*.py" = ["S101", "S603", "S607"]
-
-[tool.ruff.mccabe]
-# Unlike Flake8, default to a complexity level of 10.
-max-complexity = 10
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "DEBUG"
+#asyncio_mode = "auto"
 
 
 # ----------------------------------------------------------------------
@@ -267,8 +227,8 @@ enable_error_code = ["ignore-without-code", "truthy-bool", "redundant-expr"]
 
 # Disallow dynamic typing
 disallow_any_unimported = true
-disallow_any_expr = false
-disallow_any_decorated = false
+disallow_any_expr = false  # all attribut of argparse.Namespace are Any
+disallow_any_decorated = false  # Too many package dosn't have typed decorator
 disallow_any_generics = true
 disallow_subclassing_any = true
 
@@ -277,7 +237,7 @@ disallow_untyped_calls = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
-disallow_untyped_decorators = true
+disallow_untyped_decorators = true  # To many decorator are untyped
 
 # None and optional handling
 no_implicit_optional = true
@@ -293,3 +253,78 @@ strict_equality = true
 
 # Config file
 warn_unused_configs = true
+
+# Exemple for missing type
+#[[tool.mypy.overrides]]
+#module = ["untyped-module"]
+#ignore_missing_imports = true
+
+
+# ----------------------------------------------------------------------
+# Ruff :
+# https://pypi.org/project/ruff
+# ----------------------------------------------------------------------
+
+[tool.ruff]
+# We dont use ANN : flake8-annotations because we already have mypy
+select = [
+  "A", "B", "C", "D", "E", "F", "G", "I","N", "Q", "S", "T", "W",
+  "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN",
+  "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI",
+  "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"
+]
+# D203 and D211 are incompatible
+# D212 and D213 are incompatible
+# D400 [*] First line should end with a period
+# ANN101 Missing type annotation for `self` in method
+# D105 Missing docstring in magic method
+ignore = ["D203", "D213", "D400", "ANN101", "D105"]
+exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".hg",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "venv",
+]
+line-length = 79
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+target-version = "py38"
+
+[tool.ruff.isort]
+known-first-party = ["{{ cookiecutter.__project_slug }}"]
+
+[tool.ruff.per-file-ignores]
+# E402 Module level import not at top of file
+# INP001 File `docs\conf.py` is part of an implicit namespace package.
+# A001 Variable `copyright` is shadowing a python builtin
+# PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
+"docs/conf.py" = ["E402", "INP001", "A001", "PTH100"]
+# S101 Use of `assert` detected
+# S603 `subprocess` call: check for execution of untrusted input
+# S607 Starting a process with a partial executable path
+"tests/*.py" = ["S101", "S603", "S607"]{% if 'argparse' == cookiecutter.cli %}
+# T201 `print` found
+# T203 `pprint` found
+"*/cli.py" = ["T201", "T203"]{%- endif %}
+# Q003 [*] Change outer quotes to avoid escaping inner quotes
+# E501 Line too long
+"*/info.py" = ["Q003", "E501"]
+
+[tool.ruff.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10

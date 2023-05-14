@@ -15,7 +15,7 @@ repos:
     hooks:
       - id: black
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: 'v0.0.262'
+    rev: 'v0.0.265'
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -23,4 +23,14 @@ repos:
     rev: 'v1.2.0'
     hooks:
       - id: mypy
-        additional_dependencies: ['.[lint]']
+        pass_filenames: false
+        args: ["."]
+        additional_dependencies:{%- if "click" == cookiecutter.cli %}
+          - "click>=8.1.0"{%- endif %}
+          - "typing-extensions>=4.5.0"
+          - "pytest>=7.3.0"
+          - "pytest-mock>=3.10.0"
+          - "mypy>=1.2.0"
+          - "black>=23.0.0"
+          - "ruff>=v0.0.265"
+          - "types-setuptools>=57.0"
