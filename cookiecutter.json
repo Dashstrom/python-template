@@ -31,7 +31,6 @@
   "pypi": true,
   "git": true,
   "push": false,
-  "setup": true,
   "docker": false,
   "_copy_without_render": [
       ".github/workflows"

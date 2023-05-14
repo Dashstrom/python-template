@@ -24,11 +24,11 @@ DEFAULT_CONFIG = {
     "pypi": True,
     "git": True,
     "push": False,
-    "setup": True,
     "docker": False,
 }
 
 CONFIGS = [
+    {"project_name": "aaa-aaa", "cli": "none"},
     {
         "project_name": "aaa-aaa",
         "project_short_description": '"; import sys;sys.exit(1)',
@@ -41,7 +41,6 @@ CONFIGS = [
     {"project_name": "aaa-aaa", "pypi": False},
     {"project_name": "aaa-aaa", "git": False},
     {"project_name": "aaa-aaa", "setup": False},
-    {"project_name": "aaa-aaa", "cli": "none"},
     {"project_name": "aaa-aaa", "license": "MIT"},
     {
         "project_name": "aaa-aaa",

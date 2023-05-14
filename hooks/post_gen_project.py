@@ -186,37 +186,28 @@ def remove_paths() -> None:
                 "non",
                 "0",
                 "none",
+                "null",
                 "",
             ):
                 abspath = pathlib.Path(path).resolve()
+                print(f"[REMOVE] {path}")
                 abspath.unlink()
 
 
 def git() -> None:
     """Instansiate Git repository."""
     if "{{ cookiecutter.git }}" == "True":
-        run("git", "init")
-        run("git", "add", "*")
-        run("git", "commit", "-m", "Initial commit")
-        run("git", "branch", "-M", "main")
         run("git", "remote", "add", "origin", "{{ cookiecutter.__clone_url }}")
         if "{{ cookiecutter.push }}" == "True":
             run("git", "push", "-u", "origin", "main")
-
-
-def setup() -> None:
-    """Setup virtual environnement and pre-commit."""
-    if "{{ cookiecutter.setup }}" == "True":
-        run("make", "setup")
 
 
 def main() -> None:
     """Main function."""
     remove_paths()
     colorize_logo()
-    git()
-    setup()
     autoformat()
+    git()
 
 
 if __name__ == "__main__":
