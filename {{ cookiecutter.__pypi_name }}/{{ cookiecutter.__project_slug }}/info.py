@@ -1,6 +1,7 @@
 """Module for package information."""
 
 # fmt: off
+__project__ = {{cookiecutter.project_name | tojson()}}
 __author__ = {{cookiecutter.full_name | tojson()}}
 __maintainer__ = {{cookiecutter.full_name | tojson()}}
 __description__ = {{cookiecutter.project_short_description | tojson()}}
