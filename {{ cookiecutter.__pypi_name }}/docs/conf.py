@@ -21,8 +21,8 @@ sys.path.insert(0, os.path.abspath(".."))
 
 import {{ cookiecutter.__project_slug }}.info
 
-project = {{ cookiecutter.__project_slug }}.info.__name__
-copyright = {{ cookiecutter.__project_slug }}.info.__copyright__
+project = {{ cookiecutter.__project_slug }}.info.__project__
+copyright = {{ cookiecutter.__project_slug }}.info.__copyright__.replace("Copyright ", "")
 author = {{ cookiecutter.__project_slug }}.info.__author__
 version = {{ cookiecutter.__project_slug }}.info.__version__
 release = {{ cookiecutter.__project_slug }}.info.__version__
