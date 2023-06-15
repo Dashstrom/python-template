@@ -20,4 +20,4 @@ COPY . .
 RUN python3 -m pip install --no-cache-dir .
 
 # Run app
-CMD python -u -m autoban {{ cookiecutter.__pypi_name }}
+CMD python -u -m {{ cookiecutter.__pypi_name }}
