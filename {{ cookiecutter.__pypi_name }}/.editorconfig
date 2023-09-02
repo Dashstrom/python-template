@@ -1,4 +1,4 @@
-# see https://editorconfig.org/
+# https://editorconfig.org/
 root = true
 
 [*]
@@ -9,11 +9,20 @@ indent_style = space
 
 [*.py]
 indent_size = 4
-max_line_length = 79
-trim_trailing_whitespace = true
+max_line_length = {{ cookiecutter.line }}
 insert_final_newline = true
+trim_trailing_whitespace = true
 
-[*.{yml,yaml,toml,json,jsonb,jsonl,jsonc}]
+[*.{tex,bib}]
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[Dockerfile]
+indent_size = 4
+
+[*.{yml,yaml,toml,json,jsonc,jsonl,js,ts}]
+indent_size = 2
 insert_final_newline = true
 trim_trailing_whitespace = true
 

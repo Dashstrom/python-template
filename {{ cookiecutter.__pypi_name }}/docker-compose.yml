@@ -1,10 +1,24 @@
 version: "3.7"
 services:
-  {{ cookiecutter.__pypi_name }}:
-    container_name: {{ cookiecutter.__pypi_name }}
+  {{ cookiecutter.__project_slug }}:
+    container_name: {{ cookiecutter.__project_slug }}
+    stdin_open: true
+    tty: true
     build:
       context: .
       dockerfile: Dockerfile
+    networks:
+      - {{ cookiecutter.__project_slug }}
     volumes:
+      # Use computer time
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+      # Keep logs in volume
+      - logs:/app/logs
+
+networks:
+  {{ cookiecutter.__project_slug }}:
+    driver: bridge
+
+volumes:
+  logs:

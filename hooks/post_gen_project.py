@@ -1,4 +1,5 @@
-"""Python scripts that run after your project is generated."""
+"""Hook run after cookiecutter."""
+import json
 import os
 import pathlib
 import re
@@ -13,12 +14,16 @@ from typing import (
 )
 import zlib
 
-RAND = random.SystemRandom()
-
-PROJECT = pathlib.Path(os.getcwd()).resolve()
-DOCS = PROJECT / "docs"
+PROJECT_DIRECTORY = pathlib.Path(os.path.curdir).resolve()
+DOCS = PROJECT_DIRECTORY / "docs"
 RESOURCES = DOCS / "resources"
-
+RAND = random.SystemRandom()
+USE_FORMATER = os.environ.get("USE_FORMATER", "True").lower() not in (
+    "false",
+    "",
+    "off",
+    "0",
+)
 
 COLOR_1 = (255, 0, 0)
 COLOR_2 = (0, 255, 0)
@@ -136,18 +141,14 @@ def colorize_logo() -> None:
                 writer.write(svg)
 
 
-REMOVED_IF_FALSE = {
-    "{{ cookiecutter.docker }}": [
-        "Dockerfile",
-        "docker-compose.yml",
-        ".dockerignore",
-    ],
-    "{{ cookiecutter.cli }}": [
-        "{{ cookiecutter.__project_slug }}/cli.py",
-        "{{ cookiecutter.__project_slug }}/__main__.py",
-        "tests/test_cli.py",
-    ],
-}
+def escape(value: str) -> bytes:
+    """Minimal but unsafe escaping of string."""
+    return json.dumps(value.strip(), ensure_ascii=False).encode("utf-8")
+
+
+def remove_file(filepath: str) -> None:
+    """Remove a file from project."""
+    (PROJECT_DIRECTORY / filepath).unlink()
 
 
 def fatal(text: str) -> None:
@@ -167,47 +168,38 @@ def run(*args: str) -> None:
 
 def autoformat() -> None:
     """Format project."""
-    print("[FORMAT] formating project with make format ...")
-    try:
-        subprocess.check_output(["make", "format"])
-    except subprocess.CalledProcessError:
-        pass
-    print("[FORMAT] formating done !")
-
-
-def remove_paths() -> None:
-    """Remove paths."""
-    for pred, paths in REMOVED_IF_FALSE.items():
-        for path in paths:
-            if pred.lower().strip() in (
-                "no",
-                "false",
-                "n",
-                "non",
-                "0",
-                "none",
-                "null",
-                "",
-            ):
-                abspath = pathlib.Path(path).resolve()
-                print(f"[REMOVE] {path}")
-                abspath.unlink()
-
-
-def git() -> None:
-    """Instansiate Git repository."""
-    if "{{ cookiecutter.git }}" == "True":
-        run("git", "remote", "add", "origin", "{{ cookiecutter.__clone_url }}")
-        if "{{ cookiecutter.push }}" == "True":
-            run("git", "push", "-u", "origin", "main")
+    if USE_FORMATER:
+        try:
+            subprocess.check_call(["make", "format"])
+            print("[FORMAT] formating done !")
+        except subprocess.CalledProcessError:
+            print(
+                "[FORMAT] This error is excpected : "
+                "it occurs when `make format` run for the first time. "
+                "You can ignore it."
+            )
 
 
 def main() -> None:
-    """Main function."""
-    remove_paths()
+    """Main function for the hook."""
+    if "none" == "{{ cookiecutter.cli }}":  # type: ignore
+        project = os.path.join("src", "{{ cookiecutter.__project_slug }}")
+        remove_file(os.path.join(project, "cli.py"))
+        remove_file(os.path.join(project, "__main__.py"))
+        remove_file(os.path.join("tests", "test_cli.py"))
+    if "{{ cookiecutter.docker }}" != "True":  # type: ignore
+        remove_file("Dockerfile")
+        remove_file("docker-compose.yml")
+        remove_file(".dockerignore")
     colorize_logo()
+    run("make", "setup")
     autoformat()
-    git()
+    if "{{ cookiecutter.push }}" == "True":  # type: ignore
+        run("git", "push", "-uf", "origin", "main")
+    print("\n\nYou can activate venv with the following commands :")
+    print(
+        "\n  cd {{ cookiecutter.__clone_name }} && source venv/bin/activate\n"
+    )
 
 
 if __name__ == "__main__":

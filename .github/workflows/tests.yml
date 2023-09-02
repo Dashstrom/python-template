@@ -1,0 +1,38 @@
+name: tests
+
+on:
+  - push
+
+env:
+  USE_FORMATER: "False"
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+      - name: Setup project without virtualenv
+        run: |
+          pip install cookiecutter virtualenv
+      - name: Test template
+        run: python3 tests/test_template.py --index 1
+  test-virtualenv:
+    name: Test virtualenv
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+      - name: Setup project with virtualenv
+        run: |
+          apt -y install python3-virtualenv python3-venv
+          pip install cookiecutter
+      - name: Test template
+        run: python3 scripts/test_template.py --index 0

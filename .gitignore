@@ -1,8 +1,42 @@
+# cached files
+__pycache__/
 *.py[cod]
-__pycache__
+.cache
+.DS_Store
+*~
+.*.sw[po]
+.build
+.ve
+.env
+.pytest
+.benchmarks
+.bootstrap
+.appveyor.token
+*.bak
+
+# installation package
+*.egg-info/
+dist/
+build/
+
+# environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 # C extensions
 *.so
+
+# pycharm
+.idea/
+
+# vscode
+.vscode/
+*.code-workspace
 
 # Packages
 *.egg
@@ -28,11 +62,18 @@ pip-wheel-metadata/
 # Installer logs
 pip-log.txt
 
-# Unit test / coverage reports
-.coverage
-.tox
-.coverage.*
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+mypy.ini
+
+# test caches
+.tox/
 .pytest_cache/
+.coverage
+htmlcov
+report.xml
 nosetests.xml
 coverage.xml
 htmlcov
@@ -60,18 +101,8 @@ docs/_build
 public/
 web/
 
-.DS_Store
-*~
-.*.sw[po]
-.build
-.ve
-.env
-.cache
-.pytest
-.benchmarks
-.bootstrap
-.appveyor.token
-*.bak
+# Docs
+public/
 
 # Mypy Cache
 .mypy_cache/

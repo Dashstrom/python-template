@@ -1,6 +1,6 @@
-"""Core module, contains all core functions."""
+"""Core module."""
 
 
 def hello(text: str) -> str:
-    """Say hello to someone."""
-    return f"Hello {text}".strip()
+    """Add hello text before the provided text."""
+    return f"Hello {text}"

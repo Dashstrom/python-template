@@ -1,4 +1,4 @@
-"""Base module for testing command line interface."""{% if cookiecutter.cli|lower == 'argparse' %}
+"""Test for command line interface."""{%- if "argparse" == cookiecutter.cli %}
 import contextlib
 import io
 import subprocess
@@ -9,84 +9,77 @@ import pytest
 from {{ cookiecutter.__project_slug }} import __version__, entrypoint
 
 
-def test_cli() -> None:
-    """Basic test for command line interface."""
+def test_cli_version() -> None:
+    """Test if the command line interface is installed correctly."""
+    ver = f"version {__version__}"
     out = subprocess.check_output(
-        [
+        (
             "{{ cookiecutter.__cli_name }}",
-            "--version"
-        ],
+            "--version",
+        ),
         text=True,
         shell=False,
     )
-    assert __version__ in out.strip()
+    assert ver in out
     out = subprocess.check_output(
-        [
+        (
             sys.executable,
             "-m",
             "{{ cookiecutter.__project_slug }}",
             "--version",
-        ],
+        ),
         text=True,
         shell=False,
     )
-    assert __version__ in out.strip()
+    assert ver in out
     stdout = io.StringIO()
-    stderr = io.StringIO()
-    with (
-        contextlib.redirect_stderr(stderr),
-        contextlib.redirect_stdout(stdout),
-        pytest.raises(SystemExit),
-    ):
-        entrypoint(["--version"])
-    out = stdout.getvalue() + stderr.getvalue()
-    assert __version__ in out.strip()
+    with contextlib.redirect_stdout(stdout), pytest.raises(SystemExit):
+        entrypoint(("--version",))
+    assert ver in stdout.getvalue()
 
 
 def test_import() -> None:
     """Test if module entrypoint has correct imports."""
-    import {{ cookiecutter.__project_slug }}.__main__  # noqa: F401
+    import {{ cookiecutter.__project_slug }}.__main__  # NoQA: F401
 
 
-def test_hello(capsys: pytest.CaptureFixture[str]) -> None:
+def test_hello(caplog: pytest.LogCaptureFixture) -> None:
     """Test command hello."""
-    name = "uizuifruzbfbwsf"
-    with pytest.raises(SystemExit):
-        entrypoint(("hello", "--name", name))
-    captured = capsys.readouterr()
-    assert name in captured.out{% elif cookiecutter.cli|lower == 'click' %}
+    name = "A super secret name"
+    entrypoint(("hello", "--name", name))
+    assert name in caplog.text{% elif "click" == cookiecutter.cli %}
 import subprocess
 import sys
 
-import click.testing
+from click.testing import CliRunner
 
 from {{ cookiecutter.__project_slug }} import __version__, entrypoint
 
 
-def test_cli() -> None:
-    """Basic test for command line interface."""
+def test_cli_version() -> None:
+    """Test if the command line interface is installed correctly."""
     ver = f"version {__version__}"
     out = subprocess.check_output(
-        [
+        (
             "{{ cookiecutter.__cli_name }}",
-            "--version"
-        ],
+            "--version",
+        ),
         text=True,
         shell=False,
     )
     assert ver in out
     out = subprocess.check_output(
-        [
+        (
             sys.executable,
             "-m",
             "{{ cookiecutter.__project_slug }}",
             "--version",
-        ],
+        ),
         text=True,
         shell=False,
     )
     assert ver in out
-    runner = click.testing.CliRunner()
+    runner = CliRunner()
     result = runner.invoke(entrypoint, ["--version"])
     out = result.output
     assert ver in out
@@ -99,7 +92,7 @@ def test_import() -> None:
 
 def test_hello() -> None:
     """Test command hello."""
-    name = "uizuifruzbfbwsf"
-    runner = click.testing.CliRunner()
+    name = "A super secret name"
+    runner = CliRunner()
     result = runner.invoke(entrypoint, ["hello", "--name", name])
     assert name in result.output{% endif %}

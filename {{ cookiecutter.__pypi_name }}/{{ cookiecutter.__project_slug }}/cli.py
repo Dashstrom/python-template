@@ -1,62 +1,166 @@
-"""Module for use module as a cli."""{% if cookiecutter.cli|lower == 'argparse' %}
+"""Module for command line interface."""
+{%- if "argparse" == cookiecutter.cli %}
 import argparse
+import logging
 import sys
-from typing import Optional, Sequence
+from typing import Literal, NoReturn, Optional, Sequence
 
 from .core import hello
-from .info import __author__, __copyright__, __description__, __version__
+from .info import (
+    __author__,
+    __copyright__,
+    __description__,
+    __issues__,
+    __version__,
+)
+
+LOG_LEVELS = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]
+logger = logging.getLogger(__name__)
+
+
+class HelpArgumentParser(argparse.ArgumentParser):
+    def error(self, message: str) -> NoReturn:
+        """Handle error from argparse.ArgumentParser."""
+        self.print_help(sys.stderr)
+        self.exit(2, f"{self.prog}: error: {message}\n")
 
 
 def get_parser() -> argparse.ArgumentParser:
-    """Get configured parser."""
-    parser = argparse.ArgumentParser(
+    """Prepare ArgumentParser."""
+    parser = HelpArgumentParser(
         prog="{{ cookiecutter.__cli_name }}",
         description=__description__,
-        epilog=__copyright__,
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        epilog=f"{__version__} - {__copyright__}",
+        formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
         "--version",
         action="version",
         version=f"%(prog)s, version {__version__}",
     )
+    parser.add_argument(
+        "--log-level",
+        metavar="level",
+        default="INFO",
+        choices=LOG_LEVELS,
+        help=(
+            "print log messages of this level and higher, "
+            "possible choices: %(choices)s"
+        ),
+    )
+    parser.add_argument(
+        "--log-file",
+        metavar="file",
+        help="log file to store DEBUG level messages",
+    )
     hello_subparser = parser.add_subparsers(dest="command_hello")
     hello_parser = hello_subparser.add_parser("hello")
     hello_parser.add_argument(
         "--name",
-        help="name to greating",
+        help="name to greeting",
         default=__author__,
     )
     return parser
 
 
-def entrypoint(argv: Optional[Sequence[str]] = None) -> None:
-    """Entrypoint for CLI."""
-    parser = get_parser()
-    args = parser.parse_args(argv)
-    if args.command_hello:
-        print(hello(args.name))
+def setup_logging(
+    log_file: Optional[str] = None,
+    log_level: Optional[str] = None,
+) -> None:
+    """Do setup logging to redirect to log_file at DEBUG level."""
+    if log_level is None:
+        log_level = "INFO"
+    # Setup logging
+    if log_file:
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format="[%(asctime)s] %(levelname)-8s - %(name)s - %(message)s",
+            filename=log_file,
+            filemode="w",
+        )
+        console = logging.StreamHandler()
+        console.setLevel(log_level)
+        formatter = logging.Formatter(
+            "[%(asctime)s] %(levelname)-8s - %(message)s",
+        )
+        console.setFormatter(formatter)
+        logging.root.addHandler(console)
     else:
-        parser.error("No command specified")
-    sys.exit(0){% elif cookiecutter.cli|lower == 'click' %}
+        logging.basicConfig(
+            level=log_level,
+            format="[%(asctime)s] %(levelname)-8s - %(message)s",
+        )
+
+
+def entrypoint(argv: Optional[Sequence[str]] = None) -> None:
+    """Entrypoint for command line interface."""
+    try:
+        parser = get_parser()
+        args = parser.parse_args(argv)
+        setup_logging(args.log_file, args.log_level)
+        if args.command_hello:
+            logging.getLogger(__name__).info(hello(args.name))
+        else:
+            parser.error("No command specified")
+    except Exception as err:  # NoQA: BLE001
+        logger.critical("Unexpected error", stack_info=True, exc_info=err)
+        logger.critical("Please report this error to : %s", __issues__)
+        sys.exit(1){% elif "click" == cookiecutter.cli %}
+import logging
+from typing import Literal, Optional
+
 import click
 
 from .core import hello
-from .info import __author__, __copyright__, __description__, __version__
+from .info import __copyright__, __description__, __version__
+
+LOG_LEVELS = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]
 
 
 @click.group(
-    name="{{ cookiecutter.__pypi_name }}",
+    name="{{ cookiecutter.__cli_name }}",
     help=__description__,
-    epilog=__copyright__,
+    epilog=f"{__version__} - {__copyright__}",
 )
 @click.version_option(__version__)
-def entrypoint() -> None:
-    """Console script."""
+@click.option(
+    "--log-level",
+    metavar="level",
+    type=click.Choice(LOG_LEVELS),
+    default="INFO",
+    show_default=True,
+    help="Print log messages of this level and higher",
+)
+@click.option(
+    "--log-file",
+    help="Log file to store DEBUG level messages",
+    metavar="file",
+)
+def entrypoint(log_level: str, log_file: Optional[str]) -> None:
+    """Entrypoint for command line interface."""
+    if log_file:
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format="[%(asctime)s] %(levelname)-8s - %(name)s - %(message)s",
+            filename=log_file,
+            filemode="w",
+        )
+        console = logging.StreamHandler()
+        console.setLevel(log_level)
+        formatter = logging.Formatter(
+            "[%(asctime)s] %(levelname)-8s - %(message)s",
+        )
+        console.setFormatter(formatter)
+        logging.root.addHandler(console)
+    else:
+        logging.basicConfig(
+            level=log_level,
+            format="[%(asctime)s] %(levelname)-8s - %(message)s",
+        )
 
 
 @entrypoint.command("hello")
-@click.option("--name", default=__author__)
-def hello_command(name: str) -> None:
-    """Run hello command."""
+@click.option("--name", help="")
+def cmd_hello(name: str) -> None:
+    """Command for say hello."""
     click.echo(hello(name)){% endif %}

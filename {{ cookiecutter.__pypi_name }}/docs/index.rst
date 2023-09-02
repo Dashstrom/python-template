@@ -8,9 +8,8 @@ Contents
    Home <self>
    references
 
-Indices and tables
-##################
+Index
+#####
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`

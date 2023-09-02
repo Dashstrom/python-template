@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------
-# Packaging :
+# Packaging
 # https://packaging.python.org/en/latest/tutorials/packaging-projects
 # ----------------------------------------------------------------------
 
@@ -13,19 +13,27 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "{{ cookiecutter.__pypi_name }}"
 description = {{ cookiecutter.project_short_description | tojson() }}
-readme = "README.rst"
-requires-python = ">=3.8"
-license.file = "LICENSE"
 authors = [
   { name={{ cookiecutter.full_name | tojson() }}, email={{ cookiecutter.email | tojson() }} },
 ]
 maintainers  = [
   { name={{ cookiecutter.full_name | tojson() }}, email={{ cookiecutter.email | tojson() }} },
 ]
-keywords = [
-  "python"
+dependencies = [  # Duplicate in pre-commit-config.yaml{%- if "click" == cookiecutter.cli %}
+  "click>=8.1.0",{%- endif %}
+  "typing-extensions>=4.7.1"
 ]
+
+readme = "README.rst"
+requires-python = ">=3.8"
+keywords = [
+  "python",
+]
+license = {file = "LICENSE"}
+
+# See https://pypi.org/classifiers/
 classifiers = [
+
   #"Development Status :: 1 - Planning",
   #"Development Status :: 2 - Pre-Alpha",
   "Development Status :: 3 - Alpha",
@@ -54,7 +62,8 @@ classifiers = [
   # What is the language used in this project
   "Natural Language :: English",
 
-  # Verison available for this project
+  # Version available for this project
+  "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -62,16 +71,16 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3 :: Only",
 
+  # What is the language used in the project
+  "Natural Language :: English",
+
   # License used in this project{% if cookiecutter.license == 'GNU GPL v3.0' %}
-  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",{% elif cookiecutter.license == 'MIT' %}
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",{% elif cookiecutter.license == 'LGPL2.1+' %}
+  "License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)",{% elif cookiecutter.license == 'MIT' %}
   "License :: OSI Approved :: MIT License",{% endif %}
 
   # The project is typed
   "Typing :: Typed"
-]
-dependencies = [{%- if cookiecutter.cli|lower == 'click' %}
-  "click>=8.1.3",{%- endif %}
-  "typing-extensions>=4.5.0",
 ]
 dynamic = ["version"]
 
@@ -87,7 +96,7 @@ Source = "{{ cookiecutter.__source }}"
 {%- endif %}
 
 [project.optional-dependencies]
-tests = [
+tests = [  # Duplicate in pre-commit-config.yaml
   "pytest>=7.3.0",
   "pytest-mock>=3.10.0",
 ]
@@ -96,11 +105,12 @@ cov = [
   "coverage[toml]>=6.5.0",
   "pytest-cov>=4.0.0",
 ]
-lint = [
+lint = [  # Duplicate in pre-commit-config.yaml
   "{{ cookiecutter.__pypi_name }}[tests]",
-  "black>=22.0.0",
-  "mypy>=1.2.0",
-  "ruff>=0.0.262",
+  "mypy==1.4.1",
+  "black==23.7.0",
+  "ruff==v0.0.280",
+  "types-setuptools>=57.0",
 ]
 tox = [
   "tox>=4.0.0",
@@ -122,8 +132,9 @@ dev = [
   "{{ cookiecutter.__pypi_name }}[tests,cov,lint,tox,pre-commit,docs,build,deploy]",
 ]
 
+
 # ----------------------------------------------------------------------
-# Setuptools :
+# Setuptools
 # https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
 # ----------------------------------------------------------------------
 
@@ -136,7 +147,7 @@ version = {attr = "{{ cookiecutter.__project_slug }}.info.__version__"}
 
 
 # ----------------------------------------------------------------------
-# Tox :
+# Tox
 # https://pypi.org/project/tox
 # ----------------------------------------------------------------------
 
@@ -161,15 +172,16 @@ commands =
 [testenv:cov]
 deps = .[cov]
 commands =
-  coverage run --source {{ cookiecutter.__project_slug }} -m pytest
-  coverage report -m
-  coverage html
+	coverage run --source {envsitepackagesdir}/{{ cookiecutter.__project_slug }} -m pytest
+	coverage report -m
+	coverage html
 
 [testenv:docs]
 deps = .[docs]
 commands =
   sphinx-build -W -b html -d {envtmpdir}/doctrees docs {envtmpdir}/public
 """
+
 
 # ----------------------------------------------------------------------
 # Pytest
@@ -179,28 +191,30 @@ commands =
 [tool.pytest.ini_options]
 log_cli = true
 log_cli_level = "DEBUG"
+addopts = "-vv"
 #asyncio_mode = "auto"
 
 
 # ----------------------------------------------------------------------
-# Black :
-# https://pypi.org/project/black
+# Black
+# https://black.readthedocs.io/en/stable/
 # ----------------------------------------------------------------------
 
 [tool.black]
-line-length = 79
-target-version = ["py311", "py310", "py39", "py38"]
+line-length = {{ cookiecutter.line }}
+target-version  = ["py38", "py39", "py310", "py311"]
+
+# Enable linting on pyi files
+include = "\\.pyi?$"
 
 
 # ----------------------------------------------------------------------
-# Mypy :
+# Mypy
 # https://pypi.org/project/mypy
 # ----------------------------------------------------------------------
 
 [tool.mypy]
 python_version = 3.8
-strict = true
-show_error_codes = true
 exclude = [
   ".bzr",
   ".direnv",
@@ -226,9 +240,9 @@ exclude = [
 enable_error_code = ["ignore-without-code", "truthy-bool", "redundant-expr"]
 
 # Disallow dynamic typing
-disallow_any_unimported = true
-disallow_any_expr = false  # all attribut of argparse.Namespace are Any
-disallow_any_decorated = false  # Too many package dosn't have typed decorator
+disallow_any_unimported = false
+disallow_any_expr = false  # All attribut of argparse.Namespace are Any
+disallow_any_decorated = false  # Too many package doesn't have typed decorator
 disallow_any_generics = true
 disallow_subclassing_any = true
 
@@ -237,13 +251,13 @@ disallow_untyped_calls = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 check_untyped_defs = true
-disallow_untyped_decorators = true  # To many decorator are untyped
+disallow_untyped_decorators = false  # Too many decorator are untyped
 
 # None and optional handling
 no_implicit_optional = true
 
 # Configuring warnings
-warn_unused_ignores = false
+warn_unused_ignores = true
 warn_no_return = true
 warn_return_any = true
 warn_redundant_casts = true
@@ -254,21 +268,20 @@ strict_equality = true
 # Config file
 warn_unused_configs = true
 
-# Exemple for missing type
+# Exemple for missing types
 #[[tool.mypy.overrides]]
-#module = ["untyped-module"]
+#module = ["numpy.*"]
 #ignore_missing_imports = true
 
-
 # ----------------------------------------------------------------------
-# Ruff :
+# Ruff
 # https://pypi.org/project/ruff
 # ----------------------------------------------------------------------
 
 [tool.ruff]
 # We dont use ANN : flake8-annotations because we already have mypy
 select = [
-  "A", "B", "C", "D", "E", "F", "G", "I","N", "Q", "S", "T", "W",
+  "A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W",
   "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN",
   "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI",
   "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"
@@ -276,9 +289,16 @@ select = [
 # D203 and D211 are incompatible
 # D212 and D213 are incompatible
 # D400 [*] First line should end with a period
+# D101 Missing docstring in public class
 # ANN101 Missing type annotation for `self` in method
-# D105 Missing docstring in magic method
-ignore = ["D203", "D213", "D400", "ANN101", "D105"]
+ignore = ["D203", "D213", "D400", "D101", "ANN101"]
+fixable = [
+  "A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN",
+  "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN",
+  "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI",
+  "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"
+]
+unfixable = []
 exclude = [
   ".bzr",
   ".direnv",
@@ -301,30 +321,42 @@ exclude = [
   "node_modules",
   "venv",
 ]
-line-length = 79
+line-length = {{ cookiecutter.line }}
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 target-version = "py38"
 
-[tool.ruff.isort]
-known-first-party = ["{{ cookiecutter.__project_slug }}"]
-
 [tool.ruff.per-file-ignores]
 # E402 Module level import not at top of file
-# INP001 File `docs\conf.py` is part of an implicit namespace package.
+# INP001 File `docs\conf.py` is part of an implicit namespace package. Add an `__init__.py`.
 # A001 Variable `copyright` is shadowing a python builtin
 # PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
 "docs/conf.py" = ["E402", "INP001", "A001", "PTH100"]
 # S101 Use of `assert` detected
 # S603 `subprocess` call: check for execution of untrusted input
-# S607 Starting a process with a partial executable path
-"tests/*.py" = ["S101", "S603", "S607"]{% if 'argparse' == cookiecutter.cli %}
-# T201 `print` found
-# T203 `pprint` found
-"*/cli.py" = ["T201", "T203"]{%- endif %}
+"tests/*.py" = ["S101", "S603"]
 # Q003 [*] Change outer quotes to avoid escaping inner quotes
 # E501 Line too long
 "*/info.py" = ["Q003", "E501"]
+# E501 Line too long
+"*/__main__.py" = ["E501"]
+# INP001 File `benchmarks/*.py` is part of an implicit namespace package. Add an `__init__.py`.
+"benchmarks/*.py" = ["INP001"]
+# INP001 File `scripts/*.py` is part of an implicit namespace package. Add an `__init__.py`.
+"scripts/*.py" = ["INP001"]
+
+[tool.ruff.isort]
+known-first-party = ["{{ cookiecutter.__project_slug }}"]
 
 [tool.ruff.mccabe]
-# Unlike Flake8, default to a complexity level of 10.
-max-complexity = 10
+# Unlike Flake8, default to a complexity level of 12.
+max-complexity = 12
+
+
+# ----------------------------------------------------------------------
+# Pylint
+# https://pylint.pycqa.org/en/latest/index.html
+# ----------------------------------------------------------------------
+
+# We dont use pylint, so we disabled it
+[tool.pylint.main]
+ignore-patterns = ["*"]
