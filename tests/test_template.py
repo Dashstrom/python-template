@@ -20,14 +20,14 @@ DEFAULT_CONFIG = {
     "github_username": "Dashstrom",
     "project_name": "aaa-aaa",
     "project_short_description": "iozerjfiezifbzef",
-    "project_url": "https://gitlab.cossi.internet/fincerti/aaa-aaa",
+    "project_url": "https://github/Dashstrom/aaa-aaa",
     "version": "0.0.1",
     "cli": "argparse",
     "license": "LGPL2.1+",
     "push": False,
     "strict_lint": False,
     "docker": False,
-    "line": 120,
+    "line": 79,
     "fail": False,
 }
 USE_FORMATER = os.environ.get("USE_FORMATER", "True").lower() not in (
@@ -56,8 +56,8 @@ CONFIGS = [
     {"license": "All Rights Reserved"},
     {"strict_lint": True},
     {"docker": True},
-    {"line": 79},
-    {"cli": "click", "line": 79},
+    {"line": 120},
+    {"cli": "click", "line": 120},
     {"discord": "blabla"},
 ]
 

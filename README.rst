@@ -52,7 +52,7 @@ If you want to use the template without cookiecutter installed system-wide you c
 ..  code-block:: bash
 
   python3 -m venv venv
-  venv/bin/pip install 'cookiecutter>=2.2.0'
+  venv/bin/pip install -U cookiecutter
   venv/bin/cookiecutter --accept-hooks yes --keep-project-on-failure gh:Dashstrom/python-template
   rm -rf venv
   cd YOUR_PROJECT && source venv/bin/activate

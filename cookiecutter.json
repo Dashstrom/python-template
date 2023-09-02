@@ -1,20 +1,20 @@
 {
   "full_name": "Dashstrom",
-  "email": "dashstrom.pro@gmail.com",
   "github_username": "Dashstrom",
+  "email": "dashstrom.pro@gmail.com",
   "project_name": null,
-  "project_short_description": null,
   "__project_slug": "{{ cookiecutter.project_name.lower().strip().replace(' ', '_').replace('-', '_') }}",
+  "project_short_description": null,
   "__pypi_name": "{{ cookiecutter.__project_slug.replace('_', '-') }}",
   "__pypi_url": "https://pypi.org/project/{{ cookiecutter.__pypi_name }}",
-  "version": "0.0.1",
-  "__base_url": "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.__pypi_name }}",
-  "__homepage": "{{ cookiecutter.__base_url }}",
-  "__issues": "{{ cookiecutter.__base_url }}/issues",
-  "__documentation": "{{ cookiecutter.__base_url }}",
-  "__source": "{{ cookiecutter.__base_url }}",
-  "__clone_url": "{{ cookiecutter.__base_url }}",
+  "project_url": "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.__pypi_name }}",
+  "__homepage": "{{ cookiecutter.project_url }}",
+  "__issues": "{{ cookiecutter.project_url }}/issues",
+  "__documentation": "{{ cookiecutter.project_url }}",
+  "__source": "{{ cookiecutter.project_url }}",
+  "__clone_url": "{{ cookiecutter.project_url }}",
   "__clone_name": "{{ cookiecutter.__source.rsplit('/', 1)[-1] }}",
+  "version": "0.0.1",
   "cli": [
     "click",
     "argparse",
@@ -30,7 +30,7 @@
   "copyright": "Copyright (c) {% now 'utc', '%Y' %}, {{ cookiecutter.full_name }} <{{ cookiecutter.email }}>",
   "push": false,
   "docker": false,
-  "discord": "No",
+  "discord": "n",
   "line": 79,
   "__prompts__": {
     "full_name": "Full name",
@@ -38,17 +38,18 @@
     "github_username": "Github username",
     "project_name": "Provide project name",
     "project_short_description": "Provide a short description of project",
-    "project_url": "Provide gitlab project url",
+    "project_url": "Provide repository URL",
     "version": "Project version. Can be changed in src/.../info.py",
     "cli": "Which CLI framework do you want to use",
     "license": "Which license do you want to use",
-    "copyright": "Copyright",
+    "copyright": "Copyright used for this project",
     "push": "Push repository to the url? Can be done later using `git push -uf origin main`",
     "docker": "Use docker",
-    "discord": "Do you want to add a discord ? (no/invite)",
+    "discord": "Do you want to add a discord ? \\[invite/n]",
     "line": "Which line length do you want to use"
   },
   "_copy_without_render": [
       ".github/workflows"
-  ]
+  ],
+  "_extensions": ["jinja2_time.TimeExtension"]
 }

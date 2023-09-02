@@ -13,13 +13,13 @@
   :alt: CI : Lint
 .. image:: {{ cookiecutter.__source }}/actions/workflows/tests.yml/badge.svg
   :target: {{ cookiecutter.__source }}/actions/workflows/tests.yml
-  :alt: CI : Tests{% if if 'not open' not in cookiecutter.license|lower %}
+  :alt: CI : Tests{% if 'not open' not in cookiecutter.license|lower %}
 .. image:: https://img.shields.io/pypi/v/{{ cookiecutter.__pypi_name }}.svg
   :target: {{ cookiecutter.__pypi_url }}
   :alt: PyPI : {{ cookiecutter.__pypi_name }}
 .. image:: https://img.shields.io/pypi/pyversions/{{ cookiecutter.__pypi_name }}.svg
   :target: {{ cookiecutter.__pypi_url }}
-  :alt: Python : versions{% endif %}{% if cookiecutter.discord|lower != 'no' %}
+  :alt: Python : versions{% endif %}{% if cookiecutter.discord|lower not in ("no", "null", "false", "n", "non", "f", "0", "none", "undefined") %}
 .. image:: https://img.shields.io/badge/Discord-cookiecutter-5865F2?style=flat&logo=discord&logoColor=white
   :target: {{ cookiecutter.discord }}
   :alt: Discord{% endif %}
@@ -93,7 +93,6 @@ A Makefile is available for help you to run commands.
   tests          Run unit and functional tests.
   tests-all      Run all tests in parallel (docs, lint and tests).
   uninstall      Install the package to the active Python's site-packages.
-{%- if cookiecutter.strict_lint %}
 
 Commit
 ******
@@ -103,7 +102,6 @@ If the linting is not successful, you can't commit. For forcing the commit you c
 ..  code-block:: bash
 
   git commit --no-verify -m "MESSAGE"
-{%- endif %}{%- if 'none' != cookiecutter.cli %}
 
 How to add dependency
 *********************
@@ -126,7 +124,7 @@ To ignore illegitimate warnings you can add :
 - **# NoQA: ERROR_CODE** on the same line for ruff.
 - **# type: ignore[ERROR_CODE]** on the same line for mypy.
 - **# fmt: off** et **# fmt: on** before and after for black.
-- **# pragma: no cover** on the same line to ignore line for coverage.
+- **# pragma: no cover** on the same line to ignore line for coverage.{%- if 'none' == cookiecutter.cli|lower %}
 
 Troubleshooting
 ###############
@@ -153,8 +151,8 @@ Uninstall
 
 ..  code-block:: bash
 
-  pip uninstall {{ cookiecutter.__pip_name }}
-{%- if 'not open' not in cookiecutter.license|lower %}
+  pip uninstall {{ cookiecutter.__pypi_name }}
+{%- if 'All Rights Reserved' != cookiecutter.license %}
 
 License
 #######

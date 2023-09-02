@@ -3,7 +3,7 @@
 import argparse
 import logging
 import sys
-from typing import Literal, NoReturn, Optional, Sequence
+from typing import NoReturn, Optional, Sequence
 
 from .core import hello
 from .info import (
@@ -107,7 +107,7 @@ def entrypoint(argv: Optional[Sequence[str]] = None) -> None:
         logger.critical("Please report this error to : %s", __issues__)
         sys.exit(1){% elif "click" == cookiecutter.cli %}
 import logging
-from typing import Literal, Optional
+from typing import Optional
 
 import click
 

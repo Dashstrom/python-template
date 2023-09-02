@@ -62,7 +62,7 @@ def main() -> None:
     match(
         r"^[a-zA-Z][-a-zA-Z0-9]{,255}$",
         "pip_name",
-        {{cookiecutter.__pip_name | tojson()}},
+        {{cookiecutter.__pypi_name | tojson()}},
     )
     match(
         r"^[-a-zA-Z_][-a-zA-Z0-9_]{,255}$",
@@ -70,6 +70,14 @@ def main() -> None:
         {{cookiecutter.__cli_name | tojson()}},
     )
     match(VERSION_PATTERN, "version", "{{ cookiecutter.version }}")
+    clone_url = "{{ cookiecutter.project_url.strip()|lower }}"
+    if "Dashstrom/python-template" in clone_url:
+        print("ERROR: Invalid clone url")
+        sys.exit(1)
+    cli_name = "{{ cookiecutter.__cli_name|lower }}"
+    if cli_name in ("test", "echo", "ls", "cat"):
+        print("ERROR: Invalid project name")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

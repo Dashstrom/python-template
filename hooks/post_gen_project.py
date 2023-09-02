@@ -197,9 +197,14 @@ def main() -> None:
     if "{{ cookiecutter.push }}" == "True":  # type: ignore
         run("git", "push", "-uf", "origin", "main")
     print("\n\nYou can activate venv with the following commands :")
-    print(
-        "\n  cd {{ cookiecutter.__clone_name }} && source venv/bin/activate\n"
-    )
+    if os.name == "posix":
+        print(
+            "\n  cd {{ cookiecutter.__clone_name }} && source venv/bin/activate\n"
+        )
+    else:
+        print(
+            "\n  cd {{ cookiecutter.__clone_name }}; venv/Scripts/activate.ps1"
+        )
 
 
 if __name__ == "__main__":
