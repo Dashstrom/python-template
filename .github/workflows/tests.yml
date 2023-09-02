@@ -18,6 +18,8 @@ jobs:
           python-version: "3.8"
       - name: Setup project without virtualenv
         run: |
+          git config --global user.name "John DOE"
+          git config --global user.email "john.doe@example.com"
           pip install cookiecutter virtualenv
       - name: Test template
         run: python3 tests/test_template.py --index 1
@@ -33,6 +35,8 @@ jobs:
       - name: Setup project with virtualenv
         run: |
           sudo apt-get install -y python3-virtualenv python3-venv
+          git config --global user.name "John DOE"
+          git config --global user.email "john.doe@example.com"
           pip install cookiecutter
       - name: Test template
-        run: python3 scripts/test_template.py --index 0
+        run: python3 tests/test_template.py --index 0

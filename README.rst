@@ -5,6 +5,10 @@
 Python template
 ***************
 
+.. image:: https://github.com/Dashstrom/python-template/actions/workflows/tests.yml/badge.svg
+  :target: https://github.com/Dashstrom/python-template/actions/workflows/tests.yml
+  :alt: CI : Tests
+
 A medium complexity template for create CLI or python package.
 
 Tools used
