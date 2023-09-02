@@ -32,7 +32,7 @@ jobs:
           python-version: "3.8"
       - name: Setup project with virtualenv
         run: |
-          apt -y install python3-virtualenv python3-venv
+          sudo apt-get install -y python3-virtualenv python3-venv
           pip install cookiecutter
       - name: Test template
         run: python3 scripts/test_template.py --index 0

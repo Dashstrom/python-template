@@ -50,6 +50,5 @@
   },
   "_copy_without_render": [
       ".github/workflows"
-  ],
-  "_extensions": ["jinja2_time.TimeExtension"]
+  ]
 }
