@@ -8,7 +8,7 @@ env:
 
 jobs:
   test:
-    name: Test
+    name: Test no virtualenv
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
@@ -20,11 +20,11 @@ jobs:
         run: |
           git config --global user.name "John DOE"
           git config --global user.email "john.doe@example.com"
-          pip install cookiecutter virtualenv
+          pip install cookiecutter
       - name: Test template
         run: python3 tests/test_template.py --index 1
   test-virtualenv:
-    name: Test virtualenv
+    name: Test virtualenv system-wide
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
