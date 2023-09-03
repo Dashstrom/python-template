@@ -27,6 +27,9 @@
   :target: {{ cookiecutter.__source }}/blob/main/LICENSE
   :alt: License : {{ cookiecutter.license }}
 
+Description
+###########
+
 {{cookiecutter.project_short_description}}
 
 Installation

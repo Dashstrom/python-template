@@ -9,6 +9,9 @@ Python template
   :target: https://github.com/Dashstrom/python-template/actions/workflows/tests.yml
   :alt: CI : Tests
 
+Description
+###########
+
 A medium complexity template for create CLI or python package.
 
 Tools used

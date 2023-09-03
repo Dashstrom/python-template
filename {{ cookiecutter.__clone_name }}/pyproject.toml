@@ -109,7 +109,7 @@ lint = [  # Duplicate in pre-commit-config.yaml
   "{{ cookiecutter.__pypi_name }}[tests]",
   "mypy==1.4.1",
   "black==23.7.0",
-  "ruff==v0.0.280",
+  "ruff==v0.0.287",
   "types-setuptools>=57.0",
 ]
 tox = [
