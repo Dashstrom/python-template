@@ -172,7 +172,7 @@ commands =
 [testenv:cov]
 deps = .[cov]
 commands =
-	coverage run --source {envsitepackagesdir}/{{ cookiecutter.__project_slug }} -m pytest
+	coverage run -m pytest
 	coverage report -m
 	coverage html
 
@@ -292,7 +292,8 @@ select = [
 # D400 [*] First line should end with a period
 # D101 Missing docstring in public class
 # ANN101 Missing type annotation for `self` in method
-ignore = ["D203", "D213", "D400", "D101", "ANN101"]
+# SIM117 multiple context managers is not available in 3.8
+ignore = ["D203", "D213", "D400", "D101", "ANN101", "SIM117"]
 fixable = [
   "A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN",
   "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN",
@@ -327,11 +328,9 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 target-version = "py38"
 
 [tool.ruff.per-file-ignores]
-# E402 Module level import not at top of file
 # INP001 File `docs\conf.py` is part of an implicit namespace package. Add an `__init__.py`.
 # A001 Variable `copyright` is shadowing a python builtin
-# PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
-"docs/conf.py" = ["E402", "INP001", "A001", "PTH100"]
+"docs/conf.py" = ["INP001", "A001"]
 # S101 Use of `assert` detected
 # S603 `subprocess` call: check for execution of untrusted input
 "tests/*.py" = ["S101", "S603"]

@@ -97,12 +97,9 @@ def test_config(*, indexes: Optional[List[int]] = None) -> None:
     """Test for configs."""
     shutil.rmtree(CACHE, ignore_errors=True)
     CACHE.mkdir(exist_ok=True, parents=True)
-    if indexes is None:
-        configs = CONFIGS
-    else:
-        configs = [config for i, config in enumerate(CONFIGS) if i in indexes]
-
-    for config in configs:
+    for index, config in enumerate(CONFIGS):
+        if indexes is not None and index not in indexes:
+            continue
         repr_config = json.dumps(config, indent=2)
         config = {**DEFAULT_CONFIG, **config}  # type: ignore[call-overload]
         should_fail = config.pop("fail", False)
@@ -110,7 +107,10 @@ def test_config(*, indexes: Optional[List[int]] = None) -> None:
             prefix="python-template-", dir=CACHE
         ) as tmp:
             try:
-                print(f"\n\nWorking at {tmp} with config: \n{repr_config}\n\n")
+                print(
+                    f"\n\nWorking on {index} at {tmp} "
+                    f"with config: \n{repr_config}\n\n"
+                )
                 if sys.stdout.isatty():
                     sleep(3)
                 run(

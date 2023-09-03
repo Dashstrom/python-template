@@ -183,7 +183,7 @@ def autoformat() -> None:
 def main() -> None:
     """Main function for the hook."""
     if "none" == "{{ cookiecutter.cli }}":  # type: ignore
-        project = os.path.join("src", "{{ cookiecutter.__project_slug }}")
+        project = "{{ cookiecutter.__project_slug }}"
         remove_file(os.path.join(project, "cli.py"))
         remove_file(os.path.join(project, "__main__.py"))
         remove_file(os.path.join("tests", "test_cli.py"))
