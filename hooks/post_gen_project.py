@@ -203,7 +203,7 @@ def main() -> None:
         )
     else:
         print(
-            "\n  cd {{ cookiecutter.__clone_name }}; venv/Scripts/activate.ps1"
+            "\n  cd {{ cookiecutter.__clone_name }}; venv/Scripts/activate.ps1\n"
         )
 
 
