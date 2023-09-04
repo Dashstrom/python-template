@@ -78,6 +78,7 @@ GIT=git
 PIP=$(PY) -m pip
 VENV_PY=$(VENV)python$(EXE)
 VENV_PIP=$(VENV)pip$(EXE)
+CURRENT_DIR:=$(subst /,\,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
 RM_GLOB=$(PY) -c "import shutil,sys,pathlib;[shutil.rmtree(sp, ignore_errors=False) if sp.is_dir() else sp.unlink() for p in sys.argv[1:]for sp in pathlib.Path().resolve().glob(p)]"
 BROWSER=$(PY) -c "import os,webbrowser,sys;from urllib.request import pathname2url;webbrowser.open('file:'+pathname2url(os.path.abspath(sys.argv[1])))"
@@ -169,6 +170,9 @@ $(LIB)build: $(VENV_PIP)
 
 .PHONY: clean
 clean:  ## Remove all build, test, coverage, venv and Python artifacts.
+ifeq ($(OS),Windows_NT)
+	PowerShell "Get-Process | Where-Object {$$_.path -like '$(CURRENT_DIR)venv\Scripts\*'} | Stop-Process -Force"
+endif
 	$(RM_GLOB) 'venv/*/python.?e?x?e?' 'venv' 'build/' 'dist/' 'public/' '.eggs/' '.tox/' '.coverage' 'htmlcov/' '.pytest_cache' '.mypy_cache' '.ruff_cache'  '**/*.egg-info' '**/*.egg' '**/__pycache__' '**/*~' '**/*.pyc' '**/*.pyo'
 
 .PHONY: cov
@@ -202,7 +206,7 @@ docker-restore:  ## Restore logs backup.
 	docker compose stop
 	docker run --rm \
 		-v "{{ cookiecutter.__project_slug }}_logs:/logs" \
-		-v "$PWD":/backup \
+		-v "$$PWD":/backup \
 		ubuntu \
 		bash -c "cd / && rm -rf /{logs}/* && tar xvfP /backup/backup.tar.gz"
 	docker compose up -d
@@ -212,7 +216,7 @@ docker-backup:  ## Make backups of logs.
 	docker compose stop
 	docker run --rm \
 		-v "{{ cookiecutter.__project_slug }}_logs:/logs" \
-		-v "$PWD":/backup \
+		-v "$$PWD":/backup \
 		ubuntu \
 		tar czvf /backup/backup.tar.gz -C / logs
 	docker compose up -d
