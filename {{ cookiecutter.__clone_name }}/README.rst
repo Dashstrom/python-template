@@ -20,7 +20,7 @@
 .. image:: https://img.shields.io/pypi/pyversions/{{ cookiecutter.__pypi_name }}.svg
   :target: {{ cookiecutter.__pypi_url }}
   :alt: Python : versions{% endif %}{% if cookiecutter.discord|lower not in ("no", "null", "false", "n", "non", "f", "0", "none", "undefined") %}
-.. image:: https://img.shields.io/badge/Discord-cookiecutter-5865F2?style=flat&logo=discord&logoColor=white
+.. image:: https://img.shields.io/badge/Discord-{{ cookiecutter.project_name.replace(" ", "%20") }}-5865F2?style=flat&logo=discord&logoColor=white
   :target: {{ cookiecutter.discord }}
   :alt: Discord{% endif %}
 .. image:: https://img.shields.io/badge/license-{{ cookiecutter.license.replace(" ", "%20") }}-green.svg
