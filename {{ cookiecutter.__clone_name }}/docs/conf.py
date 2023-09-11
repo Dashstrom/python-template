@@ -13,7 +13,7 @@ from {{ cookiecutter.__project_slug }} import info
 sys.path.insert(0, os.path.abspath(".."))
 
 project = info.__project__
-copyright = info.__copyright__.replace("Copyright ", "")
+copyright = info.__copyright__.replace("Copyright", "").strip()
 author = info.__author__
 version = info.__version__
 release = info.__version__

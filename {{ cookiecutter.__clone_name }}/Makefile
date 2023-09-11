@@ -287,7 +287,7 @@ tests: $(TOX)  ## Run unit and functional tests.
 
 .PHONY: tests-all
 tests-all: $(TOX)  ## Run all tests in parallel (docs, lint and tests).
-	$(TOX) -p
+	$(TOX)
 
 .PHONY: uninstall
 uninstall:  ## Install the package to the active Python's site-packages.
