@@ -113,7 +113,7 @@ lint = [  # Duplicate in pre-commit-config.yaml
   "types-setuptools==68.2.0.0",
 ]
 tox = [
-  "tox==4.10.0",
+  "tox==4.11.3",
 ]
 pre-commit = [
   "pre-commit==3.4.0",
