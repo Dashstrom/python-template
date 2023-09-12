@@ -23,6 +23,7 @@ release = info.__version__
 
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx_autodoc_typehints",
     "sphinx.ext.viewcode",
     "sphinx_rtd_theme",
 ]

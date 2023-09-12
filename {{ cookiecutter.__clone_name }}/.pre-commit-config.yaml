@@ -30,3 +30,8 @@ repos:
           - "pytest-mock==3.11.1"
           - "typing-extensions>=4.7.1"
           - "types-setuptools==68.2.0.0"
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.4
+    hooks:
+      - id: remove-crlf
+        exclude: "(\\.bat|\\.cmd|\\.ps1)$"

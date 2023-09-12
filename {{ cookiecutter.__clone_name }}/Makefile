@@ -171,7 +171,7 @@ $(LIB)build: $(VENV_PIP)
 .PHONY: clean
 clean:  ## Remove all build, test, coverage, venv and Python artifacts.
 ifeq ($(OS),Windows_NT)
-	PowerShell "Get-Process | Where-Object {$$_.path -like '$(CURRENT_DIR)venv\Scripts\*'} | Stop-Process -Force"
+	PowerShell "Get-CimInstance Win32_Process | Where-Object {$$_.path -like '$(CURRENT_DIR)venv\Scripts\*'} | ForEach-Object { Stop-Process -Id $$_.ProcessId -Force }"
 endif
 	$(RM_GLOB) 'venv/*/python.?e?x?e?' 'venv' 'build/' 'dist/' 'public/' '.eggs/' '.tox/' '.coverage' 'htmlcov/' '.pytest_cache' '.mypy_cache' '.ruff_cache'  '**/*.egg-info' '**/*.egg' '**/__pycache__' '**/*~' '**/*.pyc' '**/*.pyo'
 
