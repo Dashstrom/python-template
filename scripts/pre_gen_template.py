@@ -1,4 +1,4 @@
-""" Converts a list of list into gray-scale PNG image. """
+"""Generate template for images."""
 import os
 import pathlib
 from typing import List, Optional, Tuple, Union
@@ -51,9 +51,10 @@ class PolyDraw:
             )
         extra = {}
         extra["fill"] = svgwrite.rgb(*fill) if fill is not None else "none"
-        extra["stroke"] = (
-            svgwrite.rgb(*stroke) if stroke is not None else "none"
-        )
+        if stroke is None:
+            extra["stroke"] = "none"
+        else:
+            extra["stroke"] = svgwrite.rgb(*stroke)
         if stroke_width is not None:
             extra["stroke_width"] = stroke_width * 2048
         self.svg.add(
@@ -92,7 +93,7 @@ class PolyDraw:
         x = 0.5  # pylint: disable=invalid-name
         size = 1.0
         ring_ratio = 4.3 / 16
-        crytal_ratio = 9 / 16
+        crystal_ratio = 9 / 16
         inclination_x = 1 / 32
         inclination_y = 1 / 32
         x = x + size * inclination_x / 2  # pylint: disable=invalid-name
@@ -100,7 +101,7 @@ class PolyDraw:
         size -= size * inclination_x
 
         ring_size = size * (1 - ring_ratio)
-        crystal_size = size * crytal_ratio
+        crystal_size = size * crystal_ratio
         stroke = (size - ring_size) / 2
 
         self.circle(
