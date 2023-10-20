@@ -35,7 +35,6 @@ venv.bak/
 .idea/
 
 # vscode
-.vscode/
 *.code-workspace
 
 # Packages
@@ -88,7 +87,6 @@ htmlcov
 .project
 .pydevproject
 .idea
-.vscode
 *.iml
 *.komodoproject
 
