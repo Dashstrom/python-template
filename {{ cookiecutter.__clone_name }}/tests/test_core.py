@@ -4,5 +4,5 @@ from {{ cookiecutter.__project_slug }} import hello
 
 def test_hello() -> None:
     """Test basic."""
-    assert hello("Dashstrom") == "Hello Dashstrom"
+    assert hello("World") == "Hello World"
     assert hello("") == "Hello"

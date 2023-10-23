@@ -20,7 +20,7 @@ def crlf2lf():
                         re_source = re.compile(rb"[^\r]\n")
                         repl = b"\r\n"
                     else:
-                        re_source = re.compile(rb"\rn")
+                        re_source = re.compile(rb"\r\n")
                         repl = b"\n"
                     data = path.read_bytes()
                     data = re_source.sub(repl, data)

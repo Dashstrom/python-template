@@ -57,6 +57,7 @@ venv*/
 .venv*/
 pyvenv*/
 pip-wheel-metadata/
+poetry.lock
 
 # Installer logs
 pip-log.txt

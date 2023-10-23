@@ -1,5 +1,5 @@
-References
-##########
+API Documentation
+#################
 
 .. automodule:: {{ cookiecutter.__project_slug }}
   :members:

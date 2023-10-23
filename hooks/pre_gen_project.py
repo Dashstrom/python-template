@@ -38,10 +38,10 @@ VERSION_PATTERN = r"""
 """
 
 
-def match(pattern: str, name: str, value: str) -> None:
+def validate(pattern: str, name: str, value: str) -> None:
     """Match non empty string."""
     if not re.match(pattern, value, re.VERBOSE | re.IGNORECASE):
-        print(f"ERROR: {name} ({value!r}) is not a valid string.")
+        print(f"ERROR: {name} ({value!r}) is not validated.")
         sys.exit(1)
 
 
@@ -49,27 +49,27 @@ def main() -> None:
     """Main function for this hook."""
     print(f"[ENV] sys.executable={sys.executable}")
     print(f"[ENV] sys.version={sys.version}")
-    match(
-        r"^[-a-zA-Z_ ][-a-zA-Z0-9_ ]{,255}$",
+    validate(
+        r"^[-a-zA-Z_ ][-a-zA-Z0-9_ ]{2,255}$",
         "project_name",
         {{cookiecutter.project_name | tojson()}},
     )
-    match(
+    validate(
         r"^[_a-zA-Z][_a-zA-Z0-9]{,255}$",
         "project_slug",
         {{cookiecutter.__project_slug | tojson()}},
     )
-    match(
+    validate(
         r"^[a-zA-Z][-a-zA-Z0-9]{,255}$",
         "pip_name",
         {{cookiecutter.__pypi_name | tojson()}},
     )
-    match(
+    validate(
         r"^[-a-zA-Z_][-a-zA-Z0-9_]{,255}$",
         "cli_name",
         {{cookiecutter.__cli_name | tojson()}},
     )
-    match(VERSION_PATTERN, "version", "{{ cookiecutter.version }}")
+    validate(VERSION_PATTERN, "version", "{{ cookiecutter.version }}")
     clone_url = "{{ cookiecutter.project_url.strip()|lower }}"
     if "Dashstrom/python-template" in clone_url:
         print("ERROR: Invalid clone url")

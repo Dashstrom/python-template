@@ -5,7 +5,7 @@ Contents
 
 .. toctree::
 
-   Home <self>
+   User Guide <self>
    references
 
 Index

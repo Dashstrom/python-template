@@ -5,14 +5,7 @@ import logging
 import sys
 from typing import NoReturn, Optional, Sequence
 
-from .core import hello
-from .info import (
-    __author__,
-    __copyright__,
-    __description__,
-    __issues__,
-    __version__,
-)
+from .core import METADATA, hello
 
 LOG_LEVELS = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]
 logger = logging.getLogger(__name__)
@@ -29,24 +22,20 @@ def get_parser() -> argparse.ArgumentParser:
     """Prepare ArgumentParser."""
     parser = HelpArgumentParser(
         prog="{{ cookiecutter.__cli_name }}",
-        description=__description__,
-        epilog=f"{__version__} - {__copyright__}",
+        description=METADATA["Summary"],
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
         "--version",
         action="version",
-        version=f"%(prog)s, version {__version__}",
+        version=f"%(prog)s, version {METADATA['Version']}",
     )
     parser.add_argument(
         "--log-level",
         metavar="level",
         default="INFO",
         choices=LOG_LEVELS,
-        help=(
-            "print log messages of this level and higher, "
-            "possible choices: %(choices)s"
-        ),
+        help="minimum level of log messages, possible choices: %(choices)s",
     )
     parser.add_argument(
         "--log-file",
@@ -58,7 +47,6 @@ def get_parser() -> argparse.ArgumentParser:
     hello_parser.add_argument(
         "--name",
         help="name to greeting",
-        default=__author__,
     )
     return parser
 
@@ -104,32 +92,30 @@ def entrypoint(argv: Optional[Sequence[str]] = None) -> None:
             parser.error("No command specified")
     except Exception as err:  # NoQA: BLE001
         logger.critical("Unexpected error", stack_info=True, exc_info=err)
-        logger.critical("Please report this error to : %s", __issues__)
+        logger.critical("Please, report this error.")
         sys.exit(1){% elif "click" == cookiecutter.cli %}
 import logging
 from typing import Optional
 
 import click
 
-from .core import hello
-from .info import __copyright__, __description__, __version__
+from .core import METADATA, hello
 
 LOG_LEVELS = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]
 
 
 @click.group(
     name="{{ cookiecutter.__cli_name }}",
-    help=__description__,
-    epilog=f"{__version__} - {__copyright__}",
+    help=METADATA["Summary"],
 )
-@click.version_option(__version__)
+@click.version_option(METADATA["Version"])
 @click.option(
     "--log-level",
     metavar="level",
     type=click.Choice(LOG_LEVELS),
     default="INFO",
     show_default=True,
-    help="Print log messages of this level and higher",
+    help="Minimum level of log messages",
 )
 @click.option(
     "--log-file",

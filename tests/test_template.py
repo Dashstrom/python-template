@@ -7,7 +7,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import os
 from time import sleep
 from typing import List, Optional, Union
 
@@ -23,19 +22,13 @@ DEFAULT_CONFIG = {
     "project_url": "https://github/Dashstrom/aaa-aaa",
     "version": "0.0.1",
     "cli": "argparse",
-    "license": "LGPL2.1+",
+    "license": "LGPL-2.1-or-later",
     "push": False,
     "strict_lint": False,
     "docker": False,
     "line": 79,
     "fail": False,
 }
-USE_FORMATER = os.environ.get("USE_FORMATER", "True").lower() not in (
-    "false",
-    "",
-    "off",
-    "0",
-)
 CONFIGS = [
     {
         "project_short_description": '"; import sys;sys.exit(1)',
@@ -53,7 +46,7 @@ CONFIGS = [
     {"project_name": "zzz-zzz"},
     {"cli": "none"},
     {"license": "MIT"},
-    {"license": "All Rights Reserved"},
+    {"license": "Proprietary"},
     {"strict_lint": True},
     {"docker": True},
     {"line": 120},
@@ -124,11 +117,15 @@ def test_config(*, indexes: Optional[List[int]] = None) -> None:
                 project_url: str = config["project_url"]  # type: ignore[assignment]
                 clone_name: str = project_url.split("/")[-1]
                 project = pathlib.Path(tmp) / clone_name
-
-                run("make", "tests-all", cwd=project)
-                if USE_FORMATER:
-                    run("make", "format", cwd=project)
-                run("make", "cov", cwd=project)
+                run(
+                    "poetry",
+                    "install",
+                    "--all-extras",
+                    "--no-interaction",
+                    cwd=project,
+                )
+                run("poetry", "run", "poe", "check", cwd=project)
+                run("poetry", "run", "poe", "cov", cwd=project)
                 if should_fail:
                     fatal("Test should fail")
             except KeyboardInterrupt:
@@ -148,7 +145,6 @@ def main() -> None:
     args = parser.parse_args()
     index = args.index
     indexes = None if index is None else [index]
-    print(f"[ENV] USE_FORMATER={USE_FORMATER}")
     print(f"[ENV] indexes={indexes}")
     test_config(indexes=indexes)
 

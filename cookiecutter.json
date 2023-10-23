@@ -2,18 +2,18 @@
   "full_name": "Dashstrom",
   "github_username": "Dashstrom",
   "email": "dashstrom.pro@gmail.com",
-  "project_name": null,
+  "project_name": "",
   "__project_slug": "{{ cookiecutter.project_name.lower().strip().replace(' ', '_').replace('-', '_') }}",
-  "project_short_description": null,
+  "project_short_description": "",
   "__pypi_name": "{{ cookiecutter.__project_slug.replace('_', '-') }}",
   "__pypi_url": "https://pypi.org/project/{{ cookiecutter.__pypi_name }}",
   "project_url": "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.__pypi_name }}",
   "__homepage": "{{ cookiecutter.project_url }}",
   "__issues": "{{ cookiecutter.project_url }}/issues",
   "__documentation": "{{ cookiecutter.project_url }}",
-  "__source": "{{ cookiecutter.project_url }}",
+  "__repository": "{{ cookiecutter.project_url }}",
   "__clone_url": "{{ cookiecutter.project_url }}",
-  "__clone_name": "{{ cookiecutter.__source.rsplit('/', 1)[-1] }}",
+  "__clone_name": "{{ cookiecutter.__repository.rsplit('/', 1)[-1] }}",
   "version": "0.0.1",
   "cli": [
     "click",
@@ -22,10 +22,10 @@
   ],
   "__cli_name": "{{ cookiecutter.__project_slug.replace('_', '-') }}",
   "license": [
-    "GNU GPL v3.0",
-    "LGPL2.1+",
+    "GPL-3.0-or-later",
+    "LGPL-2.1-or-later",
     "MIT",
-    "All Rights Reserved"
+    "Proprietary"
   ],
   "copyright": "Copyright (c) {% now 'utc', '%Y' %}, {{ cookiecutter.full_name }} <{{ cookiecutter.email }}>",
   "push": false,
@@ -39,7 +39,7 @@
     "project_name": "Provide project name",
     "project_short_description": "Provide a short description of project",
     "project_url": "Provide repository URL",
-    "version": "Project version. Can be changed in src/.../info.py",
+    "version": "Project version. Can be changed in pyproject.toml",
     "cli": "Which CLI framework do you want to use",
     "license": "Which license do you want to use",
     "copyright": "Copyright used for this project",
@@ -49,6 +49,6 @@
     "line": "Which line length do you want to use"
   },
   "_copy_without_render": [
-      ".github/workflows"
+    ".github/workflows"
   ]
 }

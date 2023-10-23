@@ -4,32 +4,34 @@
 # ----------------------------------------------------------------------
 
 [build-system]
-requires = [
-    "setuptools>=67.0.0",
-    "wheel"
-]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
-[project]
-name = "{{ cookiecutter.__pypi_name }}"
+
+# ----------------------------------------------------------------------
+# peotry
+# https://python-poetry.org/docs/pyproject/
+# ----------------------------------------------------------------------
+
+
+[tool.poetry]
+name = {{ cookiecutter.__pypi_name | tojson() }}
+version = {{ cookiecutter.version | tojson() }}
 description = {{ cookiecutter.project_short_description | tojson() }}
+license = {{ cookiecutter.license | tojson() }}
 authors = [
-  { name={{ cookiecutter.full_name | tojson() }}, email={{ cookiecutter.email | tojson() }} },
+ "{{ cookiecutter.full_name }} <{{ cookiecutter.email }}>"
 ]
 maintainers  = [
-  { name={{ cookiecutter.full_name | tojson() }}, email={{ cookiecutter.email | tojson() }} },
+  "{{ cookiecutter.full_name }} <{{ cookiecutter.email }}>",
 ]
-dependencies = [  # Duplicate in pre-commit-config.yaml{%- if "click" == cookiecutter.cli %}
-  "click>=8.1.0",{%- endif %}
-  "typing-extensions>=4.8.0"
-]
-
 readme = "README.rst"
-requires-python = ">=3.8"
+homepage = "{{ cookiecutter.__homepage }}"
+repository = "{{ cookiecutter.__repository }}"
+documentation = "{{ cookiecutter.__documentation }}"
 keywords = [
   "python",
 ]
-license = {file = "LICENSE"}
 
 # See https://pypi.org/classifiers/
 classifiers = [
@@ -74,116 +76,145 @@ classifiers = [
   # What is the language used in the project
   "Natural Language :: English",
 
-  # License used in this project{% if cookiecutter.license == 'GNU GPL v3.0' %}
-  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",{% elif cookiecutter.license == 'LGPL2.1+' %}
+
+  # License used in this project{% if cookiecutter.license == 'GPL-3.0-or-later' %}
+  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",{% elif cookiecutter.license == 'LGPL-2.1-or-later' %}
   "License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)",{% elif cookiecutter.license == 'MIT' %}
   "License :: OSI Approved :: MIT License",{% endif %}
 
   # The project is typed
   "Typing :: Typed"
 ]
-dynamic = ["version"]
+packages = [
+  { include = "{{ cookiecutter.__project_slug }}" },
+]
 
-[project.urls]
-Homepage = "{{ cookiecutter.__homepage }}"
-Issues = "{{ cookiecutter.__issues }}"
-Documentation = "{{ cookiecutter.__documentation }}"
-Source = "{{ cookiecutter.__source }}"
+
+[tool.poetry.dependencies]
+python = "^3.8"{%- if "click" == cookiecutter.cli %}
+click = "^8.1.0"{%- endif %}
+typing-extensions = "^4.8.0"
+
+pytest = { version = "^7.4.2", optional = true }
+pytest-mock = { version = "^3.11.1", optional = true }
+coverage = { extras = ["toml"], version = "^7.3.1", optional = true }
+pytest-cov = { version = "^4.1.0", optional = true }
+mypy = { version = "^1.5.1", optional = true }
+black = { version = "^23.9.1", optional = true }
+ruff = { version = "^v0.1.0", optional = true }
+pre-commit = { version = "^3.4.0", optional = true }
+sphinx = { version = "^7.1.2", optional = true }
+sphinx-autodoc-typehints = { version = "^1.24.0", optional = true }
+sphinx-rtd-theme = { version = "^1.3.0", optional = true }
+sphinxcontrib-mermaid = { version = "^0.9.2", optional = true }
+poethepoet = { version = "^0.24.0", optional = true }
+
+[tool.poetry.extras]
+test = ["pytest", "pytest-mock"]
+cov = ["pytest", "pytest-mock", "coverage", "pytest-cov"]
+lint = ["pytest", "pytest-mock", "mypy", "black", "ruff"]
+format = ["pre-commit"]
+docs = ["sphinx", "sphinx-autodoc-typehints", "sphinx-rtd-theme", "sphinxcontrib-mermaid"]
+tasks = ["poethepoet"]
 {%- if cookiecutter.cli|lower != 'none' %}
 
-[project.scripts]
+[tool.poetry.scripts]
 {{ cookiecutter.__cli_name }} = "{{ cookiecutter.__project_slug }}.cli:entrypoint"
 {%- endif %}
 
-[project.optional-dependencies]
-tests = [  # Duplicate in pre-commit-config.yaml
-  "pytest==7.4.2",
-  "pytest-mock==3.11.1",
-]
-cov = [
-  "{{ cookiecutter.__pypi_name }}[tests]",
-  "coverage[toml]==7.3.1",
-  "pytest-cov==4.1.0",
-]
-lint = [  # Duplicate in pre-commit-config.yaml
-  "{{ cookiecutter.__pypi_name }}[tests]",
-  "mypy==1.5.1",
-  "black==23.9.1",
-  "ruff==v0.0.291",
-  "types-setuptools==68.2.0.0",
-]
-tox = [
-  "tox==4.11.3",
-]
-pre-commit = [
-  "pre-commit==3.4.0",
-]
-docs = [
-  "sphinx==7.1.2",
-  "sphinx-autodoc-typehints==1.24.0",
-  "sphinx-rtd-theme==1.3.0",
-  "sphinxcontrib-mermaid==0.9.2"
-]
-build = [
-  "build==1.0.3",
-]
-deploy = [
-  "twine==4.0.2",
-]
-dev = [
-  "{{ cookiecutter.__pypi_name }}[tests,cov,lint,tox,pre-commit,docs,build,deploy]",
-]
-
 
 # ----------------------------------------------------------------------
-# Setuptools
-# https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+# Poe the Poet
+# https://poethepoet.natn.io/index.html
 # ----------------------------------------------------------------------
 
-[tool.setuptools]
-include-package-data = true
-packages = ["{{ cookiecutter.__project_slug }}"]
+[tool.poe.tasks.test]
+help = "Run test suite."
+cmd = "pytest"
 
-[tool.setuptools.dynamic]
-version = {attr = "{{ cookiecutter.__project_slug }}.info.__version__"}
+[tool.poe.tasks.lint]
+help = "Run linters : ruff, black and mypy."
+sequence = [
+  { cmd = "ruff check ." },
+  { cmd = "black --diff ." },
+  { cmd = "mypy ." },
+]
 
+[tool.poe.tasks.format]
+help = "Run linters in fix mode."
+sequence = [
+  { cmd = "ruff check --fix ." },
+  { cmd = "black ." },
+  { cmd = "mypy ." },
+]
 
-# ----------------------------------------------------------------------
-# Tox
-# https://pypi.org/project/tox
-# ----------------------------------------------------------------------
+[tool.poe.tasks.check]
+help = "Run all checks : lint, test and docs."
+sequence = [
+  { ref = "lint" },
+  { ref = "test" },
+  { ref = "docs" },
+]
 
-[tool.tox]
-legacy_tox_ini = """
-[tox]
-min_version = 4.0
-envlist = lint,docs,tests
+[tool.poe.tasks.cov]
+help = "Run coverage for generate report and html."
+sequence = [
+  { cmd = "coverage run -m pytest" },
+  { cmd = "coverage report" },
+  { cmd = "coverage html" },
+]
 
-[testenv]
-deps = .[tests]
-commands =
-  pytest
+[tool.poe.tasks.open-cov]
+help = "Open html coverage report in webbrowser."
+deps = ["cov"]
+expr = "webbrowser.open('file:'+urllib.request.pathname2url(os.path.abspath('htmlcov/index.html')),new=2)"
+imports = ["os", "webbrowser", "sys", "urllib.request"]
 
-[testenv:lint]
-deps = .[lint]
-commands =
-  ruff check .
-  black --diff .
-  mypy .
+[tool.poe.tasks.docs]
+help = "Build documentation."
+cmd = "sphinx-build -W -b html docs public"
 
-[testenv:cov]
-deps = .[cov]
-commands =
-	coverage run -m pytest
-	coverage report -m
-	coverage html
+[tool.poe.tasks.open-docs]
+help = "Open documentation in webbrowser."
+deps = ["docs"]
+expr = "webbrowser.open('file:'+urllib.request.pathname2url(os.path.abspath('public/index.html')),new=2)"
+imports = ["os", "webbrowser", "sys", "urllib.request"]
 
-[testenv:docs]
-deps = .[docs]
-commands =
-  sphinx-build -W -b html -d {envtmpdir}/doctrees docs {envtmpdir}/public
-"""
+[tool.poe.tasks.setup]
+help = "Setup pre-commit."
+cmd = "pre-commit install"
 
+[tool.poe.tasks.pre-commit]
+help = "Run pre-commit."
+cmd = "pre-commit run --all-files"
+
+[tool.poe.tasks.clean]
+help = "Clean cache files."
+expr = """[
+  shutil.rmtree(path, ignore_errors=False)
+  if path.is_dir()
+  else path.unlink()
+  for pattern in [
+    'build/',
+    'dist/',
+    'public/',
+    '.eggs/',
+    '.tox/',
+    '.coverage',
+    'htmlcov/',
+    '.pytest_cache',
+    '.mypy_cache',
+    '.ruff_cache',
+    '**/*.egg-info',
+    '**/*.egg',
+    '**/__pycache__',
+    '**/*~',
+    '**/*.pyc',
+    '**/*.pyo'
+  ]
+  for path in pathlib.Path().resolve().glob(p)
+]"""
+imports = ["shutil", "sys", "pathlib"]
 
 # ----------------------------------------------------------------------
 # Pytest
@@ -349,6 +380,9 @@ target-version = "py38"
 
 [tool.ruff.isort]
 known-first-party = ["{{ cookiecutter.__project_slug }}"]
+
+[tool.ruff.pydocstyle]
+convention = "google"
 
 [tool.ruff.mccabe]
 # Unlike Flake8, default to a complexity level of 12.

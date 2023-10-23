@@ -1,2 +1,0 @@
-svgwrite>=1.4.3
-Pillow>=9.5.0
