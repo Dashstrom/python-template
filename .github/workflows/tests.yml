@@ -17,7 +17,7 @@ jobs:
         run: |
           git config --global user.name "John DOE"
           git config --global user.email "john.doe@example.com"
-          pip install cookiecutter
+          pip install cookiecutter poetry
       - name: Test template 0
         run: python3 tests/test_template.py --index 0
       - name: Test template 1
