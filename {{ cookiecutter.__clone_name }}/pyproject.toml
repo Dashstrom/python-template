@@ -91,23 +91,24 @@ packages = [
 
 
 [tool.poetry.dependencies]
-python = "^3.8"{%- if "click" == cookiecutter.cli %}
-click = "^8.1.0"{%- endif %}
-typing-extensions = "^4.8.0"
+python = ">=3.8"
+{% if "click" == cookiecutter.cli %}
+click = ">=8.1.0"{%- endif %}
+typing-extensions = ">=4.8.0"
 
-pytest = { version = "^7.4.2", optional = true }
-pytest-mock = { version = "^3.11.1", optional = true }
-coverage = { extras = ["toml"], version = "^7.3.1", optional = true }
-pytest-cov = { version = "^4.1.0", optional = true }
-mypy = { version = "^1.5.1", optional = true }
-black = { version = "^23.9.1", optional = true }
-ruff = { version = "^v0.1.0", optional = true }
-pre-commit = { version = "^3.4.0", optional = true }
-sphinx = { version = "^7.1.2", optional = true }
-sphinx-autodoc-typehints = { version = "^1.24.0", optional = true }
-sphinx-rtd-theme = { version = "^1.3.0", optional = true }
-sphinxcontrib-mermaid = { version = "^0.9.2", optional = true }
-poethepoet = { version = "^0.24.0", optional = true }
+pytest = { version = "7.4.2", optional = true }
+pytest-mock = { version = "3.11.1", optional = true }
+coverage = { extras = ["toml"], version = "7.3.1", optional = true }
+pytest-cov = { version = "4.1.0", optional = true }
+mypy = { version = "1.5.1", optional = true }
+black = { version = "23.9.1", optional = true }
+ruff = { version = "v0.1.0", optional = true }
+pre-commit = { version = "3.4.0", optional = true }
+sphinx = { version = "7.1.2", optional = true }
+sphinx-autodoc-typehints = { version = "1.24.0", optional = true }
+sphinx-rtd-theme = { version = "1.3.0", optional = true }
+sphinxcontrib-mermaid = { version = "0.9.2", optional = true }
+poethepoet = { version = "0.24.0", optional = true }
 
 [tool.poetry.extras]
 test = ["pytest", "pytest-mock"]
@@ -235,7 +236,7 @@ addopts = "-vv"
 
 [tool.black]
 line-length = {{ cookiecutter.line }}
-target-version  = ["py38", "py39", "py310", "py311"]
+target-version  = ["py38", "py39", "py310", "py311", "py312"]
 
 # Enable linting on pyi files
 include = "\\.pyi?$"
