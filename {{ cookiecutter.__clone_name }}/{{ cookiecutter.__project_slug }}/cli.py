@@ -1,5 +1,6 @@
 """Module for command line interface."""
 {%- if "argparse" == cookiecutter.cli %}
+
 import argparse
 import logging
 import sys
@@ -94,6 +95,7 @@ def entrypoint(argv: Optional[Sequence[str]] = None) -> None:
         logger.critical("Unexpected error", stack_info=True, exc_info=err)
         logger.critical("Please, report this error.")
         sys.exit(1){% elif "click" == cookiecutter.cli %}
+
 import logging
 from typing import Optional
 

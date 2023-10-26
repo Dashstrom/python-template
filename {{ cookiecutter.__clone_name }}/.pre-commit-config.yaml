@@ -17,7 +17,7 @@ repos:
   - repo: local
     hooks:
     - id: poe-format
-      name: Ruff, Black and Mypy
+      name: ruff, black and mypy
       entry: poetry run poe format
       language: system
       pass_filenames: false

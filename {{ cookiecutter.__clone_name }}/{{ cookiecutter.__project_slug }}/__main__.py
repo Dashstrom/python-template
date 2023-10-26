@@ -1,4 +1,5 @@
 """Entrypoint with `python -m {{ cookiecutter.__project_slug }}`."""
+
 import sys
 
 from .cli import entrypoint

@@ -146,7 +146,10 @@ def main() -> None:
     index = args.index
     indexes = None if index is None else [index]
     print(f"[ENV] indexes={indexes}")
-    test_config(indexes=indexes)
+    try:
+        test_config(indexes=indexes)
+    finally:
+        shutil.rmtree(CACHE, ignore_errors=True)
 
 
 if __name__ == "__main__":

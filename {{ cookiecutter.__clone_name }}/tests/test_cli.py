@@ -1,4 +1,6 @@
-"""Test for command line interface."""{%- if "argparse" == cookiecutter.cli %}
+"""Test for command line interface."""
+{%- if "argparse" == cookiecutter.cli %}
+
 import contextlib
 import io
 import os
@@ -51,7 +53,9 @@ def test_hello(caplog: pytest.LogCaptureFixture) -> None:
     """Test command hello."""
     name = "A super secret name"
     entrypoint(("hello", "--name", name))
-    assert name in caplog.text{% elif "click" == cookiecutter.cli %}
+    assert name in caplog.text
+{%- elif "click" == cookiecutter.cli %}
+
 import os
 import subprocess
 import sys

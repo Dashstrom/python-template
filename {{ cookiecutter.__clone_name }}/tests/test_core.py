@@ -1,4 +1,5 @@
 """Test module for test core module."""
+
 from {{ cookiecutter.__project_slug }} import hello
 
 

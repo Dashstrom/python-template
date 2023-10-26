@@ -19,6 +19,7 @@ Tools used
 
 - `Black <https://black.readthedocs.io/en/stable/>`_ The uncompromising Python code formatter.
 - `Cookiecutter <https://www.cookiecutter.io>`_ A cross-platform command-line utility that creates projects.
+- `Doctest <https://docs.pytest.org/en/7.4.x/how-to/doctest.html>`_ Executes tests in docstrings
 - `Editorconfig <https://editorconfig.org/>`_ Configuration file format for defining coding styles in shared projects.
 - `Git <https://git-scm.com/>`_ Git is the most widely used version control system.
 - `Github Actions <https://docs.github.com/en/actions>`_ Automate and execute your software development workflows right in your repository.
@@ -26,7 +27,7 @@ Tools used
 - `Poetry <https://python-poetry.org/>`_ Python packaging and dependency management made easy.
 - `Poe the Poet <https://poethepoet.natn.io/index.html>`_ A task runner that works well with poetry.
 - `Pre-commit <https://pre-commit.com/>`_ A framework for managing and maintaining multi-language pre-commit hooks.
-- `Pytest <https://docs.pytest.org/en/7.3.x/>`_ Framework making it easy to write small tests, yet scales to support complex functional testing.
+- `Pytest <https://docs.pytest.org/en/7.4.x/>`_ Framework making it easy to write small tests, yet scales to support complex functional testing.
 - `Ruff <https://beta.ruff.rs/docs/rules/>`_ An extremely fast Python linter, written in Rust.
 - `Sphinx with read the docs theme <https://sphinx-rtd-theme.readthedocs.io/en/stable/>`_ Sphinx makes it easy to create intelligent and beautiful documentation.
 
