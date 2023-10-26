@@ -144,7 +144,7 @@ sequence = [
 help = "Run linters in fix mode."
 sequence = [
   { cmd = "ruff check --fix ." },
-  { cmd = "black ." },
+  { cmd = "black --experimental-string-processing ." },
   { cmd = "mypy ." },
 ]
 ignore_fail = true
