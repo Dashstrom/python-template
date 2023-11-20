@@ -54,7 +54,7 @@ First you need to create your repository then process as follows:
 
 ..  code-block:: bash
 
-  cookiecutter --accept-hooks yes --keep-project-on-failure gh:Dashstrom/python-template
+  cookiecutter --accept-hooks yes gh:Dashstrom/python-template
   cd YOUR_PROJECT
   poetry shell
 
