@@ -34,12 +34,23 @@ Tools used
 Prerequisite
 ############
 
-You need to have `Cookiecutter <https://cookiecutter.readthedocs.io/en/1.7.3/installation.html>`_, `Poetry <https://python-poetry.org/docs/#installation>`_ and `Git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_ installed system-wide.
+First of all you will need to install a version of `python <https://www.python.org/>`_ higher than 3.8.
+
+You need to install `pix <https://pypa.github.io/pipx/installation/>`_, `cookiecutter <https://cookiecutter.readthedocs.io/en/1.7.3/installation.html>`_ and `poetry <https://python-poetry.org/docs/#installation>`_ with the following commands:
+
+..  code-block:: bash
+
+  pip install --user pipx
+  pipx ensurepath
+  pipx install cookiecutter poetry
+
+You will also need to install `git <https://git-scm.com/>`_ following `the official guide <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_.
+
 
 Installation
 ############
 
-First you need to create your repository then process as follows :
+First you need to create your repository then process as follows:
 
 ..  code-block:: bash
 
