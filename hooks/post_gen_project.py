@@ -61,7 +61,6 @@ def main() -> None:
     run(
         "git",
         "add",
-        " --update",
         "*",
         ".editorconfig",
         ".gitignore",
