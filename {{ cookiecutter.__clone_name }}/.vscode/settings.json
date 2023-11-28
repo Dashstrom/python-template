@@ -7,7 +7,8 @@
   // Set file associations to support comments syntax highlight
   "files.associations": {
     "settings.json": "jsonc",
-    "extensions.json": "jsonc"
+    "extensions.json": "jsonc",
+    "LICENSE": "txt"
   },
   // Files to exclude
   "files.exclude": {
@@ -55,5 +56,24 @@
   "evenBetterToml.formatter.trailingNewline": true,
   // We like keeping TOML keys in a certain non-alphabetical order that feels more natural
   "evenBetterToml.formatter.reorderKeys": false,
-  "redhat.telemetry.enabled": false
+  "redhat.telemetry.enabled": false,
+  "cSpell.words": [
+    "anyio",
+    "automodule",
+    "autouse",
+    "bysource",
+    "docstrings",
+    "genindex",
+    "modindex",
+    "mypy",
+    "sourcelink",
+    "sphinxcontrib",
+    "todos",
+    "typehints",
+    "undoc",
+    "viewcode",
+    "doctest",
+    "{{ cookiecutter.full_name }}",
+    "{{ cookiecutter.__project_slug }}"
+  ]
 }

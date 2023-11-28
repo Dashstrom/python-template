@@ -123,7 +123,7 @@ To ignore illegitimate warnings you can add :
 
 - **# NoQA: ERROR_CODE** on the same line for ruff.
 - **# type: ignore[ERROR_CODE]** on the same line for mypy.
-- **# fmt: off** et **# fmt: on** before and after for black.
+- **# fmt: off** and **# fmt: on** before and after for black.
 - **# pragma: no cover** on the same line to ignore line for coverage.
 - **# doctest: +SKIP** on the same line for doctest.
 
