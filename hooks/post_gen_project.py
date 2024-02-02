@@ -1,11 +1,14 @@
 """Hook run after cookiecutter."""
+
 import json
 import os
 import pathlib
+import shutil
 import subprocess
 import sys
 
 PROJECT_DIRECTORY = pathlib.Path(os.path.curdir).resolve()
+DISABLE_VSCODE = os.environ.get("DISABLE_VSCODE", "no").lower() in ("yes", "y", "1")
 
 
 def escape(value: str) -> bytes:
@@ -46,6 +49,19 @@ def autoformat() -> None:
         )
 
 
+def open_vscode() -> None:
+    """Open Visual Studio Code."""
+    try:
+        path = shutil.which("code")
+        if path is not None:
+            print(f"[RUN] {path} {PROJECT_DIRECTORY}")
+            subprocess.check_call([path, str(PROJECT_DIRECTORY)])
+        else:
+            print("[WARNING] Cannot found Visual Studio Code.")
+    except subprocess.CalledProcessError:
+        print("[WARNING] Visual Studio Code could not run.")
+
+
 def main() -> None:
     """Main function for the hook."""
     if "none" == "{{ cookiecutter.cli }}":  # type: ignore
@@ -81,8 +97,11 @@ def main() -> None:
     autoformat()
     if "{{ cookiecutter.push }}" == "True":  # type: ignore
         run("git", "push", "-uf", "origin", "main")
-    print("\n\nYou can activate venv with the following commands :")
-    print("\n  cd {{ cookiecutter.__clone_name }}\n  poetry shell\n")
+    if DISABLE_VSCODE:
+        print("\n\nYou can activate venv with the following commands :")
+        print("\n  cd {{ cookiecutter.__clone_name }}\n  poetry shell\n")
+    else:
+        open_vscode()
 
 
 if __name__ == "__main__":
