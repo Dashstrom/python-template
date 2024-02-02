@@ -35,7 +35,7 @@ Prerequisite
 
 First of all you will need to install a version of `python <https://www.python.org/>`_ higher than 3.8.
 
-You need to install `pix <https://pypa.github.io/pipx/installation/>`_, `cookiecutter <https://cookiecutter.readthedocs.io/en/1.7.3/installation.html>`_ and `poetry <https://python-poetry.org/docs/#installation>`_ with the following commands:
+You need to install `pipx <https://pypa.github.io/pipx/installation/>`_, `cookiecutter <https://cookiecutter.readthedocs.io/en/1.7.3/installation.html>`_ and `poetry <https://python-poetry.org/docs/#installation>`_ with the following commands:
 
 ..  code-block:: bash
 
