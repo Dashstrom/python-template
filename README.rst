@@ -17,7 +17,6 @@ A medium complexity template for create CLI or python package.
 Tools used
 ##########
 
-- `Black <https://black.readthedocs.io/en/stable/>`_ The uncompromising Python code formatter.
 - `Cookiecutter <https://www.cookiecutter.io>`_ A cross-platform command-line utility that creates projects.
 - `Doctest <https://docs.pytest.org/en/7.4.x/how-to/doctest.html>`_ Executes tests in docstrings
 - `Editorconfig <https://editorconfig.org/>`_ Configuration file format for defining coding styles in shared projects.

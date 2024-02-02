@@ -1,4 +1,5 @@
 """Change crlf to lf."""
+
 import pathlib
 import re
 
@@ -6,7 +7,7 @@ ROOT = pathlib.Path(__file__).parent.parent
 
 
 def crlf2lf():
-    excludes = [ROOT / ".cache", ROOT / ".vscode", ROOT / ".git"]
+    excludes = [ROOT / ".cache", ROOT / ".git"]
     excludes_ext = [".png", ".ico"]
     lf2crlf = [".bat", ".cmd", ".ps1"]
     for path in ROOT.glob("**/*"):
