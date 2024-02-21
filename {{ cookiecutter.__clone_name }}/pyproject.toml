@@ -96,13 +96,12 @@ python = ">=3.8"
 click = ">=8.1.0"{%- endif %}
 typing-extensions = ">=4.8.0"
 
-pytest = { version = "7.4.3", optional = true }
+pytest = { version = "8.0.0", optional = true }
 pytest-mock = { version = "3.12.0", optional = true }
-coverage = { extras = ["toml"], version = "7.3.2", optional = true }
+coverage = { extras = ["toml"], version = "7.4.1", optional = true }
 pytest-cov = { version = "4.1.0", optional = true }
-mypy = { version = "1.7.1", optional = true }
-black = { version = "23.11.0", optional = true }
-ruff = { version = "0.1.6", optional = true }
+mypy = { version = "1.8.0", optional = true }
+ruff = { version = "0.2.0", optional = true }
 pre-commit = { version = "3.5.0", optional = true }
 sphinx = { version = "7.1.2", optional = true }
 sphinx-rtd-theme = { version = "2.0.0", optional = true }
@@ -112,7 +111,7 @@ poethepoet = { version = "0.24.4", optional = true }
 [tool.poetry.extras]
 test = ["pytest", "pytest-mock"]
 cov = ["pytest", "pytest-mock", "coverage", "pytest-cov"]
-lint = ["pytest", "pytest-mock", "mypy", "black", "ruff"]
+lint = ["pytest", "pytest-mock", "mypy", "ruff"]
 format = ["pre-commit"]
 docs = ["sphinx", "sphinx-rtd-theme", "sphinxcontrib-mermaid"]
 tasks = ["poethepoet"]
@@ -133,10 +132,10 @@ help = "Run test suite."
 cmd = "pytest"
 
 [tool.poe.tasks.lint]
-help = "Run linters : ruff, black and mypy."
+help = "Run linters : ruff checker and ruff formatter and mypy."
 sequence = [
   { cmd = "ruff check ." },
-  { cmd = "black --preview --diff ." },
+  { cmd = "ruff format --diff ." },
   { cmd = "mypy ." },
 ]
 
@@ -144,7 +143,7 @@ sequence = [
 help = "Run linters in fix mode."
 sequence = [
   { cmd = "ruff check --fix ." },
-  { cmd = "black --preview ." },
+  { cmd = "ruff format ." },
   { cmd = "mypy ." },
 ]
 ignore_fail = true
@@ -241,19 +240,6 @@ source = ["{{ cookiecutter.__project_slug }}"]
 
 
 # ----------------------------------------------------------------------
-# Black
-# https://black.readthedocs.io/en/stable/
-# ----------------------------------------------------------------------
-
-[tool.black]
-line-length = {{ cookiecutter.line }}
-target-version  = ["py38", "py39", "py310", "py311", "py312"]
-
-# Enable linting on pyi files
-include = "\\.pyi?$"
-
-
-# ----------------------------------------------------------------------
 # Mypy
 # https://pypi.org/project/mypy
 # ----------------------------------------------------------------------
@@ -325,6 +311,10 @@ warn_unused_configs = true
 # ----------------------------------------------------------------------
 
 [tool.ruff]
+line-length = {{ cookiecutter.line }}
+target-version = "py38"
+
+[tool.ruff.lint]
 select = ["ALL"]
 # D203 and D211 are incompatible
 # D212 and D213 are incompatible
@@ -332,7 +322,7 @@ select = ["ALL"]
 # D101 Missing docstring in public class
 # SIM117 multiple context managers is not available in 3.8
 # We dont use ANN : flake8-annotations because we already have mypy
-ignore = ["D203", "D213", "D400", "D101", "SIM117", "ANN"]
+ignore = ["D203", "D213", "D400", "D101", "SIM117", "ANN", "COM812", "ISC001"]
 fixable = ["ALL"]
 unfixable = []
 exclude = [
@@ -357,11 +347,9 @@ exclude = [
   "node_modules",
   "venv",
 ]
-line-length = {{ cookiecutter.line }}
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-target-version = "py38"
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 # INP001 File `docs\conf.py` is part of an implicit namespace package. Add an `__init__.py`.
 # A001 Variable `copyright` is shadowing a python builtin
 # PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
@@ -379,17 +367,17 @@ target-version = "py38"
 # INP001 File `scripts/*.py` is part of an implicit namespace package. Add an `__init__.py`.
 "scripts/*.py" = ["INP001"]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["{{ cookiecutter.__project_slug }}"]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.ruff.pyupgrade]
+[tool.ruff.lint.pyupgrade]
 # Preserve types, even if a file imports `from __future__ import annotations`.
 keep-runtime-typing = true
 
-[tool.ruff.mccabe]
+[tool.ruff.lint.mccabe]
 # Unlike Flake8, default to a complexity level of 12.
 max-complexity = 12
 
@@ -402,3 +390,12 @@ max-complexity = 12
 # We dont use pylint, so we disabled it
 [tool.pylint.main]
 ignore-patterns = ["*"]
+
+
+# ----------------------------------------------------------------------
+# Black
+# https://black.readthedocs.io/en/stable/
+# ----------------------------------------------------------------------
+
+[tool.black]
+exclude="*"

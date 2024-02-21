@@ -11,7 +11,6 @@
     "matangover.mypy",
     "ms-python.vscode-pylance",
     "ms-python.python",
-    "ms-python.black-formatter",
     "njpwerner.autodocstring",
     "redhat.vscode-yaml",
     "streetsidesoftware.code-spell-checker",
@@ -26,6 +25,7 @@
     "ms-python.autopep8",
     "ms-python.pylint",
     "ms-python.isort",
+    "ms-python.black-formatter",
     "ms-pyright.pyright"
   ]
 }

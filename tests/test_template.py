@@ -1,6 +1,8 @@
 """Test for template."""
+
 import argparse
 import json
+import os
 import pathlib
 from shlex import quote
 import shutil
@@ -72,7 +74,7 @@ def fatal(text: str) -> None:
 
 
 def run(*cmd: str, cwd: Optional[Union[pathlib.Path, str]] = None) -> None:
-    """Run test command"""
+    """Run test command."""
     print(f"[TEST RUN] {' '.join(quote(arg) for arg in cmd)} in {cwd}")
     try:
         subprocess.check_call(
@@ -81,6 +83,7 @@ def run(*cmd: str, cwd: Optional[Union[pathlib.Path, str]] = None) -> None:
             stdout=sys.stderr,
             stderr=sys.stderr,
             cwd=str(cwd),
+            env={**os.environ.copy(), "DISABLE_VSCODE": "1"},
         )
     except subprocess.CalledProcessError:
         error("Exit code is not zero")
@@ -96,9 +99,7 @@ def test_config(*, indexes: Optional[List[int]] = None) -> None:
         repr_config = json.dumps(config, indent=2)
         config = {**DEFAULT_CONFIG, **config}  # type: ignore[call-overload]
         should_fail = config.pop("fail", False)
-        with tempfile.TemporaryDirectory(
-            prefix="python-template-", dir=CACHE
-        ) as tmp:
+        with tempfile.TemporaryDirectory(prefix="python-template-", dir=CACHE) as tmp:
             try:
                 print(
                     f"\n\nWorking on {index} at {tmp} "

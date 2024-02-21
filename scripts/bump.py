@@ -17,7 +17,7 @@ RE_PRE_COMMIT = re.compile(
 PROJECT = ROOT / "{{ cookiecutter.__clone_name }}"
 PYPROJECT = PROJECT / "pyproject.toml"
 PRE_COMMIT = PROJECT / ".pre-commit-config.yaml"
-MAX = {"sphinx": "7.1.2"}
+MAX = {"sphinx": "7.1.2", "pre-commit": "3.5.0"}
 
 
 def latest(versions: Iterable[str]) -> Tuple[int, ...]:
