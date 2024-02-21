@@ -2,7 +2,7 @@
   // Don't format on save for formatters we don't explicitely control
   "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
-    "source.fixAll": false
+    "source.fixAll": "always"
   },
   // Set file associations to support comments syntax highlight
   "files.associations": {
@@ -57,6 +57,8 @@
   // We like keeping TOML keys in a certain non-alphabetical order that feels more natural
   "evenBetterToml.formatter.reorderKeys": false,
   "redhat.telemetry.enabled": false,
+  "ltex.language": "en",
+  "cSpell.language": "en",
   "cSpell.words": [
     "anyio",
     "automodule",
@@ -73,6 +75,8 @@
     "undoc",
     "viewcode",
     "doctest",
+    "noqa",
+    "webbrowser",
     "{{ cookiecutter.full_name }}",
     "{{ cookiecutter.__project_slug }}"
   ]

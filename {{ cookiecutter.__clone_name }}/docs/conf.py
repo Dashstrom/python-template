@@ -14,10 +14,10 @@ import {{ cookiecutter.__project_slug }} as info
 sys.path.insert(0, os.path.abspath(".."))
 
 project = info.__name__
-copyright = f"{info.METADATA['Author']} <{info.METADATA['Author-email']}>"
-author = info.METADATA["Author"]
-version = info.METADATA["Version"]
-release = info.METADATA["Version"]
+copyright = f"{info.__author__} <{info.__email__}>"
+author = info.__author__
+version = info.__version__
+release = info.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

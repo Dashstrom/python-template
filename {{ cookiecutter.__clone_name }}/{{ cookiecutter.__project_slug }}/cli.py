@@ -6,7 +6,11 @@ import logging
 import sys
 from typing import NoReturn, Optional, Sequence
 
-from .core import METADATA, hello
+from .core import (
+    __summary__,
+    __version__,
+    hello
+)
 
 LOG_LEVELS = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]
 logger = logging.getLogger(__name__)
@@ -23,13 +27,13 @@ def get_parser() -> argparse.ArgumentParser:
     """Prepare ArgumentParser."""
     parser = HelpArgumentParser(
         prog="{{ cookiecutter.__cli_name }}",
-        description=METADATA["Summary"],
+        description=__summary__,
         formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument(
         "--version",
         action="version",
-        version=f"%(prog)s, version {METADATA['Version']}",
+        version=f"%(prog)s, version {__version__}",
     )
     parser.add_argument(
         "--log-level",
@@ -101,16 +105,20 @@ from typing import Optional
 
 import click
 
-from .core import METADATA, hello
+from .core import (
+    __summary__,
+    __version__,
+    hello
+)
 
 LOG_LEVELS = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]
 
 
 @click.group(
     name="{{ cookiecutter.__cli_name }}",
-    help=METADATA["Summary"],
+    help=__summary__,
 )
-@click.version_option(METADATA["Version"])
+@click.version_option(__version__)
 @click.option(
     "--log-level",
     metavar="level",

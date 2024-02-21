@@ -213,7 +213,7 @@ expr = """[
     '**/*.pyc',
     '**/*.pyo'
   ]
-  for path in pathlib.Path().resolve().glob(p)
+  for path in pathlib.Path().resolve().glob(pattern)
 ]"""
 imports = ["shutil", "sys", "pathlib"]
 
