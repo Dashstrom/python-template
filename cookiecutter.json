@@ -16,15 +16,15 @@
   "__clone_name": "{{ cookiecutter.__repository.rsplit('/', 1)[-1] }}",
   "version": "0.0.1",
   "cli": [
-    "click",
     "argparse",
+    "click",
     "none"
   ],
   "__cli_name": "{{ cookiecutter.__project_slug.replace('_', '-') }}",
   "license": [
+    "MIT",
     "GPL-3.0-or-later",
     "LGPL-2.1-or-later",
-    "MIT",
     "Proprietary"
   ],
   "copyright": "Copyright (c) {% now 'utc', '%Y' %}, {{ cookiecutter.full_name }} <{{ cookiecutter.email }}>",
