@@ -112,7 +112,7 @@ poethepoet = { version = "0.24.4", optional = true }
 test = ["pytest", "pytest-mock"]
 cov = ["pytest", "pytest-mock", "coverage", "pytest-cov"]
 lint = ["pytest", "pytest-mock", "mypy", "ruff"]
-format = ["pre-commit"]
+format = ["pytest", "pytest-mock", "mypy", "ruff"]
 docs = ["sphinx", "sphinx-rtd-theme", "sphinxcontrib-mermaid"]
 tasks = ["poethepoet"]
 {%- if cookiecutter.cli|lower != 'none' %}
