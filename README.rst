@@ -5,6 +5,22 @@
 Python template
 ***************
 
+.. image:: https://www.mypy-lang.org/static/mypy_badge.svg
+  :target: https://mypy-lang.org/
+  :alt: Mypy
+
+.. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+  :target: https://github.com/astral-sh/ruff
+  :alt: Ruff
+
+.. image:: https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10%20|%203.11%20|%203.12-%23007EC6.svg
+  :target: https://gitlab.utc.fr/utcode/utcode-autofill/blob/main/LICENSE
+  :alt: Python : 3.8 3.9 3.10 3.11 3.12
+
+.. image:: https://img.shields.io/badge/license-MIT-green.svg
+  :target: https://gitlab.utc.fr/utcode/utcode-autofill/blob/main/LICENSE
+  :alt: License : MIT
+
 .. image:: https://github.com/Dashstrom/python-template/actions/workflows/tests.yml/badge.svg
   :target: https://github.com/Dashstrom/python-template/actions/workflows/tests.yml
   :alt: CI : Tests
