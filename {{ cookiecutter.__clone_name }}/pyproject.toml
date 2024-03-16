@@ -13,7 +13,6 @@ build-backend = "poetry.core.masonry.api"
 # https://python-poetry.org/docs/pyproject/
 # ----------------------------------------------------------------------
 
-
 [tool.poetry]
 name = {{ cookiecutter.__pypi_name | tojson() }}
 version = {{ cookiecutter.version | tojson() }}
@@ -114,7 +113,7 @@ cov = ["pytest", "pytest-mock", "coverage", "pytest-cov"]
 lint = ["pytest", "pytest-mock", "mypy", "ruff"]
 format = ["pytest", "pytest-mock", "mypy", "ruff"]
 docs = ["sphinx", "sphinx-rtd-theme", "sphinxcontrib-mermaid"]
-tasks = ["poethepoet"]
+tasks = ["poethepoet", "pre-commit"]
 {%- if cookiecutter.cli|lower != 'none' %}
 
 [tool.poetry.scripts]
