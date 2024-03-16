@@ -95,17 +95,17 @@ python = ">=3.8"
 click = ">=8.1.0"{%- endif %}
 typing-extensions = ">=4.8.0"
 
-pytest = { version = "8.0.0", optional = true }
+pytest = { version = "8.1.1", optional = true }
 pytest-mock = { version = "3.12.0", optional = true }
-coverage = { extras = ["toml"], version = "7.4.1", optional = true }
+coverage = { extras = ["toml"], version = "7.4.4", optional = true }
 pytest-cov = { version = "4.1.0", optional = true }
-mypy = { version = "1.8.0", optional = true }
-ruff = { version = "0.2.0", optional = true }
+mypy = { version = "1.9.0", optional = true }
+ruff = { version = "0.3.3", optional = true }
 pre-commit = { version = "3.5.0", optional = true }
 sphinx = { version = "7.1.2", optional = true }
 sphinx-rtd-theme = { version = "2.0.0", optional = true }
 sphinxcontrib-mermaid = { version = "0.9.2", optional = true }
-poethepoet = { version = "0.24.4", optional = true }
+poethepoet = { version = "0.25.0", optional = true }
 
 [tool.poetry.extras]
 test = ["pytest", "pytest-mock"]

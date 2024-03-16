@@ -14,7 +14,7 @@ Python template
   :alt: Ruff
 
 .. image:: https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10%20|%203.11%20|%203.12-%23007EC6.svg
-  :target: https://gitlab.utc.fr/utcode/utcode-autofill/blob/main/LICENSE
+  :target: https://devguide.python.org/versions
   :alt: Python : 3.8 3.9 3.10 3.11 3.12
 
 .. image:: https://img.shields.io/badge/license-MIT-green.svg
