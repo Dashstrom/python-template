@@ -99,8 +99,8 @@ Poe is available for help you to run tasks.
   pre-commit     Run pre-commit.
   clean          Clean cache files
 
-Commit
-******
+Skip commit verification
+************************
 
 If the linting is not successful, you can't commit.
 For forcing the commit you can use the next command :
@@ -108,6 +108,16 @@ For forcing the commit you can use the next command :
 ..  code-block:: bash
 
   git commit --no-verify -m 'MESSAGE'
+
+Commit with commitizen
+**********************
+
+To respect commit conventions, this repository uses
+`Commitizen <https://github.com/commitizen-tools/commitizen?tab=readme-ov-file>`_.
+
+..  code-block:: bash
+
+  cz commit
 
 How to add dependency
 *********************

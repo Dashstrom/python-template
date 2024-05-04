@@ -49,11 +49,13 @@ def test_import() -> None:
     import {{ cookiecutter.__project_slug }}.__main__  # NoQA: F401
 
 
-def test_hello(caplog: pytest.LogCaptureFixture) -> None:
+def test_hello() -> None:
     """Test command hello."""
     name = "A super secret name"
-    entrypoint(("hello", "--name", name))
-    assert name in caplog.text
+    stdout = io.StringIO()
+    with contextlib.redirect_stdout(stdout):
+        entrypoint(("hello", "--name", name))
+    assert name in stdout.getvalue()
 {%- elif "click" == cookiecutter.cli %}
 
 import os

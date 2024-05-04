@@ -83,7 +83,7 @@ def main() -> None:
         ".github/",
         ".pre-commit-config.yaml",
     )
-    run("git", "commit", "-m", "Initial commit")
+    run("git", "commit", "-m", "[feat] Initial commit")
     run("git", "branch", "-M", "main")
     run(
         "git",

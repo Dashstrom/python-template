@@ -34,11 +34,14 @@ def update_dependencies() -> None:
         try:
             version = MAX[m["package"]]
         except KeyError:
-            with urlopen(f"https://pypi.org/pypi/{m['package']}/json") as f:
+            with urlopen(
+                f"https://pypi.org/pypi/{m['package']}/json",
+                timeout=10,
+            ) as f:
                 obj = json.loads(f.read())
             version = latest(obj["releases"])
         icon = "[+]" if m["version"] != version else "[=]"
-        print(icon, m["package"], m["version"], "=>", version)
+        print(icon, m["package"], m["version"], "->", version)
         return m["p1"] + version + m["p2"]
 
     print("Update dependencies")
@@ -49,11 +52,14 @@ def update_dependencies() -> None:
 def update_pre_commit() -> None:
     def mapper(m: Match[str]) -> str:
         author, project = m["repo"].split("/")[-2:]
-        with urlopen(f"https://api.github.com/repos/{author}/{project}/tags") as f:
+        with urlopen(
+            f"https://api.github.com/repos/{author}/{project}/tags",
+            timeout=10,
+        ) as f:
             obj = json.loads(f.read())
         rev = f"v{latest([tag['name'].lstrip('v') for tag in obj])}"
         icon = "[+]" if m["rev"] != rev else "[=]"
-        print(icon, m["repo"], m["rev"], "=>", rev)
+        print(icon, m["repo"], m["rev"], "->", rev)
         return m["p1"] + m["repo"] + m["p2"] + rev
 
     print("Update pre-commit")

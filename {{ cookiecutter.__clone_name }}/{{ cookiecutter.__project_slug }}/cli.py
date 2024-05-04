@@ -6,11 +6,7 @@ import logging
 import sys
 from typing import NoReturn, Optional, Sequence
 
-from .core import (
-    __summary__,
-    __version__,
-    hello
-)
+from .core import __issues__, __summary__, __version__, hello
 
 LOG_LEVELS = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]
 logger = logging.getLogger(__name__)
@@ -35,54 +31,41 @@ def get_parser() -> argparse.ArgumentParser:
         action="version",
         version=f"%(prog)s, version {__version__}",
     )
-    parser.add_argument(
-        "--log-level",
-        metavar="level",
-        default="INFO",
-        choices=LOG_LEVELS,
-        help="minimum level of log messages, possible choices: %(choices)s",
+
+    # Add subparsers
+    subparsers = parser.add_subparsers(
+        help="desired action to perform",
+        dest="action",
+        required=True,
     )
-    parser.add_argument(
-        "--log-file",
-        metavar="file",
-        help="log file to store DEBUG level messages",
+
+    # Add parent parser with common arguments
+    parent_parser = HelpArgumentParser(add_help=False)
+    parent_parser.add_argument(
+        "-v",
+        "--verbose",
+        help="verbose mode, enable INFO and DEBUG messages.",
+        action="store_true",
+        required=False,
     )
-    hello_subparser = parser.add_subparsers(dest="command_hello")
-    hello_parser = hello_subparser.add_parser("hello")
-    hello_parser.add_argument(
-        "--name",
-        help="name to greeting",
+
+    # Parser of hello command
+    hello_parser = subparsers.add_parser(
+        "hello",
+        parents=[parent_parser],
+        help="greet the user.",
     )
+    hello_parser.add_argument("--name", help="name to greeting")
     return parser
 
 
-def setup_logging(
-    log_file: Optional[str] = None,
-    log_level: Optional[str] = None,
-) -> None:
-    """Do setup logging to redirect to log_file at DEBUG level."""
-    if log_level is None:
-        log_level = "INFO"
+def setup_logging(verbose: Optional[bool] = None) -> None:
+    """Do setup logging."""
     # Setup logging
-    if log_file:
-        logging.basicConfig(
-            level=logging.DEBUG,
-            format="[%(asctime)s] %(levelname)-8s - %(name)s - %(message)s",
-            filename=log_file,
-            filemode="w",
-        )
-        console = logging.StreamHandler()
-        console.setLevel(log_level)
-        formatter = logging.Formatter(
-            "[%(asctime)s] %(levelname)-8s - %(message)s",
-        )
-        console.setFormatter(formatter)
-        logging.root.addHandler(console)
-    else:
-        logging.basicConfig(
-            level=log_level,
-            format="[%(asctime)s] %(levelname)-8s - %(message)s",
-        )
+    logging.basicConfig(
+        level=logging.DEBUG if verbose else logging.WARNING,
+        format="[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s",
+    )
 
 
 def entrypoint(argv: Optional[Sequence[str]] = None) -> None:
@@ -90,28 +73,56 @@ def entrypoint(argv: Optional[Sequence[str]] = None) -> None:
     try:
         parser = get_parser()
         args = parser.parse_args(argv)
-        setup_logging(args.log_file, args.log_level)
-        if args.command_hello:
-            logging.getLogger(__name__).info(hello(args.name))
+        setup_logging(args.verbose)
+        if args.action == "hello":
+            print(hello(args.name))  # noqa: T201
         else:
             parser.error("No command specified")
     except Exception as err:  # NoQA: BLE001
-        logger.critical("Unexpected error", stack_info=True, exc_info=err)
-        logger.critical("Please, report this error.")
+        logger.critical("Unexpected error", exc_info=err)
+        logger.critical("Please, report this error to %s.", __issues__)
         sys.exit(1){% elif "click" == cookiecutter.cli %}
 
 import logging
-from typing import Optional
+import sys
+from functools import wraps
+from typing import Callable, TypeVar
 
 import click
+from typing_extensions import ParamSpec
 
-from .core import (
-    __summary__,
-    __version__,
-    hello
-)
+from .core import __issues__, __summary__, __version__, hello
 
+logger = logging.getLogger(__name__)
 LOG_LEVELS = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]
+P = ParamSpec("P")
+T = TypeVar("T")
+
+
+def verbosity(func: Callable[P, T]) -> Callable[P, T]:
+    """Decorator for logging."""
+    func = click.option(
+        "-v",
+        "--verbose",
+        help="verbose mode, enable INFO and DEBUG messages.",
+        is_flag=True,
+    )(func)
+
+    @wraps(func)
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
+        verbose = kwargs.pop("verbose", False)
+        logging.basicConfig(
+            level=logging.DEBUG if verbose else logging.WARNING,
+            format="[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s",
+        )
+        try:
+            return func(*args, **kwargs)
+        except Exception as err:  # noqa: BLE001
+            logger.critical("Unexpected error", exc_info=err)
+            logger.critical("Please, report this error to %s.", __issues__)
+            sys.exit(1)
+
+    return wrapper
 
 
 @click.group(
@@ -119,44 +130,13 @@ LOG_LEVELS = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]
     help=__summary__,
 )
 @click.version_option(__version__)
-@click.option(
-    "--log-level",
-    metavar="level",
-    type=click.Choice(LOG_LEVELS),
-    default="INFO",
-    show_default=True,
-    help="Minimum level of log messages",
-)
-@click.option(
-    "--log-file",
-    help="Log file to store DEBUG level messages",
-    metavar="file",
-)
-def entrypoint(log_level: str, log_file: Optional[str]) -> None:
+def entrypoint() -> None:
     """Entrypoint for command line interface."""
-    if log_file:
-        logging.basicConfig(
-            level=logging.DEBUG,
-            format="[%(asctime)s] %(levelname)-8s - %(name)s - %(message)s",
-            filename=log_file,
-            filemode="w",
-        )
-        console = logging.StreamHandler()
-        console.setLevel(log_level)
-        formatter = logging.Formatter(
-            "[%(asctime)s] %(levelname)-8s - %(message)s",
-        )
-        console.setFormatter(formatter)
-        logging.root.addHandler(console)
-    else:
-        logging.basicConfig(
-            level=log_level,
-            format="[%(asctime)s] %(levelname)-8s - %(message)s",
-        )
 
 
 @entrypoint.command("hello")
 @click.option("--name", help="")
+@verbosity
 def cmd_hello(name: str) -> None:
     """Command for say hello."""
     click.echo(hello(name)){% endif %}

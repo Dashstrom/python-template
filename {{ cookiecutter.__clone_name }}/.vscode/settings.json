@@ -77,6 +77,9 @@
     "doctest",
     "noqa",
     "webbrowser",
+    "commitizen",
+    "levelname",
+    "caplog",
     "{{ cookiecutter.full_name }}",
     "{{ cookiecutter.__project_slug }}"
   ]
