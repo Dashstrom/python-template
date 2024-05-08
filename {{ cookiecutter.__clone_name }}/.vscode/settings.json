@@ -80,6 +80,7 @@
     "commitizen",
     "levelname",
     "caplog",
+    "pypi",
     "{{ cookiecutter.full_name }}",
     "{{ cookiecutter.__project_slug }}"
   ]

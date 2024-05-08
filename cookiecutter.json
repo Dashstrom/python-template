@@ -10,7 +10,7 @@
   "project_url": "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.__pypi_name }}",
   "__homepage": "{{ cookiecutter.project_url }}",
   "__issues": "{{ cookiecutter.project_url }}/issues",
-  "__documentation": "{{ cookiecutter.project_url }}",
+  "__documentation": "https://{{ cookiecutter.github_username|lower }}.github.io/{{ cookiecutter.__pypi_name }}",
   "__repository": "{{ cookiecutter.project_url }}",
   "__clone_url": "{{ cookiecutter.project_url }}",
   "__clone_name": "{{ cookiecutter.__repository.rsplit('/', 1)[-1] }}",
@@ -31,6 +31,7 @@
   "push": false,
   "docker": false,
   "discord": "n",
+  "__discord": "{{ cookiecutter.discord|lower not in ('no', 'null', 'false', 'n', 'non', 'f', '0', 'none', 'undefined') }}",
   "line": 79,
   "__prompts__": {
     "full_name": "Full name",

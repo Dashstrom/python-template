@@ -5,38 +5,45 @@
 {{ cookiecutter.project_name }}
 {% for i in range(cookiecutter.project_name|length) %}*{% endfor %}
 
-.. image:: {{ cookiecutter.__repository }}/actions/workflows/docs.yml/badge.svg
+|ci-docs| |ci-lint| |ci-tests|{% if cookiecutter.license != "Proprietary" %} |pypi| |versions|{% endif %}{% if cookiecutter.__discord %} |discord|{% endif %} |license|
+
+.. |ci-docs| image:: {{ cookiecutter.__repository }}/actions/workflows/docs.yml/badge.svg
   :target: {{ cookiecutter.__repository }}/actions/workflows/docs.yml
   :alt: CI : Docs
 
-.. image:: {{ cookiecutter.__repository }}/actions/workflows/lint.yml/badge.svg
+.. |ci-lint| image:: {{ cookiecutter.__repository }}/actions/workflows/lint.yml/badge.svg
   :target: {{ cookiecutter.__repository }}/actions/workflows/lint.yml
   :alt: CI : Lint
 
-.. image:: {{ cookiecutter.__repository }}/actions/workflows/tests.yml/badge.svg
+.. |ci-tests| image:: {{ cookiecutter.__repository }}/actions/workflows/tests.yml/badge.svg
   :target: {{ cookiecutter.__repository }}/actions/workflows/tests.yml
   :alt: CI : Tests{% if cookiecutter.license != "Proprietary" %}
 
-.. image:: https://img.shields.io/pypi/v/{{ cookiecutter.__pypi_name }}.svg
+.. |pypi| image:: https://img.shields.io/pypi/v/{{ cookiecutter.__pypi_name }}.svg
   :target: {{ cookiecutter.__pypi_url }}
   :alt: PyPI : {{ cookiecutter.__pypi_name }}
 
-.. image:: https://img.shields.io/pypi/pyversions/{{ cookiecutter.__pypi_name }}.svg
+.. |versions| image:: https://img.shields.io/pypi/pyversions/{{ cookiecutter.__pypi_name }}.svg
   :target: {{ cookiecutter.__pypi_url }}
-  :alt: Python : versions{% endif %}{% if cookiecutter.discord|lower not in ("no", "null", "false", "n", "non", "f", "0", "none", "undefined") %}
+  :alt: Python : versions{% endif %}{% if cookiecutter.__discord %}
 
-.. image:: https://img.shields.io/badge/Discord-{{ cookiecutter.project_name.replace(" ", "%20") }}-5865F2?style=flat&logo=discord&logoColor=white
+.. |discord| image:: https://img.shields.io/badge/Discord-{{ cookiecutter.project_name.replace(" ", "%20") }}-5865F2?style=flat&logo=discord&logoColor=white
   :target: {{ cookiecutter.discord }}
   :alt: Discord{% endif %}
 
-.. image:: https://img.shields.io/badge/license-{{ cookiecutter.license.replace(" ", "%20") }}-green.svg
+.. |license| image:: https://img.shields.io/badge/license-{{ cookiecutter.license.replace(" ", "%20") }}-green.svg
   :target: {{ cookiecutter.__repository }}/blob/main/LICENSE
   :alt: License : {{ cookiecutter.license }}
 
 Description
 ###########
 
-{{cookiecutter.project_short_description}}
+{{cookiecutter.project_short_description}}{% if cookiecutter.license != "Proprietary" %}
+
+Documentation
+#############
+
+Documentation is available on {{ cookiecutter.__documentation }}{% endif %}
 
 Installation
 ############

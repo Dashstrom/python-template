@@ -62,7 +62,6 @@ You need to install `pipx <https://pypa.github.io/pipx/installation/>`_, `cookie
 
 You will also need to install `git <https://git-scm.com/>`_ following `the official guide <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_.
 
-
 Installation
 ############
 
