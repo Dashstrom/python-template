@@ -49,6 +49,8 @@
     "line": "Which line length do you want to use"
   },
   "_copy_without_render": [
-    ".github/workflows"
+    ".github/workflows/docs.yml",
+    ".github/workflows/lint.yml",
+    ".github/workflows/tests.yml"
   ]
 }
