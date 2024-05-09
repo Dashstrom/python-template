@@ -81,19 +81,17 @@ Enable GitHub pages
 
 Go to https://github.com/GITHUB_USERNAME/PROJECT_NAME/settings/pages and change branch for GitHub Pages:
 
-.. image:: https://raw.githubusercontent.com/Dashstrom/python-template/main/docs/resources/pages.png
-  :target: https://raw.githubusercontent.com/Dashstrom/python-template/main/docs/resources/pages.png
+.. image:: docs/resources/pages.png
+  :target: docs/resources/pages.png
   :alt: Configure GitHub Pages
-
-Example: https://github.com/Dashstrom/pixelize
 
 Add description, website and tag
 ********************************
 
 Go to https://github.com/GITHUB_USERNAME/PROJECT_NAME and follow instructions:
 
-.. image:: https://raw.githubusercontent.com/Dashstrom/python-template/main/docs/resources/config.png
-  :target: https://raw.githubusercontent.com/Dashstrom/python-template/main/docs/resources/config.png
+.. image:: docs/resources/config.png
+  :target: docs/resources/config.png
   :alt: Configure GitHub
 
 Enable publish on PyPI
@@ -101,8 +99,8 @@ Enable publish on PyPI
 
 Create a PyPI account and go to bottom of page https://pypi.org/manage/account/publishing
 
-.. image:: https://raw.githubusercontent.com/Dashstrom/python-template/main/docs/resources/pypi.png
-  :target: https://raw.githubusercontent.com/Dashstrom/python-template/main/docs/resources/pypi.png
+.. image:: docs/resources/pypi.png
+  :target: docs/resources/pypi.png
   :alt: Configure PyPI
 
 Testing
