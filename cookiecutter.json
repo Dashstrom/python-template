@@ -33,6 +33,10 @@
   "discord": "n",
   "__discord": "{{ cookiecutter.discord|lower not in ('no', 'null', 'false', 'n', 'non', 'f', '0', 'none', 'undefined') }}",
   "line": 79,
+  "installer": [
+    "pip",
+    "pipx"
+  ],
   "__prompts__": {
     "full_name": "Full name",
     "email": "Email",
@@ -47,7 +51,8 @@
     "push": "Push repository to the url? Can be done later using `git push -uf origin main`",
     "docker": "Use docker",
     "discord": "Do you want to add a discord ? \\[invite/n]",
-    "line": "Which line length do you want to use"
+    "line": "Which line length do you want to use",
+    "installer": "Which installer do you want to use "
   },
   "_copy_without_render": [
     ".github/workflows/docs.yml",

@@ -47,14 +47,23 @@ Documentation is available on {{ cookiecutter.__documentation }}{% endif %}
 
 Installation
 ############
-
-You can install :bash:`{{ cookiecutter.__pypi_name }}` via `pip <https://pypi.org/project/pip/>`_
+{% if cookiecutter.installer == "pip" %}
+You can install :bash:`{{ cookiecutter.__pypi_name }}` using `pip <https://pypi.org/project/pip/>`_
 from `PyPI <https://pypi.org/project>`_
 
 ..  code-block:: bash
 
   pip install {{ cookiecutter.__pypi_name }}
+{% else %}
+You can install :bash:`{{ cookiecutter.__pypi_name }}` using `pipx <https://pipx.pypa.io/stable/>`_
+from `PyPI <https://pypi.org/project>`_
 
+..  code-block:: bash
+
+  pip install pipx
+  pipx ensurepath
+  pipx install {{ cookiecutter.__pypi_name }}
+{% endif %}
 Usage
 #####
 
@@ -95,9 +104,9 @@ Poe is available for help you to run tasks.
 ..  code-block:: text
 
   test           Run test suite.
-  lint           Run linters : ruff linter, ruff formatter and mypy.
+  lint           Run linters: ruff linter, ruff formatter and mypy.
   format         Run linters in fix mode.
-  check          Run all checks : lint, test and docs.
+  check          Run all checks: lint, test and docs.
   cov            Run coverage for generate report and html.
   open-cov       Open html coverage report in webbrowser.
   docs           Build documentation.
@@ -124,7 +133,7 @@ To respect commit conventions, this repository uses
 
 ..  code-block:: bash
 
-  cz commit
+  cz c
 
 How to add dependency
 *********************
@@ -148,10 +157,10 @@ Uninstall
 
 ..  code-block:: bash
 
-  pip uninstall {{ cookiecutter.__pypi_name }}
+  pip{% if cookiecutter.installer == "pipx" %}x{% endif %} uninstall {{ cookiecutter.__pypi_name }}
 {%- if cookiecutter.license != "Proprietary" %}
 
 License
 #######
 
-This work is licensed under `{{ cookiecutter.license }} <{{ cookiecutter.__repository }}/-/raw/main/LICENSE>`_.{%- endif %}
+This work is licensed under `{{ cookiecutter.license }} <{{ cookiecutter.__repository }}/blob/main/LICENSE>`_.{%- endif %}

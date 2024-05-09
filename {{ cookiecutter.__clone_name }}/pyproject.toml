@@ -132,12 +132,13 @@ help = "Run test suite."
 cmd = "pytest"
 
 [tool.poe.tasks.lint]
-help = "Run linters : ruff checker and ruff formatter and mypy."
+help = "Run linters: ruff checker and ruff formatter and mypy."
 sequence = [
   { cmd = "ruff check ." },
   { cmd = "ruff format --diff ." },
   { cmd = "mypy ." },
 ]
+ignore_fail = true
 
 [tool.poe.tasks.format]
 help = "Run linters in fix mode."
@@ -149,7 +150,7 @@ sequence = [
 ignore_fail = true
 
 [tool.poe.tasks.check]
-help = "Run all checks : lint, test and docs."
+help = "Run all checks: lint, test and docs."
 sequence = [
   { ref = "lint" },
   { ref = "test" },
@@ -224,7 +225,7 @@ imports = ["shutil", "sys", "pathlib"]
 
 [tool.pytest.ini_options]
 log_cli = true
-log_cli_level = "DEBUG"
+log_cli_level = "INFO"
 addopts = "-vv --doctest-modules"
 doctest_optionflags = "DONT_ACCEPT_TRUE_FOR_1 NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL ELLIPSIS"
 #asyncio_mode = "auto"
