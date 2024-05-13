@@ -32,6 +32,12 @@ Description
 
 A medium complexity template for create CLI or python package.
 
+Your gratitude warms my heart 💖
+################################
+
+If you like this project or use it in your own project.
+Please, share it and add a little star for me ⭐
+
 Tools used
 ##########
 
@@ -67,7 +73,7 @@ You will also need to install `git <https://git-scm.com/>`_ following `the offic
 Installation
 ############
 
-First you need to create your repository then process as follows:
+First you need to create your repository as follows:
 
 ..  code-block:: bash
 
