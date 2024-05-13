@@ -52,7 +52,7 @@ Tools used
 Prerequisite
 ############
 
-First of all you will need to install a version of `python <https://www.python.org/>`_ higher than 3.8.
+First, you will need to install a version of `python <https://www.python.org/>`_ higher or equal to 3.8 and `Visual Studio Code <https://code.visualstudio.com/>`_. 
 
 You need to install `pipx <https://pypa.github.io/pipx/installation/>`_, `cookiecutter <https://cookiecutter.readthedocs.io/en/1.7.3/installation.html>`_ and `poetry <https://python-poetry.org/docs/#installation>`_ with the following commands:
 
