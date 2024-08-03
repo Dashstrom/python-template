@@ -47,20 +47,21 @@ Tools used
 - `Editorconfig <https://editorconfig.org/>`_ Configuration file format for defining coding styles in shared projects.
 - `Git <https://git-scm.com/>`_ Git is the most widely used version control system.
 - `Github Actions <https://docs.github.com/en/actions>`_ Automate and execute your software development workflows right in your repository.
-- `Mypy <https://mypy.readthedocs.io/en/stable/>`_ Optional static typing for Python.
-- `Poetry <https://python-poetry.org/>`_ Python packaging and dependency management made easy.
+- `Mypy <https://mypy.readthedocs.io/en/stable>`_ Optional static typing for Python.
+- `Pipx <https://pipx.pypa.io>`_ Install and Run Python Applications in Isolated Environments.
+- `Poetry <https://python-poetry.org>`_ Python packaging and dependency management made easy.
 - `Poe the Poet <https://poethepoet.natn.io/index.html>`_ A task runner that works well with poetry.
-- `Pre-commit <https://pre-commit.com/>`_ A framework for managing and maintaining multi-language pre-commit hooks.
-- `Pytest <https://docs.pytest.org/en/7.4.x/>`_ Framework making it easy to write small tests, yet scales to support complex functional testing.
-- `Ruff <https://beta.ruff.rs/docs/rules/>`_ An extremely fast Python linter, written in Rust.
-- `Sphinx with read the docs theme <https://sphinx-rtd-theme.readthedocs.io/en/stable/>`_ Sphinx makes it easy to create intelligent and beautiful documentation.
+- `Pre-commit <https://pre-commit.com>`_ A framework for managing and maintaining multi-language pre-commit hooks.
+- `Pytest <https://docs.pytest.org/en/7.4.x>`_ Framework making it easy to write small tests, yet scales to support complex functional testing.
+- `Ruff <https://beta.ruff.rs/docs/rules>`_ An extremely fast Python linter, written in Rust.
+- `Sphinx with read the docs theme <https://sphinx-rtd-theme.readthedocs.io/en/stable>`_ Sphinx makes it easy to create intelligent and beautiful documentation.
 
 Prerequisite
 ############
 
-First, you will need to install a version of `python <https://www.python.org/>`_ higher or equal to 3.8 and `Visual Studio Code <https://code.visualstudio.com/>`_. 
+First, you will need to install a version of `python <https://www.python.org>`_ higher or equal to 3.8 and `Visual Studio Code <https://code.visualstudio.com>`_. 
 
-You need to install `pipx <https://pypa.github.io/pipx/installation/>`_, `cookiecutter <https://cookiecutter.readthedocs.io/en/1.7.3/installation.html>`_ and `poetry <https://python-poetry.org/docs/#installation>`_ with the following commands:
+You need to install `pipx <https://pypa.github.io/pipx/installation>`_, `cookiecutter <https://cookiecutter.readthedocs.io/en/1.7.3/installation.html>`_ and `poetry <https://python-poetry.org/docs/#installation>`_ with the following commands:
 
 ..  code-block:: bash
 

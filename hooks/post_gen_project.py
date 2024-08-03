@@ -38,8 +38,10 @@ def run(*args: str) -> None:
 
 def autoformat() -> None:
     """Format project."""
+    args = ["poetry", "run", "poe", "pre-commit"]
+    print("[RUN]", " ".join(args))
     try:
-        subprocess.check_call(["poetry", "run", "poe", "pre-commit"])
+        subprocess.check_call(args)
         print("[FORMAT] formatting done !")
     except subprocess.CalledProcessError:
         print(
@@ -47,6 +49,12 @@ def autoformat() -> None:
             "it occurs when `poe pre-commit` run for the first time. "
             "You can ignore it."
         )
+
+
+def run_tests() -> None:
+    """Run all test."""
+    run("poetry", "run", "poe", "check")
+    print("[TEST] All check done !")
 
 
 def open_vscode() -> None:
@@ -95,6 +103,7 @@ def main() -> None:
     run("poetry", "install", "--all-extras", "--no-interaction")
     run("poetry", "run", "poe", "setup")
     autoformat()
+    run_tests()
     if "{{ cookiecutter.push }}" == "True":  # type: ignore
         run("git", "push", "-uf", "origin", "main")
     if DISABLE_VSCODE:

@@ -33,6 +33,7 @@ jobs:
       - name: Run all
         run: |
           source $VENV
+          poe check-tag
           poe check
       - name: Build package
         run: |

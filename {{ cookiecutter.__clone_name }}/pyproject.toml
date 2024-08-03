@@ -95,18 +95,19 @@ python = ">=3.8"
 click = ">=8.1.0"{%- endif %}
 typing-extensions = ">=4.8.0"
 
-pytest = { version = "8.2.0", optional = true }
+pytest = { version = "8.3.2", optional = true }
 pytest-mock = { version = "3.14.0", optional = true }
-coverage = { extras = ["toml"], version = "7.5.0", optional = true }
+coverage = { extras = ["toml"], version = "7.6.0", optional = true }
 pytest-cov = { version = "5.0.0", optional = true }
-mypy = { version = "1.10.0", optional = true }
-ruff = { version = "0.4.3", optional = true }
+mypy = { version = "1.11.1", optional = true }
+ruff = { version = "0.5.6", optional = true }
 pre-commit = { version = "3.5.0", optional = true }
+pre-commit-hooks = { version = "4.6.0", optional = true}
 sphinx = { version = "7.1.2", optional = true }
 sphinx-rtd-theme = { version = "2.0.0", optional = true }
 sphinxcontrib-mermaid = { version = "0.9.2", optional = true }
-poethepoet = { version = "0.26.1", optional = true }
-commitizen = { version = "3.25.0", optional = true }
+poethepoet = { version = "0.27.0", optional = true }
+commitizen = { version = "3.28.0", optional = true }
 
 [tool.poetry.extras]
 test = ["pytest", "pytest-mock"]
@@ -114,7 +115,7 @@ cov = ["pytest", "pytest-mock", "coverage", "pytest-cov"]
 lint = ["pytest", "pytest-mock", "mypy", "ruff"]
 format = ["pytest", "pytest-mock", "mypy", "ruff"]
 docs = ["sphinx", "sphinx-rtd-theme", "sphinxcontrib-mermaid"]
-tasks = ["poethepoet", "pre-commit", "commitizen"]
+tasks = ["poethepoet", "pre-commit", "commitizen", "pre-commit-hooks"]
 {%- if cookiecutter.cli|lower != 'none' %}
 
 [tool.poetry.scripts]
@@ -157,6 +158,21 @@ sequence = [
   { ref = "docs" },
 ]
 
+[tool.poe.tasks.check-tag]
+help = "Check if the current tag match the version."
+expr = """
+sys.exit(
+    subprocess.run(
+        ['git', 'describe', 'tag', '--abbrev=0'],
+        text=True,
+        stderr=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+    ).stdout
+    != 'v' + {{ cookiecutter.__project_slug }}.__version__
+  )
+"""
+imports = ["{{ cookiecutter.__project_slug }}", "subprocess", "os"]
+
 [tool.poe.tasks.cov]
 help = "Run coverage for generate report and html."
 sequence = [
@@ -188,6 +204,15 @@ cmd = "pre-commit install"
 [tool.poe.tasks.pre-commit]
 help = "Run pre-commit."
 cmd = "pre-commit run --all-files"
+
+[tool.poe.tasks.commit]
+help = "Test, commit and push."
+sequence = [
+  { ref = "check" },
+  { cmd = "git add ." },
+  { cmd = "cz c" },
+  { cmd = "git push" },
+]
 
 [tool.poe.tasks.clean]
 help = "Clean cache files."

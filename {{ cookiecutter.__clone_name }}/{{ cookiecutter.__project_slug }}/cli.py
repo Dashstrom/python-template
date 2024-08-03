@@ -6,7 +6,8 @@ import logging
 import sys
 from typing import NoReturn, Optional, Sequence
 
-from .core import __issues__, __summary__, __version__, hello
+from .core import hello
+from .info import __issues__, __summary__, __version__
 
 LOG_LEVELS = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]
 logger = logging.getLogger(__name__)
@@ -91,7 +92,8 @@ from typing import Callable, TypeVar
 import click
 from typing_extensions import ParamSpec
 
-from .core import __issues__, __summary__, __version__, hello
+from .core import hello
+from .info import __issues__, __summary__, __version__
 
 logger = logging.getLogger(__name__)
 LOG_LEVELS = ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]

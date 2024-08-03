@@ -104,16 +104,18 @@ Poe is available for help you to run tasks.
 ..  code-block:: text
 
   test           Run test suite.
-  lint           Run linters: ruff linter, ruff formatter and mypy.
+  lint           Run linters: ruff checker and ruff formatter and mypy.        
   format         Run linters in fix mode.
   check          Run all checks: lint, test and docs.
+  check-tag      Check if the current tag match the version.
   cov            Run coverage for generate report and html.
   open-cov       Open html coverage report in webbrowser.
   docs           Build documentation.
   open-docs      Open documentation in webbrowser.
   setup          Setup pre-commit.
   pre-commit     Run pre-commit.
-  clean          Clean cache files
+  commit         Test, commit and push.
+  clean          Clean cache files.
 
 Skip commit verification
 ************************
