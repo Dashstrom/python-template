@@ -97,7 +97,7 @@ def test_config(*, indexes: Optional[List[int]] = None) -> None:
         if indexes is not None and index not in indexes:
             continue
         repr_config = json.dumps(config, indent=2)
-        config = {**DEFAULT_CONFIG, **config}  # type: ignore[call-overload]
+        config = {**DEFAULT_CONFIG, **config}  # type: ignore[dict-item]
         should_fail = config.pop("fail", False)
         with tempfile.TemporaryDirectory(prefix="python-template-", dir=CACHE) as tmp:
             try:
@@ -108,6 +108,7 @@ def test_config(*, indexes: Optional[List[int]] = None) -> None:
                 if sys.stdout.isatty():
                     sleep(3)
                 run(
+                    "uvx",
                     "cookiecutter",
                     "-v",
                     "--no-input",
@@ -119,14 +120,12 @@ def test_config(*, indexes: Optional[List[int]] = None) -> None:
                 clone_name: str = project_url.split("/")[-1]
                 project = pathlib.Path(tmp) / clone_name
                 run(
-                    "poetry",
-                    "install",
-                    "--all-extras",
-                    "--no-interaction",
+                    "uv",
+                    "sync",
                     cwd=project,
                 )
-                run("poetry", "run", "poe", "check", cwd=project)
-                run("poetry", "run", "poe", "cov", cwd=project)
+                run("uv", "run", "poe", "check", cwd=project)
+                run("uv", "run", "poe", "cov", cwd=project)
                 if should_fail:
                     fatal("Test should fail")
             except KeyboardInterrupt:

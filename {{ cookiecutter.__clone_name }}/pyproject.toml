@@ -1,127 +1,103 @@
-# ----------------------------------------------------------------------
-# Packaging
-# https://packaging.python.org/en/latest/tutorials/packaging-projects
-# ----------------------------------------------------------------------
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-
-# ----------------------------------------------------------------------
-# peotry
-# https://python-poetry.org/docs/pyproject/
-# ----------------------------------------------------------------------
-
-[tool.poetry]
+[project]
 name = {{ cookiecutter.__pypi_name | tojson() }}
 version = {{ cookiecutter.version | tojson() }}
 description = {{ cookiecutter.project_short_description | tojson() }}
-license = {{ cookiecutter.license | tojson() }}
 authors = [
-  "{{ cookiecutter.full_name }} <{{ cookiecutter.email }}>"
-]
-maintainers  = [
-  "{{ cookiecutter.full_name }} <{{ cookiecutter.email }}>",
+    { name = {{ cookiecutter.full_name | tojson() }}, email = {{ cookiecutter.email | tojson() }} }
 ]
 readme = "README.rst"
-homepage = "{{ cookiecutter.__homepage }}"
-repository = "{{ cookiecutter.__repository }}"
-documentation = "{{ cookiecutter.__documentation }}"
-keywords = [
-  "python",
-]
+keywords = ["python"]
+requires-python = ">=3.9,<4.0"
 
 # See https://pypi.org/classifiers/
 classifiers = [
 
-  #"Development Status :: 1 - Planning",
-  #"Development Status :: 2 - Pre-Alpha",
-  "Development Status :: 3 - Alpha",
-  #"Development Status :: 4 - Beta",
-  #"Development Status :: 5 - Production/Stable",
-  #"Development Status :: 6 - Mature",
-  #"Development Status :: 7 - Inactive",
+    #"Development Status :: 1 - Planning",
+    #"Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 3 - Alpha",
+    #"Development Status :: 4 - Beta",
+    #"Development Status :: 5 - Production/Stable",
+    #"Development Status :: 6 - Mature",
+    #"Development Status :: 7 - Inactive",
 {%- if 'none' != cookiecutter.cli|lower %}
 
-  # Default usage
-  "Environment :: Console",
+    # Default usage
+    "Environment :: Console",
 {%- endif %}
 
-  # Framework used
-  "Framework :: Pytest",
-  "Framework :: Sphinx",
-  "Framework :: tox",
+    # Framework used
+    "Framework :: Pytest",
+    "Framework :: Sphinx",
+    "Framework :: tox",
 
-  # Indicate who your project is intended for
-  "Intended Audience :: Developers",
-  "Intended Audience :: System Administrators",
+    # Indicate who your project is intended for
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
 
-  # Target OS
-  "Operating System :: OS Independent",
+    # Target OS
+    "Operating System :: OS Independent",
 
-  # What is the language used in this project
-  "Natural Language :: English",
+    # What is the language used in this project
+    "Natural Language :: English",
 
-  # Version available for this project
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "Programming Language :: Python :: 3 :: Only",
+    # Version available for this project
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
 
-  # What is the language used in the project
-  "Natural Language :: English",
+    # What is the language used in the project
+    "Natural Language :: English",
 
+    # License used in this project{% if cookiecutter.license == 'GPL-3.0-or-later' %}
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",{% elif cookiecutter.license == 'LGPL-2.1-or-later' %}
+    "License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)",{% elif cookiecutter.license == 'MIT' %}
+    "License :: OSI Approved :: MIT License",{% endif %}
 
-  # License used in this project{% if cookiecutter.license == 'GPL-3.0-or-later' %}
-  "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",{% elif cookiecutter.license == 'LGPL-2.1-or-later' %}
-  "License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)",{% elif cookiecutter.license == 'MIT' %}
-  "License :: OSI Approved :: MIT License",{% endif %}
-
-  # The project is typed
-  "Typing :: Typed"
+    # The project is typed
+    "Typing :: Typed"
 ]
-packages = [
-  { include = "{{ cookiecutter.__project_slug }}" },
+dependencies = [
+    {%- if "click" == cookiecutter.cli %}
+    "click>=8.1.0",{%- endif %}
+    "typing-extensions>=4.8.0",
 ]
 
-
-[tool.poetry.dependencies]
-python = ">=3.8"
-{% if "click" == cookiecutter.cli %}
-click = ">=8.1.0"{%- endif %}
-typing-extensions = ">=4.8.0"
-
-pytest = { version = "8.3.4", optional = true }
-pytest-mock = { version = "3.14.0", optional = true }
-coverage = { extras = ["toml"], version = "7.6.1", optional = true }
-pytest-cov = { version = "5.0.0", optional = true }
-mypy = { version = "1.14.1", optional = true }
-ruff = { version = "0.8.6", optional = true }
-pre-commit = { version = "3.5.0", optional = true }
-pre-commit-hooks = { version = "5.0.0", optional = true}
-sphinx = { version = "7.1.2", optional = true }
-sphinx-rtd-theme = { version = "3.0.2", optional = true }
-sphinxcontrib-mermaid = { version = "1.0.0", optional = true }
-poethepoet = { version = "0.30.0", optional = true }
-commitizen = { version = "3.31.0", optional = true }
-
-[tool.poetry.extras]
-test = ["pytest", "pytest-mock"]
-cov = ["pytest", "pytest-mock", "coverage", "pytest-cov"]
-lint = ["pytest", "pytest-mock", "mypy", "ruff"]
-format = ["pytest", "pytest-mock", "mypy", "ruff"]
-docs = ["sphinx", "sphinx-rtd-theme", "sphinxcontrib-mermaid"]
-tasks = ["poethepoet", "pre-commit", "commitizen", "pre-commit-hooks"]
+[project.urls]
+Homepage = {{ cookiecutter.__homepage | tojson() }}
+Repository = {{ cookiecutter.__repository | tojson() }}
+Documentation = {{ cookiecutter.__documentation | tojson() }}
 {%- if cookiecutter.cli|lower != 'none' %}
 
-[tool.poetry.scripts]
+[project.scripts]
 {{ cookiecutter.__cli_name }} = "{{ cookiecutter.__project_slug }}.cli:entrypoint"
 {%- endif %}
 
+[dependency-groups]
+dev = [
+    "pytest==8.3.5",
+    "pytest-mock==3.14.0",
+    "coverage[toml]==7.6.12",
+    "pytest-cov==6.0.0",
+    "mypy==1.15.0",
+    "ruff==0.9.10",
+    "pre-commit==4.1.0",
+    "pre-commit-hooks==5.0.0",
+    "sphinx==7.4.7",
+    "sphinx-rtd-theme==3.0.2",
+    "sphinxcontrib-mermaid==1.0.0",
+    "poethepoet==0.33.0",
+    "commitizen==4.4.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.setuptools]
+py-modules = [{{ cookiecutter.__project_slug  | tojson() }}]
 
 # ----------------------------------------------------------------------
 # Poe the Poet
@@ -271,7 +247,7 @@ source = ["{{ cookiecutter.__project_slug }}"]
 # ----------------------------------------------------------------------
 
 [tool.mypy]
-python_version = 3.8
+python_version = 3.9
 exclude = [
   ".bzr",
   ".direnv",
@@ -338,7 +314,7 @@ warn_unused_configs = true
 
 [tool.ruff]
 line-length = {{ cookiecutter.line }}
-target-version = "py38"
+target-version = "py39"
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -346,9 +322,8 @@ select = ["ALL"]
 # D212 and D213 are incompatible
 # D400 [*] First line should end with a period
 # D101 Missing docstring in public class
-# SIM117 multiple context managers is not available in 3.8
 # We dont use ANN : flake8-annotations because we already have mypy
-ignore = ["D203", "D213", "D400", "D101", "SIM117", "ANN", "COM812", "ISC001"]
+ignore = ["D203", "D213", "D400", "D101", "ANN", "COM812", "ISC001"]
 fixable = ["ALL"]
 unfixable = []
 exclude = [

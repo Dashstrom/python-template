@@ -4,30 +4,30 @@ repos:
     hooks:
     - id: trailing-whitespace
       name: trim trailing whitespace
-      entry: poetry run trailing-whitespace-fixer
+      entry: uv run trailing-whitespace-fixer
       language: system
       types: [text]
-      stages: [commit, push, manual]
+      stages: [pre-commit, pre-push, manual]
     - id: end-of-file-fixer
       name: fix end of files
-      entry: poetry run end-of-file-fixer
+      entry: uv run end-of-file-fixer
       language: system
       types: [text]
-      stages: [commit, push, manual]
+      stages: [pre-commit, pre-push, manual]
     - id: check-yaml
       name: check yaml
-      entry: poetry run check-yaml
+      entry: uv run check-yaml
       language: system
       types: [yaml]
     - id: check-json
       name: check json
-      entry: poetry run check-json
+      entry: uv run check-json
       language: system
       types: [json]
       exclude: "^.vscode"
     - id: check-toml
       name: check toml
-      entry: poetry run check-toml
+      entry: uv run check-toml
       language: system
       types: [toml]
   # https://github.com/commitizen-tools/commitizen
@@ -35,7 +35,7 @@ repos:
     hooks:
     - id: commitizen
       name: commitizen check
-      entry: poetry run cz check
+      entry: uv run cz check
       args: [--allow-abort, --commit-msg-file]
       stages: [commit-msg]
       language: system
@@ -44,7 +44,7 @@ repos:
     hooks:
     - id: poe-format
       name: ruff linter, ruff formatter and mypy
-      entry: poetry run poe format
+      entry: uv run poe format
       language: system
       pass_filenames: false
       types: [python]

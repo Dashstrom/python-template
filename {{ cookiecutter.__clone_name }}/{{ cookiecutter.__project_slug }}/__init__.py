@@ -13,14 +13,14 @@ from .info import (
 )
 
 __all__ = [
-{%- if 'none' != cookiecutter.cli %}
-    "entrypoint",
-{%- endif %}
-    "hello",
     "__author__",
     "__email__",
     "__license__",
     "__maintainer__",
     "__summary__",
     "__version__",
+{%- if 'none' != cookiecutter.cli %}
+    "entrypoint",
+{%- endif %}
+    "hello",
 ]

@@ -13,8 +13,6 @@ services:
       # Use computer time
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      # Keep logs in volume
-      - logs:/app/logs
 
 networks:
   {{ cookiecutter.__project_slug }}:

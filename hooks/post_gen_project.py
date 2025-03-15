@@ -38,7 +38,7 @@ def run(*args: str) -> None:
 
 def autoformat() -> None:
     """Format project."""
-    args = ["poetry", "run", "poe", "pre-commit"]
+    args = ["uv", "run", "poe", "pre-commit"]
     print("[RUN]", " ".join(args))
     try:
         subprocess.check_call(args)
@@ -53,7 +53,7 @@ def autoformat() -> None:
 
 def run_tests() -> None:
     """Run all test."""
-    run("poetry", "run", "poe", "check")
+    run("uv", "run", "poe", "check")
     print("[TEST] All check done !")
 
 
@@ -100,15 +100,15 @@ def main() -> None:
         "origin",
         {{cookiecutter.__clone_url | tojson()}},
     )
-    run("poetry", "install", "--all-extras", "--no-interaction")
-    run("poetry", "run", "poe", "setup")
+    run("uv", "sync")
+    run("uv", "run", "poe", "setup")
     autoformat()
     run_tests()
     if "{{ cookiecutter.push }}" == "True":  # type: ignore
         run("git", "push", "-uf", "origin", "main")
     if DISABLE_VSCODE:
         print("\n\nYou can activate venv with the following commands :")
-        print("\n  cd {{ cookiecutter.__clone_name }}\n  poetry shell\n")
+        print("\n  cd {{ cookiecutter.__clone_name }}\n\n")
     else:
         open_vscode()
 

@@ -4,7 +4,8 @@
 import argparse
 import logging
 import sys
-from typing import NoReturn, Optional, Sequence
+from collections.abc import Sequence
+from typing import NoReturn, Optional
 
 from .core import hello
 from .info import __issues__, __summary__, __version__
@@ -14,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class HelpArgumentParser(argparse.ArgumentParser):
-    def error(self, message: str) -> NoReturn:
+    def error(self, message: str) -> NoReturn:  # pragma: no cover
         """Handle error from argparse.ArgumentParser."""
         self.print_help(sys.stderr)
         self.exit(2, f"{self.prog}: error: {message}\n")
@@ -78,8 +79,8 @@ def entrypoint(argv: Optional[Sequence[str]] = None) -> None:
         if args.action == "hello":
             print(hello(args.name))  # noqa: T201
         else:
-            parser.error("No command specified")
-    except Exception as err:  # NoQA: BLE001
+            parser.error("No command specified")  # pragma: no cover
+    except Exception as err:  # NoQA: BLE001  # pragma: no cover
         logger.critical("Unexpected error", exc_info=err)
         logger.critical("Please, report this error to %s.", __issues__)
         sys.exit(1){% elif "click" == cookiecutter.cli %}
@@ -119,7 +120,7 @@ def verbosity(func: Callable[P, T]) -> Callable[P, T]:
         )
         try:
             return func(*args, **kwargs)
-        except Exception as err:  # noqa: BLE001
+        except Exception as err:  # noqa: BLE001  # pragma: no cover
             logger.critical("Unexpected error", exc_info=err)
             logger.critical("Please, report this error to %s.", __issues__)
             sys.exit(1)

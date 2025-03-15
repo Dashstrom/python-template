@@ -5,20 +5,33 @@ on:
 
 jobs:
   test:
-    name: Tests
-    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            python-version: "3.9"
+            index: 0
+          - os: windows-latest
+            python-version: "3.9"
+            index: 1
+          - os: ubuntu-latest
+            python-version: "3.9"
+            index: 2
+          - os: ubuntu-latest
+            python-version: "3.13"
+            index: 3
+    name: Test on ${{ matrix.os }} (${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python 3.8
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: "3.8"
+          python-version: ${{ matrix.python-version }}
       - name: Setup project
         run: |
           git config --global user.name "John DOE"
           git config --global user.email "john.doe@example.com"
-          pip install cookiecutter poetry
-      - name: Test template 0
-        run: python3 tests/test_template.py --index 0
-      - name: Test template 1
-        run: python3 tests/test_template.py --index 1
+          pip install uv
+      - name: Test template ${{ matrix.index }}
+        run: python3 tests/test_template.py --index ${{ matrix.index }}

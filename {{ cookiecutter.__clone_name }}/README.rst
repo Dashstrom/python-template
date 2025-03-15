@@ -84,7 +84,7 @@ ensure the coverage at least stays the same before you submit a pull request.
 Setup
 *****
 
-You need to install `Poetry <https://python-poetry.org/docs/#installation>`_
+You need to install `uv <https://github.com/astral-sh/uv>`_
 and `Git <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>`_
 for work with this project.
 
@@ -92,9 +92,8 @@ for work with this project.
 
   git clone {{ cookiecutter.__clone_url }}
   cd {{ cookiecutter.__clone_name }}
-  poetry install --all-extras
-  poetry run poe setup
-  poetry shell
+  uv sync
+  uv run poe setup
 
 Poe
 ********
@@ -104,7 +103,7 @@ Poe is available for help you to run tasks.
 ..  code-block:: text
 
   test           Run test suite.
-  lint           Run linters: ruff checker and ruff formatter and mypy.        
+  lint           Run linters: ruff checker and ruff formatter and mypy.
   format         Run linters in fix mode.
   check          Run all checks: lint, test and docs.
   check-tag      Check if the current tag match the version.
@@ -142,7 +141,7 @@ How to add dependency
 
 ..  code-block:: bash
 
-  poetry add 'PACKAGE'
+  uv add 'PACKAGE'
 
 Ignore illegitimate warnings
 ****************************

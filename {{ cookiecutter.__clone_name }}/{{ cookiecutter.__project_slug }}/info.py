@@ -7,8 +7,8 @@ _DISTRIBUTION = Distribution.from_name(
 )
 _METADATA = _DISTRIBUTION.metadata
 
-__author__ = _METADATA["Author"]
-__email__ = _METADATA["Author-email"]
+__author__ = str(_METADATA["Author"])
+__email__ = str(_METADATA["Author-email"])
 __license__ = _METADATA["License"]
 __version__ = _METADATA["Version"]
 __maintainer__ = _METADATA["Maintainer"]
