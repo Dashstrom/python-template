@@ -82,6 +82,8 @@ def main() -> None:
         remove_file("docker-compose.yml")
         remove_file(".dockerignore")
     run("git", "init")
+    run("uv", "sync")
+    run("uv", "run", "poe", "setup")
     run(
         "git",
         "add",
@@ -101,8 +103,6 @@ def main() -> None:
         "origin",
         {{cookiecutter.__clone_url | tojson()}},
     )
-    run("uv", "sync")
-    run("uv", "run", "poe", "setup")
     autoformat()
     run_tests()
     if "{{ cookiecutter.push }}" == "True":  # type: ignore
