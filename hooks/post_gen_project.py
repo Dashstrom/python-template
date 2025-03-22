@@ -88,6 +88,7 @@ def main() -> None:
         "*",
         ".editorconfig",
         ".gitignore",
+        "uv.lock",
         ".github/",
         ".pre-commit-config.yaml",
     )

@@ -7,11 +7,12 @@ _DISTRIBUTION = Distribution.from_name(
 )
 _METADATA = _DISTRIBUTION.metadata
 
-__author__ = str(_METADATA["Author"])
-__email__ = str(_METADATA["Author-email"])
-__license__ = _METADATA["License"]
+if "Author" in _METADATA:
+    __author__ = str(_METADATA["Author"])
+    __email__ = str(_METADATA["Author-email"])
+else:
+    __author__, __email__ = _METADATA["Author-email"][:-1].split(" <", 1)
 __version__ = _METADATA["Version"]
-__maintainer__ = _METADATA["Maintainer"]
 __summary__ = _METADATA["Summary"]
 __copyright__ = f"{__author__} <{__email__}>"
 __issues__ = {{ cookiecutter.__issues | tojson() }}

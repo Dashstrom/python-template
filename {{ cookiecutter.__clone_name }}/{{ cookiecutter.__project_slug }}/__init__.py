@@ -6,8 +6,6 @@ from .core import hello
 from .info import (
     __author__,
     __email__,
-    __license__,
-    __maintainer__,
     __summary__,
     __version__,
 )
@@ -15,8 +13,6 @@ from .info import (
 __all__ = [
     "__author__",
     "__email__",
-    "__license__",
-    "__maintainer__",
     "__summary__",
     "__version__",
 {%- if 'none' != cookiecutter.cli %}
