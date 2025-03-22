@@ -29,21 +29,13 @@ Please, share it and add a little star for me ⭐
 - [Pytest](https://docs.pytest.org/en/7.4.x) Framework making it easy to write small tests, yet scales to support complex functional testing.
 - [Ruff](https://beta.ruff.rs/docs/rules) An extremely fast Python linter, written in Rust.
 - [Sphinx with read the docs theme](https://sphinx-rtd-theme.readthedocs.io/en/stable) Sphinx makes it easy to create intelligent and beautiful documentation.
+- [UV](https://docs.astral.sh/uv) An extremely fast Python package and project manager, written in Rust.
 
 ## Prerequisite
 
-First, you will need to install a version of [python](https://www.python.org) higher or equal to 3.8 and [Visual Studio Code](https://code.visualstudio.com).
+First, you will need to install a version of [python](https://www.python.org) higher or equal to 3.9. Then, you must install [Visual Studio Code](https://code.visualstudio.com), [uv](https://docs.astral.sh/uv/getting-started/installation/) and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
-You need to install [pipx](https://pypa.github.io/pipx/installation), [cookiecutter](https://cookiecutter.readthedocs.io/en/1.7.3/installation.html) and [poetry](https://python-poetry.org/docs/#installation) with the following commands:
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
-
-You will also need to install [git](https://git-scm.com) following [the official guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
-
-## Installation
+## Generate template
 
 First you need to create your repository as follows:
 
