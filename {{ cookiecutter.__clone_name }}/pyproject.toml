@@ -28,7 +28,6 @@ classifiers = [
     # Framework used
     "Framework :: Pytest",
     "Framework :: Sphinx",
-    "Framework :: tox",
 
     # Indicate who your project is intended for
     "Intended Audience :: Developers",
@@ -46,6 +45,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3 :: Only",
 
     # What is the language used in the project
@@ -139,13 +139,13 @@ help = "Check if the current tag match the version."
 expr = """
 sys.exit(
     subprocess.run(
-        ['git', 'describe', 'tag', '--abbrev=0'],
+        ['git', 'describe', '--exact-match', '--tags'],
         text=True,
         stderr=subprocess.DEVNULL,
         stdout=subprocess.PIPE,
-    ).stdout
+    ).stdout.strip()
     != 'v' + {{ cookiecutter.__project_slug }}.__version__
-  )
+)
 """
 imports = ["{{ cookiecutter.__project_slug }}", "subprocess", "os"]
 
