@@ -17,30 +17,40 @@ Please, share it and add a little star for me ⭐
 
 ## Tools used
 
-- [Commitizen](https://github.com/commitizen-tools/commitizen) A tool to create committing rules for projects.
-- [Cookiecutter](https://www.cookiecutter.io) A cross-platform command-line utility that creates projects.
-- [Doctest](https://docs.pytest.org/en/7.4.x/how-to/doctest.html) Executes tests in docstrings
-- [Editorconfig](https://editorconfig.org/) Configuration file format for defining coding styles in shared projects.
-- [Git](https://git-scm.com/) Git is the most widely used version control system.
-- [Github Actions](https://docs.github.com/en/actions) Automate and execute your software development workflows right in your repository.
-- [Mypy](https://mypy.readthedocs.io/en/stable) Optional static typing for Python.
-- [Poe the Poet](https://poethepoet.natn.io/index.html) A task runner that works well with poetry.
-- [Pre-commit](https://pre-commit.com) A framework for managing and maintaining multi-language pre-commit hooks.
-- [Pytest](https://docs.pytest.org/en/7.4.x) Framework making it easy to write small tests, yet scales to support complex functional testing.
-- [Ruff](https://beta.ruff.rs/docs/rules) An extremely fast Python linter, written in Rust.
-- [Sphinx with read the docs theme](https://sphinx-rtd-theme.readthedocs.io/en/stable) Sphinx makes it easy to create intelligent and beautiful documentation.
-- [UV](https://docs.astral.sh/uv) An extremely fast Python package and project manager, written in Rust.
+* [Cookiecutter](https://www.cookiecutter.io): A cross-platform command-line utility that creates projects.
+* [UV](https://github.com/astral-sh/uv): An extremely fast Python package and project manager, written in Rust.
+* [Git](https://git-scm.com): Git is the most widely used version control system.
+* [Github Actions](https://docs.github.com/en/actions) Automate and execute your software development workflows right in your repository.
+* [Poe the Poet](https://poethepoet.natn.io/index.html): A task runner.
+* [Mypy](https://mypy.readthedocs.io/en/stable) Optional static typing for Python.
+* [Pre-commit](https://pre-commit.com): A framework for managing and maintaining multi-language pre-commit hooks.
+* [Ruff](https://beta.ruff.rs/docs/rules): An extremely fast Python linter, written in Rust.
+* [mkdocstrings with read the docs theme](https://mkdocstrings.github.io/): Sphinx makes it easy to create intelligent and beautiful documentation.
+* [Pytest](https://docs.pytest.org/en/7.4.x): Framework making it easy to write small tests, yet scales to support complex functional testing.
+* [Doctest](https://docs.pytest.org/en/7.4.x/how-to/doctest.html): Executes tests in docstrings.
 
 ## Prerequisite
 
-First, you will need to install a version of [python](https://www.python.org) higher or equal to 3.9. Then, you must install [Visual Studio Code](https://code.visualstudio.com), [uv](https://docs.astral.sh/uv/getting-started/installation/) and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
+First, you will need to install a version of [python](https://www.python.org) higher or equal to 3.10. Then, you must install [Visual Studio Code](https://code.visualstudio.com), [uv](https://docs.astral.sh/uv/getting-started/installation/) and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). Then update shell path with this command:
 
-## Generate template
+```bash
+uv tool update-shell
+```
+
+After that you need to install [cookiecutter](https://cookiecutter.readthedocs.io/en/1.7.3/installation.html):
+
+```bash
+uv tool install cookiecutter
+```
+
+⚠️ You must reload your shell.
+
+## Installation
 
 First you need to create your repository as follows:
 
 ```bash
-uvx cookiecutter --accept-hooks yes gh:Dashstrom/python-template
+uvx cookiecutter --accept-hooks yes --keep-project-on-failure gh:Dashstrom/python-template
 ```
 
 ## Configuration
@@ -72,3 +82,16 @@ python tests/test_template.py
 ## Green IT
 
 For going further, you can use [shrinkix](https://github.com/Dashstrom/shrinkix) for compress your images.
+
+## Update version in pyproject.toml
+
+```bash
+python scripts/bump.py
+```
+
+## Update an already existing template
+
+```bash
+git pull
+python scripts/update.py --template . path/to/your/project
+```

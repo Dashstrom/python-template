@@ -1,26 +1,30 @@
-"""Core module."""
+"""Core module of {{ cookiecutter.__project_slug }}."""
 
-from typing import Optional
+import logging
+from pathlib import Path
+
+# Each file must have a different logger
+logger = logging.getLogger(__name__)
 
 
-def hello(text: Optional[str]) -> str:
-    """Add hello text before the provided text.
+def {{ cookiecutter.__project_slug }}(path: str | Path) -> bool:
+    """{{ cookiecutter.__description }}.
 
     Args:
-        text: Text to add after hello.
+        path: Path to the artifacts
 
     Returns:
-        A string with Hello + text.
+        A boolean if the file exists.
 
     Examples:
-        >>> hello("world")
-        'Hello world'
-        >>> hello(author).startswith('Hello')
+        >>> {{ cookiecutter.__project_slug }}("README.rst")
+        False
+        >>> {{ cookiecutter.__project_slug }}("README.md")
         True
-        >>> hello("")
-        'Hello'
-        >>> hello()
+        >>> {{ cookiecutter.__project_slug }}()
         Traceback (most recent call last):
-        TypeError: hello() missing 1 required positional argument: 'text'
+        TypeError: {{ cookiecutter.__project_slug }}() missing 1 required positional argument: 'path'
     """
-    return f"Hello {text or ''}".strip()
+    # TODO(you): Put your code here
+    logger.debug("Process path: %s", path)
+    return Path(path).exists()

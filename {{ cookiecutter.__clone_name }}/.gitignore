@@ -95,16 +95,17 @@ htmlcov
 output/*.html
 output/*/index.html
 
-# Sphinx
+# Docs
 docs/_build
 public/
+site/
 web/
-
-# Docs
-public/
 
 # Mypy Cache
 .mypy_cache/
 
 # Ruff cache
 .ruff_cache/
+
+# UV
+uv.lock

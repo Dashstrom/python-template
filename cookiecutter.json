@@ -5,6 +5,7 @@
   "project_name": "",
   "__project_slug": "{{ cookiecutter.project_name.lower().strip().replace(' ', '_').replace('-', '_') }}",
   "project_short_description": "",
+  "__description": "{{ cookiecutter.project_short_description.strip().strip('.').strip().capitalize() }}.",
   "__pypi_name": "{{ cookiecutter.__project_slug.replace('_', '-') }}",
   "__pypi_url": "https://pypi.org/project/{{ cookiecutter.__pypi_name }}",
   "project_url": "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.__pypi_name }}",
@@ -25,17 +26,18 @@
     "MIT",
     "GPL-3.0-or-later",
     "LGPL-2.1-or-later",
-    "Proprietary"
+    "LicenseRef-Proprietary"
   ],
   "copyright": "Copyright (c) {% now 'utc', '%Y' %}, {{ cookiecutter.full_name }} <{{ cookiecutter.email }}>",
   "push": false,
   "docker": false,
   "discord": "n",
   "__discord": "{{ cookiecutter.discord|lower not in ('no', 'null', 'false', 'n', 'non', 'f', '0', 'none', 'undefined') }}",
-  "line": 79,
+  "line": "79",
   "installer": [
     "pip",
-    "pipx"
+    "pipx",
+    "uv"
   ],
   "__prompts__": {
     "full_name": "Full name",

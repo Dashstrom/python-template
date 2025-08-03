@@ -100,11 +100,8 @@ docs/_build
 public/
 web/
 
-# Docs
-public/
-
-# Mypy Cache
-.mypy_cache/
-
 # Ruff cache
 .ruff_cache/
+
+# Logs from tests
+*.log

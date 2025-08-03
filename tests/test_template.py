@@ -3,16 +3,15 @@
 import argparse
 import json
 import os
-import pathlib
+from pathlib import Path
 from shlex import quote
 import shutil
 import subprocess
 import sys
 import tempfile
 from time import sleep
-from typing import List, Optional, Union
 
-HERE = pathlib.Path(__file__).parent
+HERE = Path(__file__).parent
 TEMPLATE_PATH = HERE.parent.resolve()
 CACHE = TEMPLATE_PATH / ".cache" / "tests"
 DEFAULT_CONFIG = {
@@ -26,14 +25,16 @@ DEFAULT_CONFIG = {
     "cli": "argparse",
     "license": "LGPL-2.1-or-later",
     "push": False,
-    "strict_lint": False,
     "docker": False,
-    "line": 79,
+    "line": "79",
     "fail": False,
 }
 CONFIGS = [
     {
-        "project_short_description": '"; import sys;sys.exit(1)',
+        "project_short_description": "A little simple test",
+    },
+    {
+        "project_short_description": 'A"; import sys;sys.exit(1)',
     },
     {"cli": "click"},
     {
@@ -48,8 +49,8 @@ CONFIGS = [
     {"project_name": "zzz-zzz"},
     {"cli": "none"},
     {"license": "MIT"},
-    {"license": "Proprietary"},
-    {"strict_lint": True},
+    {"license": "LicenseRef-Proprietary"},
+    {"line": "119"},
     {"docker": True},
     {"line": 120},
     {"cli": "click", "line": 120},
@@ -63,17 +64,22 @@ def error(text: str) -> None:
     raise OSError("Invalid return")
 
 
+def wait_if_a_tty() -> None:
+    """Check if the current terminal is a tty."""
+    if sys.stdin.isatty():
+        input("Press enter for clean up")
+
+
 def fatal(text: str) -> None:
     """Print error and exit."""
     try:
         error(text)
     except OSError:
-        if sys.stdin.isatty():
-            input("Press enter for clean up")
+        wait_if_a_tty()
         sys.exit(1)
 
 
-def run(*cmd: str, cwd: Optional[Union[pathlib.Path, str]] = None) -> None:
+def run(*cmd: str, cwd: Path | str | None = None) -> None:
     """Run test command."""
     print(f"[TEST RUN] {' '.join(quote(arg) for arg in cmd)} in {cwd}")
     try:
@@ -89,20 +95,21 @@ def run(*cmd: str, cwd: Optional[Union[pathlib.Path, str]] = None) -> None:
         error("Exit code is not zero")
 
 
-def test_config(*, indexes: Optional[List[int]] = None) -> None:
+def test_config(*, indexes: list[int] | None = None) -> None:
     """Test for configs."""
     shutil.rmtree(CACHE, ignore_errors=True)
     CACHE.mkdir(exist_ok=True, parents=True)
-    for index, config in enumerate(CONFIGS):
+    for index, partial_config in enumerate(CONFIGS, start=1):
         if indexes is not None and index not in indexes:
             continue
-        repr_config = json.dumps(config, indent=2)
-        config = {**DEFAULT_CONFIG, **config}  # type: ignore[dict-item]
-        should_fail = config.pop("fail", False)
+        repr_config = json.dumps(partial_config, indent=2)
+        config = DEFAULT_CONFIG.copy()
+        config.update(partial_config)  # type: ignore[call-overload]
+        should_fail = config.get("fail", False)
         with tempfile.TemporaryDirectory(prefix="python-template-", dir=CACHE) as tmp:
             try:
                 print(
-                    f"\n\nWorking on {index} at {tmp} "
+                    f"\n\nWorking on {index}/{len(CONFIGS)} at {tmp} "
                     f"with config: \n{repr_config}\n\n"
                 )
                 if sys.stdout.isatty():
@@ -111,6 +118,7 @@ def test_config(*, indexes: Optional[List[int]] = None) -> None:
                     "uvx",
                     "cookiecutter",
                     "-v",
+                    "--keep-project-on-failure",
                     "--no-input",
                     str(TEMPLATE_PATH),
                     *[f"{key}={value}" for key, value in config.items()],
@@ -118,12 +126,8 @@ def test_config(*, indexes: Optional[List[int]] = None) -> None:
                 )
                 project_url: str = config["project_url"]  # type: ignore[assignment]
                 clone_name: str = project_url.split("/")[-1]
-                project = pathlib.Path(tmp) / clone_name
-                run(
-                    "uv",
-                    "sync",
-                    cwd=project,
-                )
+                project = Path(tmp) / clone_name
+                run("uv", "sync", cwd=project)
                 run("uv", "run", "poe", "check", cwd=project)
                 run("uv", "run", "poe", "cov", cwd=project)
                 if should_fail:
@@ -131,9 +135,9 @@ def test_config(*, indexes: Optional[List[int]] = None) -> None:
             except KeyboardInterrupt:
                 print("Interrupted !")
                 break
-            except OSError:
+            except (OSError, SystemExit, subprocess.CalledProcessError):
                 if not should_fail:
-                    fatal("Error ...\n")
+                    print("An unexpected error occurred:", file=sys.stderr, flush=True)
                     raise
             if sys.stdout.isatty():
                 sleep(3)

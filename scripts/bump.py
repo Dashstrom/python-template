@@ -1,44 +1,53 @@
 """Script for bump version."""
 
 from contextlib import suppress
+from functools import cache
 import json
 from operator import eq, ge, gt, le, ne, lt
 import pathlib
 import re
-from typing import Dict, Match, Optional, Tuple
+from typing import Match
 from urllib.request import Request, urlopen
 
-ROOT = pathlib.Path(__file__).parent.parent
+# Cache
+MAX: dict[str, str] = {}
+
+# Operators used
+OPERATORS = {">=": ge, "==": eq, "<=": le, "!=": ne, ">": gt, "<": lt}
+
+# Regex
 RE_DEPENDENCIES = re.compile(
-    r'"(?P<package>[a-zA-Z0-9\-\_\[\]]+)==(?P<version>[0-9\.]+)"'
+    r"(?P<package>[a-zA-Z0-9\-\_\[\]]+)==(?P<version>[0-9\.]+)"
 )
-PROJECT = ROOT / "{{ cookiecutter.__clone_name }}"
-PYPROJECT = PROJECT / "pyproject.toml"
 RE_PYTHON_VERSION = re.compile(
     r"python_version\s*=\s*(?P<version>[\"']?[0-9\.]+[\"']?)"
 )
-MAX: Dict[str, str] = {}
-OPERATORS = {">=": ge, "==": eq, "<=": le, "!=": ne, ">": gt, "<": lt}
 RE_VERSION = re.compile(
     rf"(?P<op>{'|'.join(re.escape(k) for k in OPERATORS)})\s*(?P<version>[\d\.]+)"
 )
 
+# Paths
+ROOT = pathlib.Path(__file__).parent.parent
+PROJECT = ROOT / "{{ cookiecutter.__clone_name }}"
+PROJECT_PYPROJECT = PROJECT / "pyproject.toml"
 
+
+@cache
 def get_pyproject_version() -> str:
-    match = RE_PYTHON_VERSION.search(PYPROJECT.read_text("utf-8"))
+    match = RE_PYTHON_VERSION.search(PROJECT_PYPROJECT.read_text("utf-8"))
     if match is None:
         err = "Python version cannot be resolved from pyproject.toml"
         raise ValueError(err)
-    return match["version"]
+    return match["version"].strip('"')
 
 
-def parse_stable_version(version: str) -> Tuple[int, ...]:
+def parse_stable_version(version: str) -> tuple[int, ...]:
     """Parse stable version like 'X.Y.Z'."""
     return tuple(map(int, version.split(".")))
 
 
 def match_requires(
-    requires_python: Optional[str],
+    requires_python: str | None,
     python_version: str,
 ) -> bool:
     """Check if a requirement match a version."""
@@ -58,14 +67,15 @@ def match_requires(
     return True
 
 
+@cache
 def get_highest_version(package: str, python_version: str) -> str:
     """Get the highest compatible version for a package."""
 
-    # Get all information on the package frm pypi=
+    # Get all information on the package from pypi
     req = Request(url=f"https://pypi.org/pypi/{package}/json")
     req.add_header("Accept", "application/json")
     req.add_header("User-Agent", "Github: Dashstrom/python-template/scripts/bump.py")
-    with urlopen(req, timeout=0.5) as resp:
+    with urlopen(req, timeout=1) as resp:
         content = json.load(resp)
 
     # Order stable versions
@@ -99,28 +109,33 @@ def get_highest_version(package: str, python_version: str) -> str:
     raise ValueError(err)
 
 
-def update_dependencies() -> None:
+def update_dependencies(path: pathlib.Path) -> None:
     python_version = get_pyproject_version()
-    print(f"Python version: {python_version}")
 
     def mapper(m: Match[str]) -> str:
         # Print a waiting line
         print("[.]", m["package"], m["version"], "->", "...", end="\r")
         name = m["package"].split("[")[0]
-        try:
+        if name in MAX:
             version = MAX[name]
-        except KeyError:
+        else:
             # Resolve the highest version working with the python version
             version = get_highest_version(name, python_version)
         # print the information about the modification
         icon = "[+]" if m["version"] != version else "[=]"
         print(icon, m["package"], m["version"], "->", version)
-        return f'"{m["package"]}=={version}"'
+        return f'{m["package"]}=={version}'
 
-    print("Update dependencies")
-    config = RE_DEPENDENCIES.sub(mapper, PYPROJECT.read_text())
-    PYPROJECT.write_text(config)
+    print(f"Update {path}")
+    config = RE_DEPENDENCIES.sub(mapper, path.read_text())
+    path.write_text(config)
+
+
+def update_all() -> None:
+    python_version = get_pyproject_version()
+    print(f"Python version: {python_version}")
+    update_dependencies(PROJECT_PYPROJECT)
 
 
 if __name__ == "__main__":
-    update_dependencies()
+    update_all()
