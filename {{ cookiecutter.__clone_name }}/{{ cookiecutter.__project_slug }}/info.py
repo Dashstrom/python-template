@@ -20,7 +20,7 @@ else:  # pragma: no cover
     __maintainer__, __maintainer_email__ = _METADATA["Maintainer-email"][:-1].split(" <", 1)
 if "License-Expression" in _METADATA:  # pragma: no cover
     __license__: str = _METADATA["License-Expression"]
-else:
+else:  # pragma: no cover
     __license__ = _METADATA["License"]
 
 __version__: str = _METADATA["Version"]

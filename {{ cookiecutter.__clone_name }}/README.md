@@ -44,12 +44,19 @@ uv tool install {{ cookiecutter.__pypi_name }}
 
 ### Contributing
 
-Contributions are very welcome. Tests can be run with `poe check`, please
-ensure the coverage at least stays the same before you submit a pull request.
+Contributions are very welcome. Tests can be run with `poe check`, please ensure the coverage at least stays the same before you submit a pull request.
 
 ### Prerequisite
 
-First, You need to install [git](https://git-scm.com) following [the official guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and configure it. Finally, run these commands for setup install the project with dev dependencies.
+First, You need to install [git](https://git-scm.com) following [the official guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and configure it.
+
+You need to install [uv](https://docs.astral.sh/uv/getting-started/installation) and update shell path with this command:
+
+```bash
+uv tool update-shell
+```
+
+Finally, run these commands for setup install the project with dev dependencies.
 
 ```bash
 git clone {{ cookiecutter.__clone_url }}

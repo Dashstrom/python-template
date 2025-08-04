@@ -1,11 +1,13 @@
-"""Script for bump version."""
+"""Script for bump version."""  # noqa: INP001
 
+from __future__ import annotations
+
+import json
+import re
 from contextlib import suppress
 from functools import cache
-import json
-from operator import eq, ge, gt, le, ne, lt
-import pathlib
-import re
+from operator import eq, ge, gt, le, lt, ne
+from pathlib import Path
 from typing import Match
 from urllib.request import Request, urlopen
 
@@ -17,23 +19,24 @@ OPERATORS = {">=": ge, "==": eq, "<=": le, "!=": ne, ">": gt, "<": lt}
 
 # Regex
 RE_DEPENDENCIES = re.compile(
-    r"(?P<package>[a-zA-Z0-9\-\_\[\]]+)==(?P<version>[0-9\.]+)"
+    r"(?P<package>[a-zA-Z0-9\-\_\[\]]+)==(?P<version>[0-9\.]+)",
 )
 RE_PYTHON_VERSION = re.compile(
-    r"python_version\s*=\s*(?P<version>[\"']?[0-9\.]+[\"']?)"
+    r"python_version\s*=\s*(?P<version>[\"']?[0-9\.]+[\"']?)",
 )
 RE_VERSION = re.compile(
-    rf"(?P<op>{'|'.join(re.escape(k) for k in OPERATORS)})\s*(?P<version>[\d\.]+)"
+    rf"(?P<op>{'|'.join(re.escape(k) for k in OPERATORS)})\s*(?P<version>[\d\.]+)",
 )
 
 # Paths
-ROOT = pathlib.Path(__file__).parent.parent
+ROOT = Path(__file__).parent.parent
 PROJECT = ROOT / "{{ cookiecutter.__clone_name }}"
 PROJECT_PYPROJECT = PROJECT / "pyproject.toml"
 
 
 @cache
 def get_pyproject_version() -> str:
+    """Get current python version."""
     match = RE_PYTHON_VERSION.search(PROJECT_PYPROJECT.read_text("utf-8"))
     if match is None:
         err = "Python version cannot be resolved from pyproject.toml"
@@ -70,12 +73,11 @@ def match_requires(
 @cache
 def get_highest_version(package: str, python_version: str) -> str:
     """Get the highest compatible version for a package."""
-
     # Get all information on the package from pypi
-    req = Request(url=f"https://pypi.org/pypi/{package}/json")
+    req = Request(url=f"https://pypi.org/pypi/{package}/json")  # noqa: S310
     req.add_header("Accept", "application/json")
     req.add_header("User-Agent", "Github: Dashstrom/python-template/scripts/bump.py")
-    with urlopen(req, timeout=1) as resp:
+    with urlopen(req, timeout=1) as resp:  # noqa: S310
         content = json.load(resp)
 
     # Order stable versions
@@ -88,7 +90,7 @@ def get_highest_version(package: str, python_version: str) -> str:
                     file["requires_python"]
                     for file in content["releases"][release]
                     if file["requires_python"]
-                }
+                },
             )
             if not constraints:
                 none_versions.append(parse_stable_version(release))
@@ -109,12 +111,13 @@ def get_highest_version(package: str, python_version: str) -> str:
     raise ValueError(err)
 
 
-def update_dependencies(path: pathlib.Path) -> None:
+def update_dependencies(path: Path) -> None:
+    """Update dependencies in the given file."""
     python_version = get_pyproject_version()
 
     def mapper(m: Match[str]) -> str:
         # Print a waiting line
-        print("[.]", m["package"], m["version"], "->", "...", end="\r")
+        print("[.]", m["package"], m["version"], "->", "...", end="\r")  # noqa: T201
         name = m["package"].split("[")[0]
         if name in MAX:
             version = MAX[name]
@@ -123,17 +126,18 @@ def update_dependencies(path: pathlib.Path) -> None:
             version = get_highest_version(name, python_version)
         # print the information about the modification
         icon = "[+]" if m["version"] != version else "[=]"
-        print(icon, m["package"], m["version"], "->", version)
+        print(icon, m["package"], m["version"], "->", version)  # noqa: T201
         return f'{m["package"]}=={version}'
 
-    print(f"Update {path}")
+    print(f"Update {path}")  # noqa: T201
     config = RE_DEPENDENCIES.sub(mapper, path.read_text())
     path.write_text(config)
 
 
 def update_all() -> None:
+    """Update all."""
     python_version = get_pyproject_version()
-    print(f"Python version: {python_version}")
+    print(f"Python version: {python_version}")  # noqa: T201
     update_dependencies(PROJECT_PYPROJECT)
 
 

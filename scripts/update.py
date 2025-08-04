@@ -1,31 +1,36 @@
-"""Update template on your project."""
+"""Update template on your project."""  # noqa: INP001
+
+from __future__ import annotations
 
 import argparse
+import json
 import os
-from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
-from time import sleep
-import json
-import tomli
 import tempfile
-import shutil
+from pathlib import Path
+from time import sleep
+from typing import Any
+
+import tomli
 
 TEMPLATE = str(Path(__file__).resolve().parent.parent)
-RE_TITLE = re.compile(r"\*\*\*\**\n(.+)\n\*\*\*\**|^# (.+)")
+RE_TITLE = re.compile(r"\*\*\*\**\n(.+)\n\*\*\*\**|^#\s+(.+)")
 RE_PATH = re.compile(r"Virtualenv\n.*Path:\s*([^\n]+)\n.*Base", re.DOTALL)
 RE_VERSION = re.compile(r"__version__\s*=\s*([^\n]+)\n")
 RE_DEPENDENCIES = re.compile(
-    r"(?P<package>[a-zA-Z0-9\-\_\[\]]+)(?:(?P<op>>=|==|<=|!=|>|<)v?(?P<version>[0-9\.]+))?"
+    r"(?P<package>[a-zA-Z0-9\-\_\[\]]+)(?:(?P<op>>=|==|<=|!=|>|<)v?(?P<version>[0-9\.]+))?",
 )
-DELETE = ["Makefile", "MANIFEST.in", ".editorconfig"]
+DELETE = ["Makefile", "MANIFEST.in", ".editorconfig", "README.rst"]
 
 
 def get_poetry_env(repository: Path) -> Path | None:
+    """Get the previous path to poetry venv."""
     try:
         info = subprocess.check_output(
-            ["poetry", "env", "info"],
+            ["poetry", "env", "info"],  # noqa: S607, S603
             cwd=repository,
             stderr=subprocess.DEVNULL,
             text=True,
@@ -42,14 +47,16 @@ def get_poetry_env(repository: Path) -> Path | None:
 
 
 def delete_poetry_env(repository: Path) -> None:
+    """Delete poetry venv."""
     path = get_poetry_env(repository)
     if path is not None:
         shutil.rmtree(path)
 
 
 def get_git_changes(repository: Path) -> list[tuple[str, ...]]:
+    """Get all uncommitted changes."""
     git_output = subprocess.check_output(
-        ["git", "status", "--porcelain"],
+        ["git", "status", "--porcelain"],  # noqa: S607, S603
         cwd=repository,
         stderr=subprocess.DEVNULL,
         text=True,
@@ -61,23 +68,28 @@ def get_git_changes(repository: Path) -> list[tuple[str, ...]]:
 
 
 def has_uncommitted_git_changes(repository: Path) -> bool:
+    """Check for uncommitted change."""
     return len(get_git_changes(repository)) > 0
 
 
 def undo_git_change(repository: Path, file: str) -> None:
+    """Undo an action on a file."""
     subprocess.check_output(
-        ["git", "checkout", "HEAD", file],
+        ["git", "checkout", "HEAD", file],  # noqa: S607, S603
         cwd=repository,
         stderr=subprocess.DEVNULL,
         text=True,
     )
 
 
-def main() -> None:
+def main() -> None:  # noqa: C901, PLR0912, PLR0915
+    """Update an old project with the new template."""
     parser = argparse.ArgumentParser()
     parser.add_argument("project")
     parser.add_argument(
-        "--template", default=TEMPLATE, help="Path or url to the template."
+        "--template",
+        default=TEMPLATE,
+        help="Path or url to the template.",
     )
     parser.add_argument(
         "--dry-run",
@@ -87,38 +99,35 @@ def main() -> None:
     )
     args = parser.parse_args()
     template = args.template
-    if not (
-        template.startswith("https://")
-        or template.startswith("http://")
-        or template.startswith("git@")
-    ):
+    if not (template.startswith(("https://", "http://", "git@"))):
         template = str(Path(template).resolve())
     path = Path(args.project)
     dry_run = args.dry_run
 
-    print("Check for uncommitted changes ...")
+    print("Check for uncommitted changes ...")  # noqa: T201
     if dry_run:
         try:
             if has_uncommitted_git_changes(path):
-                print(f"Uncommitted change detected in {path}", file=sys.stderr)
                 return
         except subprocess.CalledProcessError:
-            print(f"No .git found in in {path}", file=sys.stderr)
+            print(f"No .git found in in {path}", file=sys.stderr)  # noqa: T201
             return
 
-    print("Resolving initial configuration of the project ...")
+    print("Resolving initial configuration of the project ...")  # noqa: T201
     pyproject = tomli.loads((path / "pyproject.toml").read_text())
 
-    config = {"push": False}
+    config: dict[str, Any] = {"push": False}
 
     # Resolve project_name
     readme_rst_path = path / "README.rst"
     if readme_rst_path.exists():
         readme = (path / "README.rst").read_text()
-        config["project_name"] = RE_TITLE.search(readme).group(1)
+        if match := RE_TITLE.search(readme):
+            config["project_name"] = match.group(1)
     else:
         readme = (path / "README.md").read_text()
-        config["project_name"] = RE_TITLE.search(readme).group(2)
+        if match := RE_TITLE.search(readme):
+            config["project_name"] = match.group(2)
 
     # Resolve line
     config["line"] = pyproject["tool"]["ruff"]["line-length"]
@@ -128,7 +137,7 @@ def main() -> None:
     if not license_path.exists():
         config["license"] = "LicenseRef-Proprietary"
     else:
-        license = license_path.read_text()
+        license = license_path.read_text()  # noqa: A001
         if "GNU GENERAL PUBLIC LICENSE" in license:
             config["license"] = "GPL-3.0-or-later"
         elif "GNU LESSER GENERAL PUBLIC LICENSE" in license:
@@ -139,9 +148,8 @@ def main() -> None:
             config["license"] = "LicenseRef-Proprietary"
 
     # Using poetry
-    dependencies = {}
+    dependencies: set[str] = set()
     if "poetry" in pyproject["tool"]:
-        print("Using [tool.poetry]")
         poetry = pyproject["tool"]["poetry"]
         dependencies = set(poetry["dependencies"])
         config.update(
@@ -154,12 +162,12 @@ def main() -> None:
                     if "click" in dependencies
                     else ("argparse" if "scripts" in poetry else "none")
                 ),
-            }
+            },
         )
 
     # Using setuptools
     elif "project" in pyproject:
-        print("Using [project]")
+        print("Using [project]")  # noqa: T201
         project = pyproject["project"]
         dependencies_with_versions = set(project.get("dependencies", []))
         groups = pyproject.get("dependency-groups", {})
@@ -191,44 +199,13 @@ def main() -> None:
                     if any(dep.startswith("click") for dep in project["dependencies"])
                     else ("argparse" if "scripts" in project else "none")
                 ),
-            }
+            },
         )
 
     # Unknown packager
     else:
-        print("Unknown packager", file=sys.stderr)
+        print("Unknown packager", file=sys.stderr)  # noqa: T201
         return
-
-    # doc field
-    if "mkdocs" in dependencies or "sphinx" in dependencies:
-        config["doc"] = "mkdocs"
-
-    # test field
-    config["test"] = "pytest" if "pytest" in dependencies else "none"
-
-    # linter field
-    config["linter"] = (
-        "ruff" if "ruff" in dependencies or "black" in dependencies else "none"
-    )
-
-    # typer field
-    config["typer"] = "mypy" if "mypy" in dependencies else "none"
-
-    # hooks field
-    config["hooks"] = "pre-commit" if "pre-commit" in dependencies else "none"
-
-    # ci field
-    ci = path / ".gitlab-ci.yml"
-    if ci.exists():
-        ci_content = ci.read_text("utf-8")
-        if "\ntest:" in ci_content:
-            config["ci"] = "GitLab CI/CD with Windows support"
-        elif "test-windows" not in ci_content:
-            config["ci"] = "GitLab CI/CD"
-        else:  # By default add windows support
-            config["ci"] = "GitLab CI/CD with Windows support"
-    else:
-        config["ci"] = "none"
 
     # Fallback for resolve version
     if "version" not in config:
@@ -242,14 +219,14 @@ def main() -> None:
                         config["version"] = json.loads(version_match[1])
 
     # Safe sleep
-    print("Using cookiecutter config:", json.dumps(config, indent=2))
+    print("Using cookiecutter config:", json.dumps(config, indent=2))  # noqa: T201
     if dry_run:
-        return None
+        return
     sleep(5)
 
     # Create the new template
     with tempfile.TemporaryDirectory() as tmp:
-        print("Recreate the project using resolved configuration ...")
+        print("Recreate the project using resolved configuration ...")  # noqa: T201
         cmd = [
             "cookiecutter",
             "-v",
@@ -260,29 +237,27 @@ def main() -> None:
         try:
             subprocess.check_call(
                 cmd,
-                shell=False,
+                shell=False,  # noqa: S603
                 cwd=str(tmp),
                 env={**os.environ, "PYTHON_TEMPLATE_FAST": "y"},
             )
         except subprocess.CalledProcessError as err:
-            print(f"An error occurred, exit code: {err.returncode}")
+            print(f"An error occurred, exit code: {err.returncode}")  # noqa: T201
             return
         name = next(iter(name for name in os.listdir(tmp)))
-        print("Merge .git directory to the project ...")
+        print("Merge .git directory to the project ...")  # noqa: T201
         tmp_project = Path(tmp) / name
         shutil.rmtree(tmp_project / ".git", ignore_errors=True)
         shutil.copytree(path / ".git", tmp_project / ".git")
         delete_poetry_env(path)
         shutil.rmtree(path)
         shutil.move(tmp_project, path)
-        print("Undo deletions ...")
+        print("Undo deletions ...")  # noqa: T201
         for change, file in get_git_changes(path):
             if change == "D" and file not in DELETE:
-                print(f"Undo {file}")
+                print(f"Undo {file}")  # noqa: T201
                 undo_git_change(path, file)
-        print("All done, you need to undo change you don't want in your project !")
-        print("Don't forget to reinstall all your dependency with:")
-        print("uv sync --all-extras; uv run poe setup-pre-commit; uv run poe format")
+        print("Don't forget to reinstall all your dependency with:")  # noqa: T201
 
 
 if __name__ == "__main__":

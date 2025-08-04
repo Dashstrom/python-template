@@ -3,10 +3,10 @@
 
 import argparse
 import logging
-import pathlib
 import sys
 import warnings
 from collections.abc import Sequence
+from pathlib import Path
 from typing import NoReturn, TextIO
 
 from .core import {{ cookiecutter.__project_slug }}
@@ -50,10 +50,10 @@ def showwarning(  # pragma: no cover
     """Show warning within the logger."""
     for module_name, module in sys.modules.items():  # noqa: B007
         module_path = getattr(module, "__file__", None)
-        if module_path and pathlib.Path(module_path).samefile(filename):
+        if module_path and Path(module_path).samefile(filename):
             break
     else:
-        module_name = pathlib.Path(filename).stem
+        module_name = Path(filename).stem
     msg = f"{category.__name__}: {message}"
     logger = logging.getLogger(module_name)
     try:
@@ -157,11 +157,11 @@ def entrypoint(argv: Sequence[str] | None = None) -> None:
         sys.exit(1){% elif "click" == cookiecutter.cli %}
 
 import logging
-import pathlib
 import sys
 import warnings
 from collections.abc import Callable
 from functools import wraps
+from pathlib import Path
 from typing import TextIO, TypeVar
 
 import click
@@ -211,10 +211,10 @@ def showwarning(  # pragma: no cover
     """Show warning within the logger."""
     for module_name, module in sys.modules.items():  # noqa: B007
         module_path = getattr(module, "__file__", None)
-        if module_path and pathlib.Path(module_path).samefile(filename):
+        if module_path and Path(module_path).samefile(filename):
             break
     else:
-        module_name = pathlib.Path(filename).stem
+        module_name = Path(filename).stem
     msg = f"{category.__name__}: {message}"
     logger = logging.getLogger(module_name)
     try:
