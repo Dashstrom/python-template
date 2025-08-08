@@ -4,8 +4,13 @@
 # ----------------------------------------------------------------------
 
 [build-system]
-requires = ["setuptools>=62.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling >= 1.27"]
+build-backend = "hatchling.build"
+
+# ----------------------------------------------------------------------
+[tool.hatch.build.targets.wheel]
+packages = ["{{ cookiecutter.__project_slug }}"]
+
 
 # ----------------------------------------------------------------------
 # uv
@@ -203,6 +208,7 @@ expr = """[
     'build/',
     'dist/',
     'public/',
+    'site/',
     '.eggs/',
     '.tox/',
     '.coverage',
@@ -254,6 +260,7 @@ python_version = "3.10"
 exclude = [
   ".bzr",
   ".direnv",
+  "site",
   ".eggs",
   ".git",
   ".hg",
@@ -334,6 +341,7 @@ unfixable = []
 exclude = [
   ".bzr",
   ".direnv",
+  "site",
   ".eggs",
   ".git",
   ".hg",
@@ -375,7 +383,8 @@ dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 # INP001 File `benchmarks/*.py` is part of an implicit namespace package. Add an `__init__.py`.
 "benchmarks/*.py" = ["INP001"]
 # INP001 File `scripts/*.py` is part of an implicit namespace package. Add an `__init__.py`.
-"scripts/*.py" = ["INP001"]
+# T201 `print` found
+"scripts/*.py" = ["INP001", "T201"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["{{ cookiecutter.__project_slug }}"]

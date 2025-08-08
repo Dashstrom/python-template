@@ -23,7 +23,7 @@ RE_VERSION = re.compile(r"__version__\s*=\s*([^\n]+)\n")
 RE_DEPENDENCIES = re.compile(
     r"(?P<package>[a-zA-Z0-9\-\_\[\]]+)(?:(?P<op>>=|==|<=|!=|>|<)v?(?P<version>[0-9\.]+))?",
 )
-DELETE = ["Makefile", "MANIFEST.in", ".editorconfig", "README.rst"]
+DELETE = ["Makefile", "MANIFEST.in", ".editorconfig", "docs/conf.py"]
 
 
 def get_poetry_env(repository: Path) -> Path | None:
@@ -51,6 +51,16 @@ def delete_poetry_env(repository: Path) -> None:
     path = get_poetry_env(repository)
     if path is not None:
         shutil.rmtree(path)
+
+
+def create_uv_venv(repository: Path) -> None:
+    """ "Create empty virtual env."""
+    subprocess.check_output(
+        ["uv", "venv", "--no-project"],
+        cwd=repository,
+        stderr=subprocess.DEVNULL,
+        text=True,
+    )
 
 
 def get_git_changes(repository: Path) -> list[tuple[str, ...]]:
@@ -257,7 +267,14 @@ def main() -> None:  # noqa: C901, PLR0912, PLR0915
             if change == "D" and file not in DELETE:
                 print(f"Undo {file}")  # noqa: T201
                 undo_git_change(path, file)
+        create_uv_venv(path)
+        print(  # noqa: T201
+            "All done, you need to undo changes you don't want in your project!"
+        )
         print("Don't forget to reinstall all your dependency with:")  # noqa: T201
+        print(  # noqa: T201
+            "uv sync --all-extras; uv run poe setup-pre-commit; uv run poe format"
+        )
 
 
 if __name__ == "__main__":

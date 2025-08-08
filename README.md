@@ -19,6 +19,7 @@ Please, share it and add a little star for me ⭐
 
 * [Cookiecutter](https://www.cookiecutter.io): A cross-platform command-line utility that creates projects.
 * [UV](https://github.com/astral-sh/uv): An extremely fast Python package and project manager, written in Rust.
+* [Hatchling](https://pypi.org/project/hatchling): Build backend width better default then setuptool.
 * [Git](https://git-scm.com): Git is the most widely used version control system.
 * [Github Actions](https://docs.github.com/en/actions) Automate and execute your software development workflows right in your repository.
 * [Poe the Poet](https://poethepoet.natn.io/index.html): A task runner.
