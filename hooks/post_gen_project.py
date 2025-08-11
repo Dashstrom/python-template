@@ -1,5 +1,4 @@
 """Hook run after cookiecutter."""  # noqa: INP001
-from __future__ import annotations
 
 import json
 import os
@@ -115,28 +114,31 @@ def main() -> None:
         remove_file("Dockerfile")
         remove_file("docker-compose.yml")
         remove_file(".dockerignore")
-    run("git", "init")
-    run("uv", "sync")
-    run("uv", "run", "poe", "setup")
-    git_add()
-    autoformat()
-    run("git", "commit", "-m", "feat: Initial commit")
-    run("git", "branch", "-M", "main")
-    run(
-        "git",
-        "remote",
-        "add",
-        "origin",
-        {{cookiecutter.__clone_url | tojson()}},  # noqa: SLF001
-    )
-    run_tests()
-    if "{{ cookiecutter.push }}" == "True":  # noqa: PLR0133
-        run("git", "push", "-uf", "origin", "main")
-    if DISABLE_VSCODE:
-        print("\n\nYou can activate venv with the following commands :")  # noqa: T201
-        print("\n  cd {{ cookiecutter.__clone_name }}\n\n")  # noqa: T201
-    else:
-        open_vscode()
+    if not PYTHON_TEMPLATE_FAST:
+        run("git", "init")
+        run("uv", "sync")
+        run("uv", "run", "poe", "setup")
+        git_add()
+        autoformat()
+        run("git", "commit", "-m", "feat: Initial commit")
+        run("git", "branch", "-M", "main")
+        run(
+            "git",
+            "remote",
+            "add",
+            "origin",
+            {{cookiecutter.__clone_url | tojson()}},  # noqa: SLF001
+        )
+        run_tests()
+        if "{{ cookiecutter.push }}" == "True":  # noqa: PLR0133
+            run("git", "push", "-uf", "origin", "main")
+        if DISABLE_VSCODE:
+            print(
+                "\n\nYou can activate venv with the following commands :"
+            )  # noqa: T201
+            print("\n  cd {{ cookiecutter.__clone_name }}\n\n")  # noqa: T201
+        else:
+            open_vscode()
 
 
 if __name__ == "__main__":

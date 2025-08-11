@@ -10,16 +10,21 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from time import sleep
-from typing import Any
+from typing import Any, Literal, NamedTuple
+from urllib.parse import urlparse
 
-import tomli
+try:
+    import tomllib as tomli
+except ImportError:
+    import tomli  # type: ignore[no-redef]
 
 TEMPLATE = str(Path(__file__).resolve().parent.parent)
-RE_TITLE = re.compile(r"\*\*\*\**\n(.+)\n\*\*\*\**|^#\s+(.+)")
-RE_PATH = re.compile(r"Virtualenv\n.*Path:\s*([^\n]+)\n.*Base", re.DOTALL)
-RE_VERSION = re.compile(r"__version__\s*=\s*([^\n]+)\n")
+RE_TITLE = re.compile(r"\*\*\*\**\n(.+)\r?\n\*\*\*\**|^#\s+(.+)")
+RE_PATH = re.compile(r"Virtualenv\n.*Path:\s*([^\n]+)\r?\n.*Base", re.DOTALL)
+RE_VERSION = re.compile(r"__version__\s*=\s*([^\n]+)\r?\n")
+RE_COPYRIGHT = re.compile(r"__copyright__\s*=\s*([^\n]+)\r?\n")
 RE_DEPENDENCIES = re.compile(
     r"(?P<package>[a-zA-Z0-9\-\_\[\]]+)(?:(?P<op>>=|==|<=|!=|>|<)v?(?P<version>[0-9\.]+))?",
 )
@@ -63,7 +68,12 @@ def create_uv_venv(repository: Path) -> None:
     )
 
 
-def get_git_changes(repository: Path) -> list[tuple[str, ...]]:
+class Change(NamedTuple):
+    type: str
+    file: str
+
+
+def get_git_changes(repository: Path) -> list[Change]:
     """Get all uncommitted changes."""
     git_output = subprocess.check_output(
         ["git", "status", "--porcelain"],  # noqa: S607, S603
@@ -71,10 +81,11 @@ def get_git_changes(repository: Path) -> list[tuple[str, ...]]:
         stderr=subprocess.DEVNULL,
         text=True,
     )
-    return [
-        tuple(line.strip().split(" ", maxsplit=1))
-        for line in git_output.strip().splitlines()
-    ]
+    changes = []
+    for line in git_output.strip().splitlines():
+        type, file = line.strip().split(" ", maxsplit=1)
+        changes.append(Change(type, file.strip('"').strip("'")))
+    return changes
 
 
 def has_uncommitted_git_changes(repository: Path) -> bool:
@@ -82,10 +93,10 @@ def has_uncommitted_git_changes(repository: Path) -> bool:
     return len(get_git_changes(repository)) > 0
 
 
-def undo_git_change(repository: Path, file: str) -> None:
+def undo_git_change(repository: Path, *file: str) -> None:
     """Undo an action on a file."""
     subprocess.check_output(
-        ["git", "checkout", "HEAD", file],  # noqa: S607, S603
+        ["git", "checkout", "HEAD", "--", *file],  # noqa: S607, S603
         cwd=repository,
         stderr=subprocess.DEVNULL,
         text=True,
@@ -199,11 +210,19 @@ def main() -> None:  # noqa: C901, PLR0912, PLR0915
         if "version" in project:
             config["version"] = project["version"]
 
+        # Get url
+        url = "https://example.com"
+        for key in ("Source", "Repository", "Homepage"):
+            if key in project["urls"]:
+                url = project["urls"][key]
+
         # Other configuration
         config.update(
             {
+                "full_name": project["authors"][0]["name"],
+                "email": project["authors"][0]["email"],
                 "project_short_description": project["description"],
-                "project_url": project["urls"]["Source"],
+                "project_url": url,
                 "cli": (
                     "click"
                     if any(dep.startswith("click") for dep in project["dependencies"])
@@ -217,22 +236,47 @@ def main() -> None:  # noqa: C901, PLR0912, PLR0915
         print("Unknown packager", file=sys.stderr)  # noqa: T201
         return
 
-    # Fallback for resolve version
-    if "version" not in config:
-        for module in (path / "src").iterdir():
-            for candidate in ("info.py", "core.py"):
-                metadata_path = module / candidate
-                if metadata_path.is_file():
-                    metadata = metadata_path.read_text()
-                    version_match = RE_VERSION.search(metadata)
-                    if version_match:
-                        config["version"] = json.loads(version_match[1])
+    # Get Platform name from url
+    config["github_username"] = (
+        PurePosixPath(urlparse(config["project_url"]).path).parents[0].name
+    )
+
+    # Project slug
+    project_slug = (
+        config["project_name"].lower().strip().replace(" ", "_").replace("-", "_")
+    )
+
+    # resolve information from python file
+    for candidate in ("info.py", "core.py"):
+        metadata_path = path / project_slug / candidate
+        if metadata_path.is_file():
+            metadata = metadata_path.read_text()
+
+            # Fallback for resolve version
+            if "version" not in config:
+                version_match = RE_VERSION.search(metadata)
+                if version_match:
+                    config["version"] = json.loads(version_match[1])
+
+            if "copyright" not in config:
+                copyright_match = RE_COPYRIGHT.search(metadata)
+                if copyright_match:
+                    if copyright_match[1].startswith(('f"', "f'")):
+                        config["copyright"] = json.loads(
+                            copyright_match[1][1:]
+                            .replace("{__author__}", config["full_name"])
+                            .replace("{__email__}", config["email"])
+                        )
+                    else:
+                        config["copyright"] = json.loads(copyright_match[1])
+
+    # Docker required
+    config["docker"] = (path / "DockerFile").exists()
 
     # Safe sleep
     print("Using cookiecutter config:", json.dumps(config, indent=2))  # noqa: T201
     if dry_run:
         return
-    sleep(5)
 
     # Create the new template
     with tempfile.TemporaryDirectory() as tmp:
@@ -249,7 +293,11 @@ def main() -> None:  # noqa: C901, PLR0912, PLR0915
                 cmd,
                 shell=False,  # noqa: S603
                 cwd=str(tmp),
-                env={**os.environ, "PYTHON_TEMPLATE_FAST": "y"},
+                env={
+                    **os.environ,
+                    "PYTHON_TEMPLATE_FAST": "y",
+                    "DISABLE_VSCODE": "y",
+                },
             )
         except subprocess.CalledProcessError as err:
             print(f"An error occurred, exit code: {err.returncode}")  # noqa: T201
@@ -257,24 +305,30 @@ def main() -> None:  # noqa: C901, PLR0912, PLR0915
         name = next(iter(name for name in os.listdir(tmp)))
         print("Merge .git directory to the project ...")  # noqa: T201
         tmp_project = Path(tmp) / name
-        shutil.rmtree(tmp_project / ".git", ignore_errors=True)
         shutil.copytree(path / ".git", tmp_project / ".git")
         delete_poetry_env(path)
+        # https://stackoverflow.com/a/79320340
+        for p in path.glob("**/*"):
+            p.chmod(0o777)
         shutil.rmtree(path)
         shutil.move(tmp_project, path)
         print("Undo deletions ...")  # noqa: T201
-        for change, file in get_git_changes(path):
-            if change == "D" and file not in DELETE:
-                print(f"Undo {file}")  # noqa: T201
-                undo_git_change(path, file)
+        to_undo = []
+        for change in get_git_changes(path):
+            if (
+                change.type == "D"
+                and change.file not in DELETE
+                and not change.file.endswith(".rst")
+            ):
+                print(f"Undo {change.file}")  # noqa: T201
+                to_undo.append(change.file)
+        undo_git_change(path, *to_undo)
         create_uv_venv(path)
         print(  # noqa: T201
             "All done, you need to undo changes you don't want in your project!"
         )
         print("Don't forget to reinstall all your dependency with:")  # noqa: T201
-        print(  # noqa: T201
-            "uv sync --all-extras; uv run poe setup-pre-commit; uv run poe format"
-        )
+        print("uv sync --all-extras; uv run poe setup; uv run poe format")  # noqa: T201
 
 
 if __name__ == "__main__":

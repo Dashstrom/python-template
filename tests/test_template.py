@@ -54,7 +54,6 @@ CONFIGS = [
     {"docker": True},
     {"line": 120},
     {"cli": "click", "line": 120},
-    {"discord": "blabla"},
 ]
 
 

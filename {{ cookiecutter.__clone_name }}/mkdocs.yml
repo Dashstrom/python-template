@@ -16,7 +16,7 @@ nav:
 
 theme:
   name: "readthedocs"
-  logo: resources/logo.png
+  # logo: resources/logo.png
 
 plugins:
   - search

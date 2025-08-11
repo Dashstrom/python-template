@@ -1,10 +1,6 @@
 # Python template
 
-[![Mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Python : 3.10 3.11 3.12 3.13 3.14](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12%20|%203.13%20|%203.14-%23007EC6.svg)](https://devguide.python.org/versions)
-[![License : MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://gitlab.utc.fr/utcode/utcode-autofill/blob/main/LICENSE)
-[![CI : Tests](https://github.com/Dashstrom/python-template/actions/workflows/tests.yml/badge.svg)](https://github.com/Dashstrom/python-template/actions/workflows/tests.yml)
+[![Mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![Python : 3.10 3.11 3.12 3.13](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12%20|%203.13-%23007EC6.svg)](https://devguide.python.org/versions) [![License : MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://gitlab.utc.fr/utcode/utcode-autofill/blob/main/LICENSE) [![CI : Tests](https://github.com/Dashstrom/python-template/actions/workflows/tests.yml/badge.svg)](https://github.com/Dashstrom/python-template/actions/workflows/tests.yml)
 
 ## Description
 

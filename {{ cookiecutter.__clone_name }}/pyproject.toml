@@ -66,7 +66,6 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: 3 :: Only",
 
   # What is the language used in the project
@@ -90,11 +89,11 @@ Source = {{ cookiecutter.__repository | tojson() }}
 [dependency-groups]
 dev = [
   # Task runner
-  "poethepoet==0.36.0",
+  "poethepoet==0.37.0",
 
   # Pre-commit
-  "pre-commit==4.2.0",
-  "pre-commit-hooks==5.0.0",
+  "pre-commit==4.3.0",
+  "pre-commit-hooks==6.0.0",
 
   # Documentation
   "mkdocs==1.6.1",
@@ -105,10 +104,10 @@ dev = [
   "mypy==1.17.1",
 
   # Linter
-  "ruff==0.12.7",
+  "ruff==0.12.8",
 
   # Tests
-  "coverage[toml]==7.10.1",
+  "coverage[toml]==7.10.3",
   "pytest-cov==6.2.1",
   "pytest==8.4.1",
   "pytest-mock==3.14.1",
@@ -311,7 +310,7 @@ strict_equality = true
 # Config file
 warn_unused_configs = true
 
-# Exemple for missing types
+# Example for missing types
 #[[tool.mypy.overrides]]
 #module = ["numpy.*"]
 #ignore_missing_imports = true

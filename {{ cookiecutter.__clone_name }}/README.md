@@ -1,23 +1,12 @@
 # {{ cookiecutter.project_name }}
 
-[![CI : Docs]({{ cookiecutter.__repository }}/actions/workflows/docs.yml/badge.svg)]({{ cookiecutter.__repository }}/actions/workflows/docs.yml)
-[![CI : Lint]({{ cookiecutter.__repository }}/actions/workflows/lint.yml/badge.svg)]({{ cookiecutter.__repository }}/actions/workflows/lint.yml)
-[![CI : Tests]({{ cookiecutter.__repository }}/actions/workflows/tests.yml/badge.svg)]({{ cookiecutter.__repository }}/actions/workflows/tests.yml)
-{% if cookiecutter.license != "Proprietary" %}
-[![PyPI : {{ cookiecutter.__pypi_name }}](https://img.shields.io/pypi/v/{{ cookiecutter.__pypi_name }}.svg)]({{ cookiecutter.__pypi_url }})
-[![Python : versions](https://img.shields.io/pypi/pyversions/{{ cookiecutter.__pypi_name }}.svg)]({{ cookiecutter.__pypi_url }})
-{% endif %}
-{% if cookiecutter.__discord %}
-[![Discord](https://img.shields.io/badge/Discord-{{ cookiecutter.project_name.replace(" ", "%20") }}-5865F2?style=flat&logo=discord&logoColor=white)]({{ cookiecutter.discord }})
-{% endif %}
-[![License : {{ cookiecutter.license }}](https://img.shields.io/badge/license-{{ cookiecutter.license.replace(" ", "%20") }}-green.svg)]({{ cookiecutter.__repository }}/blob/main/LICENSE)
+[![CI : Docs]({{ cookiecutter.__repository }}/actions/workflows/docs.yml/badge.svg)]({{ cookiecutter.__repository }}/actions/workflows/docs.yml) [![CI : Lint]({{ cookiecutter.__repository }}/actions/workflows/lint.yml/badge.svg)]({{ cookiecutter.__repository }}/actions/workflows/lint.yml) [![CI : Tests]({{ cookiecutter.__repository }}/actions/workflows/tests.yml/badge.svg)]({{ cookiecutter.__repository }}/actions/workflows/tests.yml) [![PyPI : {{ cookiecutter.__pypi_name }}](https://img.shields.io/pypi/v/{{ cookiecutter.__pypi_name }}.svg)]({{ cookiecutter.__pypi_url }}) [![Python : versions](https://img.shields.io/pypi/pyversions/{{ cookiecutter.__pypi_name }}.svg)]({{ cookiecutter.__pypi_url }}) [![License : {{ cookiecutter.license }}](https://img.shields.io/badge/license-{{ cookiecutter.license.replace(" ", "%20") }}-green.svg)]({{ cookiecutter.__repository }}/blob/main/LICENSE)
 
-{{ cookiecutter.__description }}{% if cookiecutter.license != "Proprietary" %}
+{{ cookiecutter.__description }}
 
-Documentation
-#############
+## Documentation
 
-Documentation is available on {{ cookiecutter.__documentation }}{% endif %}
+Documentation is available on <{{ cookiecutter.__documentation }}>.
 
 ## Installation
 
@@ -50,13 +39,13 @@ Contributions are very welcome. Tests can be run with `poe check`, please ensure
 
 First, You need to install [git](https://git-scm.com) following [the official guide](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and configure it.
 
-You need to install [uv](https://docs.astral.sh/uv/getting-started/installation) and update shell path with this command:
+Then, you need to install [uv](https://docs.astral.sh/uv/getting-started/installation) and update shell path with this command:
 
 ```bash
 uv tool update-shell
 ```
 
-Finally, run these commands for setup install the project with dev dependencies.
+Finally, run these commands for setup the project with dev dependencies.
 
 ```bash
 git clone {{ cookiecutter.__clone_url }}
@@ -98,12 +87,6 @@ To ignore illegitimate warnings you can add :
 - **# type: ignore[ERROR_CODE]** on the same line for mypy.
 - **# pragma: no cover** on the same line to ignore line for coverage.
 - **# doctest: +SKIP** on the same line for doctest.
-
-## Uninstall
-
-```bash
-pip uninstall {{ cookiecutter.__pypi_name }}
-```
 
 ## License
 
