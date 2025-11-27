@@ -89,28 +89,28 @@ Source = {{ cookiecutter.__repository | tojson() }}
 [dependency-groups]
 dev = [
   # Task runner
-  "poethepoet==0.37.0",
+  "poethepoet==0.38.0",
 
   # Pre-commit
-  "pre-commit==4.3.0",
+  "pre-commit==4.5.0",
   "pre-commit-hooks==6.0.0",
 
   # Documentation
   "mkdocs==1.6.1",
-  "mkdocstrings[python]==0.30.0",
-  "pymdown-extensions==10.16.1",
+  "mkdocstrings[python]==0.30.1",
+  "pymdown-extensions==10.17.2",
 
   # Typer
-  "mypy==1.17.1",
+  "mypy==1.18.2",
 
   # Linter
-  "ruff==0.12.8",
+  "ruff==0.14.6",
 
   # Tests
-  "coverage[toml]==7.10.3",
-  "pytest-cov==6.2.1",
-  "pytest==8.4.1",
-  "pytest-mock==3.14.1",
+  "coverage[toml]==7.12.0",
+  "pytest-cov==7.0.0",
+  "pytest==9.0.1",
+  "pytest-mock==3.15.1",
 ]
 
 [tool.setuptools]
