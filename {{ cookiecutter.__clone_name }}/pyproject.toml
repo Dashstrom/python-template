@@ -34,7 +34,7 @@ dependencies = [
   {%- endif %}
 ]
 readme = "README.md"
-requires-python = ">=3.10,<4.0"
+requires-python = ">=3.12,<4.0"
 keywords = ["python"]
 
 # See https://pypi.org/classifiers/
@@ -89,27 +89,27 @@ Source = {{ cookiecutter.__repository | tojson() }}
 [dependency-groups]
 dev = [
   # Task runner
-  "poethepoet==0.38.0",
+  "poethepoet==0.46.0",
 
   # Pre-commit
-  "pre-commit==4.5.0",
+  "pre-commit==4.6.0",
   "pre-commit-hooks==6.0.0",
 
   # Documentation
   "mkdocs==1.6.1",
-  "mkdocstrings[python]==0.30.1",
-  "pymdown-extensions==10.17.2",
+  "mkdocstrings[python]==1.0.4",
+  "pymdown-extensions==10.21.3",
 
   # Typer
-  "mypy==1.18.2",
+  "mypy==2.1.0",
 
   # Linter
-  "ruff==0.14.6",
+  "ruff==0.15.14",
 
   # Tests
-  "coverage[toml]==7.12.0",
-  "pytest-cov==7.0.0",
-  "pytest==9.0.1",
+  "coverage[toml]==7.14.1",
+  "pytest-cov==7.1.0",
+  "pytest==9.0.3",
   "pytest-mock==3.15.1",
 ]
 
@@ -255,7 +255,7 @@ source = ["{{ cookiecutter.__project_slug }}"]
 # ----------------------------------------------------------------------
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.12"
 exclude = [
   ".bzr",
   ".direnv",
@@ -323,7 +323,7 @@ warn_unused_configs = true
 
 [tool.ruff]
 line-length = {{ cookiecutter.line }}
-target-version = "py310"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = ["ALL"]

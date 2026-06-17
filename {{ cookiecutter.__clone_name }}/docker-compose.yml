@@ -7,12 +7,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - ./data:/data:rw,z
     networks:
       - {{ cookiecutter.__project_slug }}
-    volumes:
-      # Use computer time
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
+
+    # Security
+    cap_drop:
+      - ALL
+    security_opt:
+    - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
 
 networks:
   {{ cookiecutter.__project_slug }}:

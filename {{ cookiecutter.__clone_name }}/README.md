@@ -50,7 +50,7 @@ Finally, run these commands for setup the project with dev dependencies.
 ```bash
 git clone {{ cookiecutter.__clone_url }}
 cd {{ cookiecutter.__clone_name }}
-uv sync --all-extras --python 3.10
+uv sync --all-extras --python 3.12
 uv run poe setup
 ```
 

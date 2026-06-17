@@ -1,42 +1,9 @@
-.venv
-venv
-tools
-htmlcov
-__pycache__
-.vagrant
-.pytest_cache
-.github
-.gitlab
-.cache
-Vagrantfile
-.coverage
-.coveragerc
-.gitignore
-.travis.yml
-*.log
-docker
-images
-get-docker.sh
-docs
-tests
-build
-*.egg-info
-npm-debug.log
-.bzr
-.direnv
-.eggs
-.git
-.hg
-.mypy_cache
-.nox
-.pants.d
-.pytype
-.ruff_cache
-.svn
-.tox
-__pypackages__
-_build
-buck-out
-build
-dist
-poetry.lock
+*
+!pyproject.toml
+!LICENSE
+!/{{ cookiecutter.__project_slug }}/*.py
+!/{{ cookiecutter.__project_slug }}/*/*.py
+!/{{ cookiecutter.__project_slug }}/*/*/*.py
+!/{{ cookiecutter.__project_slug }}/*/*/*/*.py
+!/{{ cookiecutter.__project_slug }}/resources
+!README.md

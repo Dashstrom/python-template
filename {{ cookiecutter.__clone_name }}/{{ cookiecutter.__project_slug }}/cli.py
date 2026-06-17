@@ -133,7 +133,8 @@ def setup_logging(*, verbose: bool | None = None) -> None:
     )
     warnings.showwarning = showwarning
     for handler in logging.root.handlers:
-        handler.setFormatter(ExtraFormatter(handler.formatter._fmt))  # type: ignore[union-attr]  # noqa: SLF001
+        if handler.formatter:
+            handler.setFormatter(ExtraFormatter(handler.formatter._fmt))  # noqa: SLF001
 
 
 def entrypoint(argv: Sequence[str] | None = None) -> None:
@@ -146,7 +147,7 @@ def entrypoint(argv: Sequence[str] | None = None) -> None:
             print({{ cookiecutter.__project_slug }}(args.path))  # noqa: T201
         else:  # pragma: no cover
             parser.error("No command specified")
-    except Exception as err:  # NoQA: BLE001  # pragma: no cover
+    except Exception as err:  # pragma: no cover  # noqa: BLE001,RUF100
         logger.critical(
             "Unexpected error (%s, version %s)",
             __project__,
@@ -236,7 +237,7 @@ def showwarning(  # pragma: no cover
     logger.handle(record)
 
 
-def verbosity(func: Callable[P, T]) -> Callable[P, T]:
+def verbosity[**P, T](func: Callable[P, T]) -> Callable[P, T]:
     """Decorator for logging."""
     func = click.option(
         "-v",
@@ -254,10 +255,11 @@ def verbosity(func: Callable[P, T]) -> Callable[P, T]:
         )
         warnings.showwarning = showwarning
         for handler in logging.root.handlers:
-            handler.setFormatter(ExtraFormatter(handler.formatter._fmt))  # type: ignore[union-attr]  # noqa: SLF001
+            if handler.formatter:
+                handler.setFormatter(ExtraFormatter(handler.formatter._fmt))
         try:
             return func(*args, **kwargs)
-        except Exception as err:  # noqa: BLE001  # pragma: no cover
+        except Exception as err:  # pragma: no cover  # noqa: BLE001,RUF100
             logger.critical(
                 "Unexpected error (%s, version %s)",
                 __project__,

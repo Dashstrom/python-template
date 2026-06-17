@@ -114,7 +114,7 @@ def test_cli_version() -> None:
 
 def test_import() -> None:
     """Test if module entrypoint has correct imports."""
-    import {{ cookiecutter.__project_slug }}.__main__  # noqa: PLC0415, F401
+    import {{ cookiecutter.__project_slug }}.__main__  # noqa: F401, PLC0415
 
 
 def test_{{ cookiecutter.__project_slug }}_cli() -> None:

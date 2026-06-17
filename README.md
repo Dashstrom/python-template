@@ -1,6 +1,6 @@
 # Python template
 
-[![Mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![Python : 3.10 3.11 3.12 3.13](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12%20|%203.13-%23007EC6.svg)](https://devguide.python.org/versions) [![License : MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://gitlab.utc.fr/utcode/utcode-autofill/blob/main/LICENSE) [![CI : Tests](https://github.com/Dashstrom/python-template/actions/workflows/tests.yml/badge.svg)](https://github.com/Dashstrom/python-template/actions/workflows/tests.yml)
+[![Mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/) [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![Python : 3.12 3.13 3.14](https://img.shields.io/badge/python-3.12%20|%203.13%20|%203.14-%23007EC6.svg)](https://devguide.python.org/versions) [![License : MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://gitlab.utc.fr/utcode/utcode-autofill/blob/main/LICENSE) [![CI : Tests](https://github.com/Dashstrom/python-template/actions/workflows/tests.yml/badge.svg)](https://github.com/Dashstrom/python-template/actions/workflows/tests.yml)
 
 ## Description
 
@@ -28,7 +28,7 @@ Please, share it and add a little star for me ⭐
 
 ## Prerequisite
 
-First, you will need to install a version of [python](https://www.python.org) higher or equal to 3.10. Then, you must install [Visual Studio Code](https://code.visualstudio.com), [uv](https://docs.astral.sh/uv/getting-started/installation/) and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). Then update shell path with this command:
+First, you will need to install a version of [python](https://www.python.org) higher or equal to 3.12. Then, you must install [Visual Studio Code](https://code.visualstudio.com), [uv](https://docs.astral.sh/uv/getting-started/installation/) and [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git). Then update shell path with this command:
 
 ```bash
 uv tool update-shell
